@@ -3,7 +3,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+
 const uploadRoute = require('./routes/uploadRoute');
+const registerRoutes = require("./routes/registerRoutes");
+const employeeRoute = require('./routes/employeeRoute');
+const dataRoute = require('./routes/dataRoute');
+
 const dotenv = require("dotenv");
 
 dotenv.config(); // Load environment variables
@@ -26,6 +31,9 @@ mongoose
 
 // Routes
 app.use('/api/upload', uploadRoute);
+app.use("/api/auth", registerRoutes);
+app.use('/api/employees', employeeRoute);
+app.use('/api/data', dataRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
