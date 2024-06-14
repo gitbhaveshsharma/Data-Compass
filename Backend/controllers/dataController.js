@@ -27,4 +27,14 @@ const distributeData = async (req, res) => {
     }
 };
 
-module.exports = { distributeData };
+const getDataCounts = async (req, res) => {
+    try {
+        const assignedCount = await Data.countDocuments({ status: 'assigned' });
+        const unassignedCount = await Data.countDocuments({ status: 'unassigned' });
+        res.status(200).json({ assignedCount, unassignedCount });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching data counts' });
+    }
+};
+
+module.exports = { distributeData, getDataCounts };
