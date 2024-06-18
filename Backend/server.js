@@ -8,6 +8,7 @@ const uploadRoute = require('./routes/uploadRoute');
 const registerRoutes = require("./routes/registerRoutes");
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
+const authRoute = require('./routes/authRoute');
 
 const dotenv = require("dotenv");
 
@@ -34,6 +35,7 @@ app.use('/api/upload', uploadRoute);
 app.use("/api/auth", registerRoutes);
 app.use('/api/employees', employeeRoute);
 app.use('/api/data', dataRoute);
+app.use('/api/auth', authRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

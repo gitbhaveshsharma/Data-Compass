@@ -1,4 +1,3 @@
-// src/Reducer/dataReducer.js
 const initialState = {
     data: [],
     loading: false,
@@ -8,6 +7,29 @@ const initialState = {
 const dataCountsInitialState = {
     assignedCount: 0,
     unassignedCount: 0,
+    loading: false,
+    error: null,
+};
+
+const assignedDataInitialState = {
+    assignedData: [],
+    error: null,
+};
+
+const orderDataInitialState = {
+    data: [],
+    loading: false,
+    error: null,
+};
+
+const canceledDataInitialState = {
+    data: [],
+    loading: false,
+    error: null,
+};
+
+const callbackDataInitialState = {
+    data: [],
     loading: false,
     error: null,
 };
@@ -47,4 +69,67 @@ const dataCountsReducer = (state = dataCountsInitialState, action) => {
     }
 };
 
-export { dataReducer, dataCountsReducer };
+const assignedDataReducer = (state = assignedDataInitialState, action) => {
+    switch (action.type) {
+        case 'FETCH_ASSIGNED_DATA_SUCCESS':
+            return {
+                ...state,
+                assignedData: action.payload,
+            };
+        case 'FETCH_ASSIGNED_DATA_FAILURE':
+            return {
+                ...state,
+                error: action.error,
+            };
+        default:
+            return state;
+    }
+};
+
+const orderDataReducer = (state = orderDataInitialState, action) => {
+    switch (action.type) {
+        case 'FETCH_ORDER_DATA_REQUEST':
+            return { ...state, loading: true };
+        case 'FETCH_ORDER_DATA_SUCCESS':
+            return { ...state, loading: false, data: action.payload };
+        case 'FETCH_ORDER_DATA_FAILURE':
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+const canceledDataReducer = (state = canceledDataInitialState, action) => {
+    switch (action.type) {
+        case 'FETCH_CANCELED_DATA_REQUEST':
+            return { ...state, loading: true };
+        case 'FETCH_CANCELED_DATA_SUCCESS':
+            return { ...state, loading: false, data: action.payload };
+        case 'FETCH_CANCELED_DATA_FAILURE':
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+const callbackDataReducer = (state = callbackDataInitialState, action) => {
+    switch (action.type) {
+        case 'FETCH_CALLBACK_DATA_REQUEST':
+            return { ...state, loading: true };
+        case 'FETCH_CALLBACK_DATA_SUCCESS':
+            return { ...state, loading: false, data: action.payload };
+        case 'FETCH_CALLBACK_DATA_FAILURE':
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export {
+    dataReducer,
+    dataCountsReducer,
+    assignedDataReducer,
+    orderDataReducer,
+    canceledDataReducer,
+    callbackDataReducer,
+};
