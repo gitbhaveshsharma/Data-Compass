@@ -3,7 +3,7 @@ const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: !!localStorage.getItem('token'),
     user: null,
-    loading: true,
+    loading: false,
     error: null,
 };
 
@@ -12,9 +12,11 @@ const authReducer = (state = initialState, action) => {
         case 'LOGIN_SUCCESS':
             return {
                 ...state,
-                token: action.payload,
+                token: action.payload.token,
                 isAuthenticated: true,
+                user: action.payload.user,
                 loading: false,
+                error: null,
             };
         case 'LOGIN_FAILURE':
         case 'LOGOUT':

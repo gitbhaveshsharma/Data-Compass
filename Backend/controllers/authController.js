@@ -1,39 +1,39 @@
 // backend/controllers/authController.js
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+require('dotenv').config();
 
-const loginUser = async (req, res) => {
+exports.login = async (req, res) => {
     const { email, password } = req.body;
-
     try {
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(400).send({ error: 'Invalid email or password.' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
+        const token = jwt.sign({ id: user._id, role: user.role, department: user.department }, process.env.JWT_SECRET, {
+            expiresIn: '1h',
+        });
 
-        const token = jwt.sign({ userId: user._id, role: user.role, department: user.department }, 'your_jwt_secret', { expiresIn: '1h' });
-
-        res.json({ token });
+        res.send({ token, user: { id: user._id, role: user.role, department: user.department } });
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in' });
+        res.status(500).send({ error: 'Server error.' });
     }
 };
 
-const getUserData = async (req, res) => {
-    const { userId } = req.user;
-
+exports.register = async (req, res) => {
+    const { email, password, name, role, department } = req.body;
     try {
-        const user = await User.findById(userId).select('-password');
-        res.json(user);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send({ error: 'User already exists.' });
+        }
+
+        const user = new User({ email, password, name, role, department });
+        await user.save();
+        res.status(201).send({ message: 'User registered successfully.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching user data' });
+        res.status(500).send({ error: 'Server error.' });
     }
 };
-
-module.exports = { loginUser, getUserData };

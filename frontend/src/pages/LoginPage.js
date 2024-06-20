@@ -1,43 +1,68 @@
 // src/pages/LoginPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Container, Typography } from '@mui/material';
 import { login } from '../redux/authActions';
-import { Redirect } from 'react-router-dom';
 
-const LoginPage = () => {
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    const error = useSelector((state) => state.auth.error);
+    const navigate = useNavigate();
+    const { isAuthenticated, error, user } = useSelector((state) => state.auth);
 
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            if (user.role === 'admin') {
+                navigate('/admin-dashboard');
+            } else if (user.role === 'employee') {
+                if (user.department === 'Flead') {
+                    navigate('/field-dashboard');
+                } else if (user.department === 'Verify') {
+                    navigate('/verify-dashboard');
+                } else {
+                    navigate('/');
+                }
+            } else {
+                navigate('/');
+            }
+        }
+    }, [isAuthenticated, user, navigate]);
 
-    const { email, password } = formData;
-
-    const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-    const onSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(login(formData));
+        await dispatch(login({ email, password }));
     };
 
-    if (isAuthenticated) {
-        return <Redirect to="/" />;
-    }
-
     return (
-        <div>
-            <h1>Login</h1>
-            {error && <p>{error}</p>}
-            <form onSubmit={onSubmit}>
-                <input type="email" name="email" value={email} onChange={onChange} required />
-                <input type="password" name="password" value={password} onChange={onChange} required />
-                <button type="submit">Login</button>
+        <Container maxWidth="sm">
+            <Typography variant="h4" gutterBottom>
+                Login
+            </Typography>
+            <form onSubmit={handleSubmit}>
+                <TextField
+                    label="Email"
+                    fullWidth
+                    margin="normal"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button type="submit" variant="contained" color="primary" fullWidth>
+                    Login
+                </Button>
+                {error && <Typography color="error">{error}</Typography>}
             </form>
-        </div>
+        </Container>
     );
 };
 
-export default LoginPage;
+export default Login;

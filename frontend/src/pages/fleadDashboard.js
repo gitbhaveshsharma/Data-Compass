@@ -1,23 +1,39 @@
-// src/components/FieldDashboard.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FreshLeadCard from '../components/FreshLeadCard';
 import OrderDataCard from '../components/OrderData';
 import CanceledDataCard from '../components/CanceledData';
 import CallbackDataCard from '../components/CallbackData';
-import { Grid, Paper, Box, TextField } from '@mui/material';
+import { Grid, Paper, Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import ChartCard from '../components/ChartCard';
+import { fetchOrderDataByEmployeeId, fetchCallbackDataByEmployeeId, fetchCanceledDataByEmployeeId } from '../redux/dataActions';
 
 const FieldDashboard = () => {
-    const [employeeId, setEmployeeId] = useState('');
+    const dispatch = useDispatch();
+    const orderData = useSelector((state) => state.data.orderData.data); 
+    const callbackData = useSelector((state) => state.data.callbackData.data); 
+    const canceledData = useSelector((state) => state.data.canceledData.data); 
 
-    const handleInputChange = (e) => {
-        setEmployeeId(e.target.value);
-    };
+    // Fetch user details from Redux store
+    const user = useSelector((state) => state.auth.user);
+    const employeeId = user ? user.id : '';
+
+    useEffect(() => {
+        if (employeeId) {
+            dispatch(fetchOrderDataByEmployeeId(employeeId));
+            dispatch(fetchCallbackDataByEmployeeId(employeeId));
+            dispatch(fetchCanceledDataByEmployeeId(employeeId));
+        }
+    }, [dispatch, employeeId]);
+
+    useEffect(() => {
+        console.log("Order Data:", orderData);
+    }, [orderData]);
 
     // Dummy data for charts
     const chartData = [
-        { quarter: 'Q1', orders: 35, canceled: 51, callbacks: 15 },
+        { quarter: 'Q1', orders: `${Array.isArray(orderData) ? orderData.length : 0}`, canceled:`${Array.isArray(canceledData) ? canceledData.length : 0}`, callbacks: `${Array.isArray(callbackData) ? callbackData.length : 0}` },
         { quarter: 'Q2', orders: 44, canceled: 6, callbacks: 25 },
         { quarter: 'Q3', orders: 24, canceled: 49, callbacks: 30 },
         { quarter: 'Q4', orders: 34, canceled: 30, callbacks: 50 },
@@ -26,14 +42,6 @@ const FieldDashboard = () => {
     return (
         <Container maxWidth="false">
             <Box sx={{ flexGrow: 1, p: 2 }}>
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Enter Employee ID"
-                    value={employeeId}
-                    onChange={handleInputChange}
-                    margin="normal"
-                />
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={7}>
                         <Grid container spacing={4}>
@@ -71,4 +79,3 @@ const FieldDashboard = () => {
 };
 
 export default FieldDashboard;
-
