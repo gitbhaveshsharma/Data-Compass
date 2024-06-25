@@ -19,6 +19,25 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    products: [{
+        productName: {
+            type: String,
+            required: true,
+        },
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        }
+    }],
+    status: {
+        type: String,
+        enum: ['pending', 'under verification', 'verified', 'shipping', 'delivered'],
+        default: 'pending'
+    },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',

@@ -1,18 +1,12 @@
-// src/components/OperationPage.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDataById, updateData, orderData, cancelData, callbackData } from '../redux/operationActions';
-
+import { fetchProducts } from '../redux/productActions';
 import { styled } from '@mui/system';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
+import { Grid, Typography, Button, Alert, MenuItem, Select, IconButton } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { FormControl, useFormControlContext } from '@mui/base/FormControl';
-
 const blue = {
     100: '#DAECFF',
     200: '#b6daff',
@@ -37,7 +31,7 @@ const grey = {
 
 const StyledInput = styled('input')(
     ({ theme }) => `
-  width: 320px;
+  width: 100%;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
@@ -89,15 +83,20 @@ const OperationPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const data = useSelector((state) => state.operation.data);
+    const products = useSelector(state => state.products.products);
     const [formData, setFormData] = useState({
         name: '',
         number: '',
-        address: ''
+        address: '',
     });
     const [message, setMessage] = useState('');
+    const [productsInOrder, setProductsInOrder] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState('');
+    const [quantity, setQuantity] = useState('');
 
     useEffect(() => {
         dispatch(fetchDataById(id));
+        dispatch(fetchProducts());
     }, [dispatch, id]);
 
     useEffect(() => {
@@ -120,41 +119,66 @@ const OperationPage = () => {
 
     const handleUpdate = async () => {
         try {
+            console.log(`Updating data with ID: ${id}, Data:`, formData);
             await dispatch(updateData(id, formData));
             setMessage('Data updated successfully!');
         } catch (error) {
+            console.error('Update failed:', error);
             setMessage('Failed to update data.');
         }
     };
 
     const handleOrder = async () => {
         try {
-            await dispatch(orderData(id));
+            const orderDetails = { ...formData, products: productsInOrder, status: 'pending' };  // Ensure 'pending' status
+            console.log(`Placing order with ID: ${id}, Order Details:`, orderDetails);
+            await dispatch(orderData(id, orderDetails));
             setMessage('Order placed successfully!');
             navigate('/');
         } catch (error) {
+            console.error('Order failed:', error);
             setMessage('Failed to place order.');
         }
     };
 
     const handleCancel = async () => {
         try {
+            console.log(`Cancelling order with ID: ${id}`);
             await dispatch(cancelData(id));
             setMessage('Order canceled successfully!');
             navigate('/');
         } catch (error) {
+            console.error('Cancel failed:', error);
             setMessage('Failed to cancel order.');
         }
     };
 
     const handleCallback = async () => {
         try {
+            console.log(`Requesting callback with ID: ${id}`);
             await dispatch(callbackData(id));
             setMessage('Callback request sent successfully!');
             navigate('/');
         } catch (error) {
+            console.error('Callback request failed:', error);
             setMessage('Failed to send callback request.');
         }
+    };
+
+    const handleAddProduct = () => {
+        const product = products.find(p => p.name === selectedProduct);
+        if (product) {
+            setProductsInOrder([...productsInOrder, { productName: product.name, quantity: parseInt(quantity, 10), price: product.price }]);
+            setSelectedProduct('');
+            setQuantity('');
+            console.log('Product added:', { productName: product.name, quantity, price: product.price });
+        }
+    };
+
+    const handleRemoveProduct = (index) => {
+        const updatedProducts = [...productsInOrder];
+        updatedProducts.splice(index, 1);
+        setProductsInOrder(updatedProducts);
     };
 
     if (!data) return <div>Loading...</div>;
@@ -177,55 +201,110 @@ const OperationPage = () => {
                 Operation Page
             </Typography>
 
-            <Card sx={{ maxWidth: 345, margin: 'auto', padding: '50px' }}>
-                <CardContent>
-                    {message && <Alert severity={message.includes('successfully') ? 'success' : 'error'}>{message}</Alert>}
-                </CardContent>
-                <CardContent sx={{ margin: 'auto', padding: '0' }}>
-                    <form>
-                        <FormControl required>
-                            <label>Name:</label>
-                            <StyledInput
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="Write your name here"
-                            />
-                            <HelperText />
-                        </FormControl>
-                        <FormControl required>
-                            <label>Number:</label>
-                            <StyledInput
-                                type="text"
-                                name="number"
-                                value={formData.number}
-                                onChange={handleChange}
-                                placeholder="Write your number here"
-                            />
-                            <HelperText />
-                        </FormControl>
-                        <FormControl required>
-                            <label>Address:</label>
-                            <StyledInput
-                                type="text"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                placeholder="Write your address here"
-                            />
-                            <HelperText />
-                        </FormControl>
-                    </form>
-                </CardContent>
-                <CardActions>
-                    <Button variant="contained" color="primary" onClick={handleUpdate}>Update</Button>
-                    <Button variant="contained" color="success" onClick={handleOrder}>Order</Button>
-                    <Button variant="contained" color="error" onClick={handleCancel}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={handleCallback}>Callback</Button>
-                </CardActions>
-
-            </Card>
+            <Grid container spacing={2} style={{maxWidth: '100%', width:'500px', margin: 'auto', padding:'25px', borderRadius:'10px'}} sx={{bgcolor:'#f0f0f1'}}>
+                {message && (
+                    <Grid item xs={12}>
+                        <Alert severity={message.includes('successfully') ? 'success' : 'error'}>{message}</Alert>
+                    </Grid>
+                )}
+                <Grid item xs={12} md={6}>
+                    <FormControl required fullWidth>
+                        <label>Name:</label>
+                        <StyledInput
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Write your name here"
+                        />
+                        <HelperText />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <FormControl required fullWidth>
+                        <label>Number:</label>
+                        <StyledInput
+                            type="text"
+                            name="number"
+                            value={formData.number}
+                            onChange={handleChange}
+                            placeholder="Write your number here"
+                        />
+                        <HelperText />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <FormControl required fullWidth>
+                        <label>Address:</label>
+                        <StyledInput
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            placeholder="Write your address here"
+                        />
+                        <HelperText />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={7} >
+                    <FormControl required fullWidth>
+                        <label>Product:</label>
+                        <Select
+                            value={selectedProduct}
+                            onChange={(e) => setSelectedProduct(e.target.value)}
+                            displayEmpty
+                            sx={{height:'39px', width:'245px'}}
+                        >
+                            <MenuItem value="" disabled >Select a product</MenuItem>
+                            {products.map((product) => (
+                                <MenuItem key={product.id} value={product.name} sx={{height:'39px', fontSize:'15px'}}>
+                                    {product.name} - ${product.price}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={5}>
+                    <FormControl required fullWidth>
+                        <label>Quantity:</label>
+                        <StyledInput
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                            placeholder="Enter quantity"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} >
+                <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Button variant="contained" sx={{width:'150px'}} color="primary" onClick={handleAddProduct} fullWidth>
+                        Add Product
+                    </Button>
+                </div>
+                </Grid>
+                <Grid item xs={12}>
+                    {productsInOrder.map((product, index) => (
+                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                            <Typography>{product.productName} - {product.quantity} - ${product.price}</Typography>
+                            <IconButton color="error" onClick={() => handleRemoveProduct(index)}>
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                    ))}
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>Update</Button>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Button variant="contained" color="success" onClick={handleOrder} fullWidth>Order</Button>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Button variant="contained" color="secondary" onClick={handleCallback} fullWidth>Callback</Button>
+                </Grid>
+            </Grid>
         </div>
     );
 };

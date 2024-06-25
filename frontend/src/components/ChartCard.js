@@ -1,8 +1,8 @@
 // src/components/ChartCard.js
 import React, { useState } from 'react';
 import { Tab, Tabs, Box, Paper } from '@mui/material';
-import BarChartComponent from './BarChart';
-import PieChartComponent from './PieChart';
+import BarChartComponent from './data/BarChart';
+import PieChartComponent from './data/PieChart';
 
 const ChartCard = ({ data }) => {
     const [value, setValue] = useState(0);

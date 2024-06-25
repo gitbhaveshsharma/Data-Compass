@@ -1,25 +1,36 @@
-// src/components/EmployeeListComponent.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FixedSizeList } from 'react-window';
 import { fetchEmployees } from '../redux/employeeActions';
-import { distributeData, fetchDataCounts } from '../redux/dataActions';
+import { distributeData, fetchDataCounts, fetchAssignedData } from '../redux/dataActions';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 const EmployeeListComponent = () => {
     const dispatch = useDispatch();
     const { employees, loading, error } = useSelector((state) => state.employees);
+    const { data } = useSelector((state) => state.data);
+    const assignedData = useSelector((state) => state.data.assignedData || {});
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [dataCount, setDataCount] = useState(0);
 
     useEffect(() => {
         dispatch(fetchEmployees());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (employees.length > 0) {
+            employees.forEach(employee => {
+                dispatch(fetchAssignedData(employee._id));
+            });
+        }
+    }, [dispatch, employees]);
 
     const handleCheckboxChange = useCallback(
         (employeeId) => {
@@ -29,18 +40,22 @@ const EmployeeListComponent = () => {
                     : [...prev, employeeId]
             );
         },
-        [setSelectedEmployees]
+        []
     );
 
-    const handleDistribute = () => {
-        dispatch(distributeData(selectedEmployees, dataCount)).then(() => {
-            dispatch(fetchDataCounts());
+    const handleDistribute = async () => {
+        const departments = selectedEmployees.map(employeeId => {
+            const employee = employees.find(emp => emp._id === employeeId);
+            return employee.department;
         });
+        await dispatch(distributeData(selectedEmployees, dataCount, departments));
+        dispatch(fetchDataCounts());
     };
 
     const renderRow = useCallback(
-        ({ index, style }) => {
-            const employee = employees[index];
+        ({ index, style, employeesList }) => {
+            const employee = employeesList[index];
+            const count = assignedData[employee._id] ? assignedData[employee._id].length : 0;
             return (
                 <ListItem style={style} key={employee._id} component="div" disablePadding>
                     <ListItemButton>
@@ -51,52 +66,81 @@ const EmployeeListComponent = () => {
                                     onChange={() => handleCheckboxChange(employee._id)}
                                 />
                             }
-                            label={employee.name}
+                            label={`${employee.name} (${count})`}
                         />
                     </ListItemButton>
                 </ListItem>
             );
         },
-        [employees, selectedEmployees, handleCheckboxChange]
+        [selectedEmployees, handleCheckboxChange, assignedData]
     );
 
+    const verifyEmployees = employees.filter(employee => employee.department === 'Verify');
+    const fleadEmployees = employees.filter(employee => employee.department === 'Flead');
+
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Container>
+            <Box textAlign="center" mb={4}>
                 <h2>Employee List</h2>
                 {loading ? (
                     <p>Loading...</p>
                 ) : error ? (
                     <p>Error: {error}</p>
                 ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <div style={{ backgroundColor: "#d9e7ff", borderRadius: '10px', padding:10}}>
-                        <FixedSizeList
-                            height={390}
-                            width={320}
-                            itemSize={46}
-                            itemCount={employees.length}
-                            overscanCount={4}
-                        >
-                            {renderRow}
-                                    </FixedSizeList>
-                                    </div>
-                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center' }}>
-                            <input
-                                type="number"
-                                value={dataCount}
-                                onChange={(e) => setDataCount(e.target.value)}
-                                        placeholder="Number of data to Assigned"
-                                style={{ height: 32, padding: '0 8px' }}
-                            />
-                            <Button onClick={handleDistribute} variant="contained">
-                                Assign To
-                            </Button>
-                        </div>
-                    </div>
+                    <Grid container spacing={2} justifyContent="center">
+                        <Grid item xs={12} sm={6}>
+                            <Box mb={2}>
+                                <h3>Verify</h3>
+                                <FixedSizeList
+                                    height={390}
+                                    width="100%"
+                                    itemSize={46}
+                                    itemCount={verifyEmployees.length}
+                                    overscanCount={4}
+                                    itemData={verifyEmployees}
+                                >
+                                    {({ index, style }) => renderRow({ index, style, employeesList: verifyEmployees })}
+                                </FixedSizeList>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Box mb={2}>
+                                <h3>Flead</h3>
+                                <FixedSizeList
+                                    height={390}
+                                    width="100%"
+                                    itemSize={46}
+                                    itemCount={fleadEmployees.length}
+                                    overscanCount={4}
+                                    itemData={fleadEmployees}
+                                >
+                                    {({ index, style }) => renderRow({ index, style, employeesList: fleadEmployees })}
+                                </FixedSizeList>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 )}
-            </div>
-        </div>
+                <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={2}>
+                    <input
+                        type="number"
+                        value={dataCount}
+                        onChange={(e) => setDataCount(Number(e.target.value))}
+                        placeholder="Number of data to Assign"
+                        style={{ height: 32, padding: '0 8px' }}
+                    />
+                    <Button onClick={handleDistribute} variant="contained">
+                        Assign To
+                    </Button>
+                </Box>
+                {data?.assignmentMessages && (
+                    <Box mt={2}>
+                        {data.assignmentMessages.map((message, index) => (
+                            <p key={index}>{message}</p>
+                        ))}
+                    </Box>
+                )}
+            </Box>
+        </Container>
     );
 };
 

@@ -11,11 +11,13 @@ import {
 } from './dataReducer';
 import authReducer from './authReducer';
 import operationReducer from './operationReducer';
+import productReducer from './productReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,
     employees: employeeReducer,
     dataCounts: dataCountsReducer,
+    products: productReducer, 
     data: combineReducers({
         data: dataReducer,
         assignedData: assignedDataReducer,

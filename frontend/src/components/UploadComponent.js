@@ -4,10 +4,19 @@ import { useDispatch } from 'react-redux';
 import { uploadExcel } from '../redux/uploadActions';
 import { fetchDataCounts } from '../redux/dataActions';
 import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+
+const VisuallyHiddenInput = styled('input')({
+    display: 'none',
+});
 
 const UploadComponent = () => {
     const [file, setFile] = useState(null);
@@ -34,36 +43,87 @@ const UploadComponent = () => {
         });
     };
 
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
-
     const handleClose = () => {
         setError('');
         setSuccess(false);
     };
 
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const droppedFile = e.dataTransfer.files[0];
+        setFile(droppedFile);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleRemoveFile = () => {
+        setFile(null);
+        fileInputRef.current.value = null;
+    };
+
     return (
-        <div>
-            <h2>Data Upload</h2>
-            {file && <p>Selected file: {file.name}</p>}
-            <input type="file" onChange={handleFileChange} ref={fileInputRef}  />
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: { xs: 2, md: 5 },
+            }}
+        >
+            <Typography variant="h4" sx={{ mb: 2 }}>
+                Drop file to upload
+            </Typography>
+            <Box
+                sx={{
+                    border: '2px dashed grey',
+                    borderRadius: '8px',
+                    width: { xs: '100%', sm: '100%' },
+                    height: '155px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '20px',
+                    position: 'relative',
+                    cursor: 'pointer',
+                    flexDirection: 'column',
+                    textAlign: 'center',
+                }}
+                onClick={() => fileInputRef.current.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+            >
+                <VisuallyHiddenInput
+                    type="file"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                />
+                {file ? (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Typography variant="body1">{file.name}</Typography>
+                        <IconButton size="small" onClick={handleRemoveFile}>
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
+                ) : (
+                    <CloudUploadIcon sx={{ fontSize: 48, color: 'grey' }} />
+                )}
+            </Box>
             <Button
-                component="label"
-                role={undefined}
                 variant="contained"
-                tabIndex={-1}
+                color="primary"
+                startIcon={<CloudUploadIcon />}
                 onClick={handleUpload}
             >
-                Upload
+                Upload file
             </Button>
             {error && (
                 <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}>
@@ -79,7 +139,7 @@ const UploadComponent = () => {
                     </Alert>
                 </Snackbar>
             )}
-        </div>
+        </Box>
     );
 };
 

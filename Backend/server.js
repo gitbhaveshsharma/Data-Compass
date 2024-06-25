@@ -5,11 +5,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const uploadRoute = require('./routes/uploadRoute');
-const registerRoutes = require("./routes/registerRoutes");
+// const registerRoutes = require("./routes/registerRoutes");
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
 const authRoutes = require('./routes/authRoute');
 const auth = require('./middleware/auth');
+const productRoutes = require('./routes/productRoutes');
 
 const dotenv = require("dotenv");
 
@@ -33,10 +34,11 @@ mongoose
 
 // Routes
 app.use('/api/upload', uploadRoute);
-app.use("/api/auth", registerRoutes);
+// app.use("/api/auth", registerRoutes);
 app.use('/api/employees', employeeRoute);
 app.use('/api/data', dataRoute);
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
 
 // Protecting a route as an example
 app.get('/api/protected', auth, (req, res) => {

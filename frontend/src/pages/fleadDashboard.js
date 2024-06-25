@@ -7,7 +7,7 @@ import { Grid, Paper, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import ChartCard from '../components/ChartCard';
-import { fetchOrderDataByEmployeeId, fetchCallbackDataByEmployeeId, fetchCanceledDataByEmployeeId } from '../redux/dataActions';
+import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
 
 const FieldDashboard = () => {
     const dispatch = useDispatch();
@@ -21,9 +21,9 @@ const FieldDashboard = () => {
 
     useEffect(() => {
         if (employeeId) {
-            dispatch(fetchOrderDataByEmployeeId(employeeId));
-            dispatch(fetchCallbackDataByEmployeeId(employeeId));
-            dispatch(fetchCanceledDataByEmployeeId(employeeId));
+            dispatch(fetchOrderData(employeeId));
+            dispatch(fetchCallbackData(employeeId));
+            dispatch(fetchCanceledData(employeeId));
         }
     }, [dispatch, employeeId]);
 
@@ -41,6 +41,7 @@ const FieldDashboard = () => {
 
     return (
         <Container maxWidth="false">
+            <h1> Flead Dashboard </h1>
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={7}>

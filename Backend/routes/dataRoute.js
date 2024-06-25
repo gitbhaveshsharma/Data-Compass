@@ -1,6 +1,17 @@
-// backend/routes/dataRoute.js
 const express = require('express');
-const { distributeData, getDataCounts, getAssignedData, getDataById, updateData, orderData, cancelData, callbackData, getOrderedDataById, getCancelDataById, getCallbackDataById  } = require('../controllers/dataController');
+const {
+    distributeData,
+    getDataCounts,
+    getAssignedData,
+    getDataById,
+    updateData,
+    orderData,
+    cancelData,
+    callbackData,
+    getOrderedData,
+    getCanceledData,
+    getCallbackData
+} = require('../controllers/dataController');
 
 const router = express.Router();
 
@@ -10,12 +21,10 @@ router.get('/assigned/:employeeId', getAssignedData);
 router.get('/:id', getDataById);
 router.put('/:id', updateData);
 router.post('/:id/order', orderData);
+router.get('/orders/:employeeId', getOrderedData);
 router.post('/:id/cancel', cancelData);
+router.get('/canceled/:employeeId', getCanceledData);
 router.post('/:id/callback', callbackData);
-router.get('/orders/:employeeId', getOrderedDataById);
-router.get('/canceled/:employeeId', getCancelDataById);
-router.get('/callbacks/:employeeId', getCallbackDataById);
-
-
+router.get('/callbacks/:employeeId', getCallbackData);
 
 module.exports = router;

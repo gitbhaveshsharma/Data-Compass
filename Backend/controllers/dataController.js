@@ -4,32 +4,48 @@ const Order = require('../models/Order');
 const Cancel = require('../models/Cancel');
 const Callback = require('../models/Callback');
 
-// Distribute data to employees
 const distributeData = async (req, res) => {
-    const { employeeIds, dataCount } = req.body;
+    const { employeeIds, dataCount, departments } = req.body;
 
     try {
-        const unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
-
         const updates = [];
-        employeeIds.forEach((employeeId, index) => {
-            const assignedData = unassignedData.slice(index * dataCount, (index + 1) * dataCount);
-            assignedData.forEach(data => {
-                data.status = 'assigned';
-                data.assignedTo = employeeId;
-                updates.push(data.save());
-            });
-        });
+        const assignmentMessages = [];
+
+        for (let i = 0; i < employeeIds.length; i++) {
+            const employeeId = employeeIds[i];
+            const department = departments[i];
+
+            let unassignedData;
+
+            if (department === 'Verify') {
+                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: employeeId }}).limit(dataCount * employeeIds.length);
+            } else if (department === 'Flead') {
+                unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
+            }
+
+            if (unassignedData && unassignedData.length > 0) {
+                const assignedData = unassignedData.slice(i * dataCount, (i + 1) * dataCount);
+                assignedData.forEach(data => {
+                    data.assignedTo = employeeId;
+                    if (department === 'Flead') {
+                        data.status = 'assigned';
+                    } else if (department === 'Verify') {
+                        data.status = 'under verification';
+                    }
+                    updates.push(data.save());
+                });
+                assignmentMessages.push(`Assigned ${assignedData.length} items to employee ${employeeId} in ${department} department.`);
+            }
+        }
 
         await Promise.all(updates);
 
-        const updatedData = await Data.find({});
-
-        res.status(200).json({ updatedData });
+        res.status(200).json({ message: 'Data distributed successfully', assignmentMessages });
     } catch (error) {
-        res.status(500).json({ message: 'Error distributing data' });
+        res.status(500).json({ message: 'Error distributing data', error });
     }
 };
+
 
 // Fetch data counts
 const getDataCounts = async (req, res) => {
@@ -61,9 +77,6 @@ const getAssignedData = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch assigned data' });
     }
 };
-
-
-
 
 // Update data status and assignedTo field
 const updateDataStatus = async (req, res) => {
@@ -113,43 +126,50 @@ const updateData = async (req, res) => {
     }
 };
 
-// Mark data as ordered
 const orderData = async (req, res) => {
     try {
+        // console.log('Request Body:', req.body);  // Add this line
         const data = await Data.findById(req.params.id);
         if (!data) {
             return res.status(404).json({ message: 'Data not found' });
         }
+        const { products, status } = req.body;
         const order = new Order({
             dataId: data._id,
             name: data.name,
             number: data.number,
             address: data.address,
             assignedTo: data.assignedTo,
+            products,
+            status,
         });
         await order.save();
         data.status = 'order';
         await data.save();
         res.json(order);
     } catch (error) {
+        console.error('Error:', error);  // Add this line
         res.status(500).json({ message: error.message });
     }
 };
 
-// fatch order data to a specific employee
-const getOrderedDataById = async (req, res) => {
+
+// Fetch all order data for admin or specific employee
+const getOrderedData = async (req, res) => {
     const { employeeId } = req.params;
+
     try {
-        console.log(`Received request to fetch order data for employee ID: ${employeeId}`);
-        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
-            console.log('Invalid employee ID');
-            return res.status(400).json({ error: 'Invalid employee ID' });
+        let orderedData;
+        if (employeeId === 'all') {
+            orderedData = await Order.find({});
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+                return res.status(400).json({ error: 'Invalid employee ID' });
+            }
+            orderedData = await Order.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
-        const orderedData = await Order.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
-        console.log(`Found ${orderedData.length} records for employee ID: ${employeeId}`);
         res.json(orderedData);
     } catch (error) {
-        console.error(`Failed to fetch order data for employee ID: ${employeeId}`, error);
         res.status(500).json({ error: 'Failed to fetch order data' });
     }
 };
@@ -177,25 +197,25 @@ const cancelData = async (req, res) => {
     }
 };
 
-// fatch cancel data to a specific employee
-
-const getCancelDataById = async (req, res) => {
+// Fetch all canceled data for admin or specific employee
+const getCanceledData = async (req, res) => {
     const { employeeId } = req.params;
+
     try {
-        console.log(`Received request to fetch Cancel data for employee ID: ${employeeId}`);
-        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
-            console.log('Invalid employee ID');
-            return res.status(400).json({ error: 'Invalid employee ID' });
+        let canceledData;
+        if (employeeId === 'all') {
+            canceledData = await Cancel.find({});
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+                return res.status(400).json({ error: 'Invalid employee ID' });
+            }
+            canceledData = await Cancel.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
-        const canceledData = await Cancel.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
-        console.log(`Found ${canceledData.length} records for employee ID: ${employeeId}`);
         res.json(canceledData);
     } catch (error) {
-        console.error(`Failed to fetch Cancel data for employee ID: ${employeeId}`, error);
-        res.status(500).json({ error: 'Failed to fetch Cancel data' });
+        res.status(500).json({ error: 'Failed to fetch canceled data' });
     }
 };
-
 
 // Mark data for callback
 const callbackData = async (req, res) => {
@@ -220,25 +240,37 @@ const callbackData = async (req, res) => {
     }
 };
 
-// fatch callback data to a specific emplyee
-const getCallbackDataById = async (req, res) => {
+// Fetch all callback data for admin or specific employee
+const getCallbackData = async (req, res) => {
     const { employeeId } = req.params;
+
     try {
-        console.log(`Received request to fetch Callback data for employee ID: ${employeeId}`);
-        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
-            console.log('Invalid employee ID');
-            return res.status(400).json({ error: 'Invalid employee ID' });
+        let callbackData;
+        if (employeeId === 'all') {
+            callbackData = await Callback.find({});
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+                return res.status(400).json({ error: 'Invalid employee ID' });
+            }
+            callbackData = await Callback.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
-        const callbackData = await Callback.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
-        console.log(`Found ${callbackData.length} records for employee ID: ${employeeId}`);
         res.json(callbackData);
     } catch (error) {
-        console.error(`Failed to fetch Callback data for employee ID: ${employeeId}`, error);
-        res.status(500).json({ error: 'Failed to fetch Callback data' });
+        res.status(500).json({ error: 'Failed to fetch callback data' });
     }
 };
 
-
-
-
-module.exports = { distributeData, getDataCounts, getAssignedData, updateDataStatus, getDataById, updateData, orderData, callbackData, cancelData, getOrderedDataById, getCancelDataById, getCallbackDataById };
+module.exports = {
+    distributeData,
+    getDataCounts,
+    getAssignedData,
+    updateDataStatus,
+    getDataById,
+    updateData,
+    orderData,
+    callbackData,
+    cancelData,
+    getOrderedData,
+    getCanceledData,
+    getCallbackData
+};
