@@ -12,6 +12,45 @@ export const fetchDataById = (id) => async (dispatch) => {
     }
 };
 
+// FATCH ORDER BY ID 
+export const fetchOrderDataById = (id) => async (dispatch) => {
+    try {
+        console.log(`Fetching order data with ID: ${id}`);
+        const response = await axios.get(`http://localhost:3001/api/data/order/${id}`);
+        console.log('Fetched order data:', response.data);
+        dispatch({ type: 'FETCH_ORDERED_DATA_SUCCESS', payload: response.data });
+    } catch (error) {
+        console.error('Fetch order data failed:', error);
+        dispatch({ type: 'FETCH_ORDERED_DATA_FAILURE', error: error.message });
+    }
+};
+
+//fatch call back data by id
+export const fetchCallbackDataById = (id) => async (dispatch) => {
+    try {
+        console.log(`Fetching callback data with ID: ${id}`);
+        const response = await axios.get(`http://localhost:3001/api/data/callback/${id}`);
+        console.log('Fetched callback data:', response.data);
+        dispatch({ type: 'FETCH_CALLBACK_DATA_SUCCESS', payload: response.data });
+    } catch (error) {
+        console.error('Fetch callback data failed:', error);
+        dispatch({ type: 'FETCH_CALLBACK_DATA_FAILURE', error: error.message });
+    }
+};
+
+//fatch cancel data by id
+export const fetchCancelDataById = (id) => async (dispatch) => {
+    try {
+        console.log(`Fetching cancel data with ID: ${id}`);
+        const response = await axios.get(`http://localhost:3001/api/data/cancel/${id}`);
+        console.log('Fetched cancel data:', response.data);
+        dispatch({ type: 'FETCH_CANCELED_DATA_SUCCESS', payload: response.data });
+    } catch (error) {
+        console.error('Fetch cancel data failed:', error);
+        dispatch({ type: 'FETCH_CANCELED_DATA_FAILURE', error: error.message });
+    }
+};
+
 export const updateData = (id, data) => async (dispatch) => {
     try {
         // console.log(`Updating data with ID: ${id}, Data:`, data);

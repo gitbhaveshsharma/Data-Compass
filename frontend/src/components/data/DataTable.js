@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const DataTable = ({ columns, data, title }) => {
     const [page, setPage] = useState(0);
@@ -59,7 +60,7 @@ const DataTable = ({ columns, data, title }) => {
                                     {rows
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row) => (
-                                            <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row._id} component={Link} to={`/data/order/${row._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 {columns.map((column) => {
                                                     const value = row[column.id];
                                                     return (

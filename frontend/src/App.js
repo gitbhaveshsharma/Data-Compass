@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/adminDashboard';
 import FieldDashboard from './pages/fleadDashboard';
+import VerifyOrder from './components/verification/VerifyOrder';
 import VerifyDashboard from './pages/VerifyDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import OperationPage from './components/OperationPage';
@@ -24,6 +25,7 @@ const App = () => {
                     <Route path="/field-dashboard" element={<FieldDashboard />} />
                     <Route path="/verify-dashboard" element={<VerifyDashboard />} />
                     <Route path="/data/:id" element={<OperationPage />}/>
+                        <Route path="/data/order/:id" element={<VerifyOrder />} />
                 </Route>
                 <Route path="/" element={<LoginPage />} />
             </Routes>

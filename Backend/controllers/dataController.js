@@ -107,6 +107,53 @@ const getDataById = async (req, res) => {
     }
 };
 
+// Fetch order data by ID
+const getOrderDataById = async (req, res) => {
+    try {
+        const data = await Order.findById(req.params.id);
+        if (!data) {
+            console.log(`Order data not found with ID: ${req.params.id}`);
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching order data:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Fetch cancel data by ID
+const getCancelDataById = async (req, res) => {
+    try {
+        const data = await Cancel.findById(req.params.id);
+        if (!data) {
+            console.log(`Cancel data not found with ID: ${req.params.id}`);
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching cancel data:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Fetch callback data by ID
+const getCallbackDataById = async (req, res) => {
+    try {
+        const data = await Callback.findById(req.params.id);
+        if (!data) {
+            console.log(`Callback data not found with ID: ${req.params.id}`);
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching callback data:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 // Update data
 const updateData = async (req, res) => {
     try {
@@ -272,5 +319,9 @@ module.exports = {
     cancelData,
     getOrderedData,
     getCanceledData,
-    getCallbackData
+    getCallbackData,
+    getOrderDataById,
+    getCancelDataById,
+    getCallbackDataById
+    
 };

@@ -10,7 +10,10 @@ const {
     callbackData,
     getOrderedData,
     getCanceledData,
-    getCallbackData
+    getCallbackData,
+    getOrderDataById,
+    getCancelDataById,
+    getCallbackDataById,
 } = require('../controllers/dataController');
 
 const router = express.Router();
@@ -26,5 +29,8 @@ router.post('/:id/cancel', cancelData);
 router.get('/canceled/:employeeId', getCanceledData);
 router.post('/:id/callback', callbackData);
 router.get('/callbacks/:employeeId', getCallbackData);
+router.get('/order/:id', getOrderDataById);
+router.get('/cancel/:id', getCancelDataById);
+router.get('/callback/:id', getCallbackDataById);
 
 module.exports = router;
