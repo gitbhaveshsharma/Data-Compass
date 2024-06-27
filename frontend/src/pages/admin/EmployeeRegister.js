@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
 
-const departments = ['Flead', 'Verify'];
+const departments = ['flead', 'Verify', 'admin'];
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({

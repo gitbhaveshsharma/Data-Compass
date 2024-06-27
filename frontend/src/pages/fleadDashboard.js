@@ -3,7 +3,7 @@ import FreshLeadCard from '../components/FreshLeadCard';
 import OrderDataCard from '../components/OrderData';
 import CanceledDataCard from '../components/CanceledData';
 import CallbackDataCard from '../components/CallbackData';
-import { Grid, Paper, Box } from '@mui/material';
+import { Grid, Paper, Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import ChartCard from '../components/ChartCard';
@@ -41,7 +41,7 @@ const FieldDashboard = () => {
 
     return (
         <Container maxWidth="false">
-            <h1> Flead Dashboard </h1>
+            <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}> Flead Dashboard </Typography>
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={7}>

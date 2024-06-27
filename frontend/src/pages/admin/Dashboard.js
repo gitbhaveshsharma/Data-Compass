@@ -1,68 +1,82 @@
 // src/pages/AdminDashboard.js
 import React from 'react';
-import { styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import { useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
-import DataCountComponent from '../../components/DataCountComponent';
-import OrderData from '../../components/OrderData';
+import OrderDataCard from '../../components/OrderData';
 import CallbackData from '../../components/CallbackData';
 import CanceledData from '../../components/CanceledData';
-import UploadComponent from '../../components/UploadComponent';
-import EmployeeListComponent from '../../components/EmployeeListComponent';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(2),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 const AdminDashboard = () => {
+  const orderData = useSelector((state) => state.data.orderData.data);
+  const user = useSelector((state) => state.auth.user);
+  const department = user ? user.department : '';
+
+  const filterDataByStatus = (status) => {
+    return orderData.filter(order => order.status === status);
+  };
+
+  const isVerifyOrAdmin = department === 'Verify' || department === 'admin';
 
   return (
     <Container maxWidth={false}>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
-          {/* Left grid with two items in one column, each taking 3 spaces */}
-          <Grid item xs={12} md={7}>
+          {/* Left grid */}
+          <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={12}>
-                <Item>
-                  <DataCountComponent />
-                </Item>
+              <Grid item xs={12} md={6}>
+                <OrderDataCard
+                  data={isVerifyOrAdmin ? filterDataByStatus('pending') : orderData}
+                  title="Pending Order"
+                  role={user.role}
+                  department={department}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Item>
-                  <OrderData role="admin" />
-                </Item>
+                <CallbackData role="admin" />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Item>
-                  <CallbackData role="admin" />
-                </Item>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Item>
-                  <CanceledData role="admin" />
-                </Item>
+                <CanceledData role="admin" />
               </Grid>
             </Grid>
           </Grid>
-          {/* Right grid with a single item */}
-          <Grid item xs={12} md={5}>
+          {/* Right grid */}
+          <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={12}>
-                <Item>
-                  <UploadComponent />
-                </Item>
+              <Grid item xs={12} md={6}>
+                <OrderDataCard
+                  data={isVerifyOrAdmin ? filterDataByStatus('under verification') : orderData}
+                  title="Under Verification Order"
+                  role={user.role}
+                  department={department}
+                />
               </Grid>
-              <Grid item xs={12} md={12}>
-                <Item>
-                  {/* <EmployeeListComponent /> */}
-                </Item>
+              <Grid item xs={12} md={6}>
+                <OrderDataCard
+                  data={isVerifyOrAdmin ? filterDataByStatus('verified') : orderData}
+                  title="Verified Order"
+                  role={user.role}
+                  department={department}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <OrderDataCard
+                  data={isVerifyOrAdmin ? filterDataByStatus('callback') : orderData}
+                  title="Call back Order"
+                  role={user.role}
+                  department={department}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <OrderDataCard
+                  data={isVerifyOrAdmin ? filterDataByStatus('canceled') : orderData}
+                  title="Canceled Order"
+                  role={user.role}
+                  department={department}
+                />
               </Grid>
             </Grid>
           </Grid>

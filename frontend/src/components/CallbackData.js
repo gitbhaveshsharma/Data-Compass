@@ -18,7 +18,7 @@ const CallbackData = ({ employeeId, role }) => {
         dispatch(fetchCallbackData(employeeId, role));
     }, [dispatch, employeeId, role]);
 
-    return <DataTable columns={callbackColumns} data={callbackData} title="Callback Data" />;
+    return <DataTable columns={callbackColumns} data={callbackData} title="Call back Data" />;
 };
 
 export default CallbackData;

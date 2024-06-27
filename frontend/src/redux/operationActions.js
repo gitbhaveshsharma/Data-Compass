@@ -106,3 +106,34 @@ export const callbackData = (id) => async (dispatch) => {
         dispatch({ type: 'CALLBACK_DATA_FAILURE', error: error.message });
     }
 };
+
+export const updateOrderStatus = (id, status) => async (dispatch) => {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/data/order/${id}/status`, { status });
+        dispatch({ type: 'UPDATE_ORDER_STATUS_SUCCESS', payload: response.data });
+    } catch (error) {
+        dispatch({ type: 'UPDATE_ORDER_STATUS_FAILURE', error: error.message });
+    }
+};
+
+export const deleteProductFromOrder = (id, productId) => async (dispatch) => {
+    try {
+        const response = await axios.delete(`http://localhost:3001/api/data/order/${id}/product/${productId}`);
+        dispatch({ type: 'DELETE_PRODUCT_FROM_ORDER_SUCCESS', payload: response.data });
+    } catch (error) {
+        dispatch({ type: 'DELETE_PRODUCT_FROM_ORDER_FAILURE', error: error.message });
+    }
+};
+
+export const updateOrder = (id, orderDetails) => async (dispatch) => {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/data/order/${id}`, orderDetails, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        dispatch({ type: 'UPDATE_ORDER_SUCCESS', payload: response.data });
+    } catch (error) {
+        dispatch({ type: 'UPDATE_ORDER_FAILURE', error: error.message });
+    }
+};

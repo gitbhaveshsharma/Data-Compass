@@ -1,8 +1,7 @@
-// src/components/DataCountComponent.js
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDataCounts } from '../redux/dataActions';
-import "../Style/DataCount.css";
+import { Box, Card, Paper, Typography, CircularProgress } from '@mui/material';
 
 const DataCountComponent = () => {
     const dispatch = useDispatch();
@@ -13,27 +12,27 @@ const DataCountComponent = () => {
     }, [dispatch]);
 
     return (
-        <div>
-            <h2>Data Status</h2>
+        <Box sx={{ flexGrow: 1, p: 2 }}>
+            <Typography variant="h5" sx={{ textAlign:'center'} } gutterBottom>Data Status</Typography>
             {loading ? (
-                <p>Loading...</p>
+                <Box display="flex" justifyContent="center">
+                    <CircularProgress />
+                    </Box>
             ) : error ? (
-                <p>Error: {error}</p>
+                <Typography color="error">Error: {error}</Typography>
             ) : (
-                <div>
-                    <div class="count-box">
-                        <div class="count-box-1">
-                            <h5>{assignedCount}</h5>
-                            <p>Assigned </p>
-                        </div>
-                        <div class="count-box-2">
-                            <h5>{unassignedCount}</h5>
-                            <p>Unassigned</p>
-                        </div>
-                    </div>
-                </div>
+                    <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems="center">
+                        <Paper elevation={3} sx={{ p: 2, m: 1, flex: 1, textAlign: 'center' }}>
+                            <Typography variant="h5">{assignedCount}</Typography>
+                            <Typography variant="body1">Assigned</Typography>
+                        </Paper>
+                        <Paper elevation={3} sx={{ p: 2, m: 1, flex: 1, textAlign: 'center' }}>
+                            <Typography variant="h5">{unassignedCount}</Typography>
+                            <Typography variant="body1">Unassigned</Typography>
+                        </Paper>
+                    </Box>
             )}
-        </div>
+        </Box>
     );
 };
 

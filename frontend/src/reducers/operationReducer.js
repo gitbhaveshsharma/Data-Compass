@@ -1,4 +1,3 @@
-// src/redux/operationReducer.js
 const initialState = {
     data: null,
     loading: false,
@@ -45,7 +44,18 @@ const operationReducer = (state = initialState, action) => {
             return { ...state, callbacksData: action.payload, loading: false };
         case 'FETCH_CALLBACK_DATA_FAILURE':
             return { ...state, callbacksData: null, loading: false, error: action.error };
-
+        case 'UPDATE_ORDER_STATUS_SUCCESS':
+            return { ...state, ordersData: action.payload, loading: false };
+        case 'UPDATE_ORDER_STATUS_FAILURE':
+            return { ...state, error: action.error, loading: false };
+        case 'DELETE_PRODUCT_FROM_ORDER_SUCCESS':
+            return { ...state, ordersData: action.payload, loading: false };
+        case 'DELETE_PRODUCT_FROM_ORDER_FAILURE':
+            return { ...state, error: action.error, loading: false };
+        case 'UPDATE_ORDER_SUCCESS':
+            return { ...state, ordersData: action.payload, loading: false };
+        case 'UPDATE_ORDER_FAILURE':
+            return { ...state, error: action.error, loading: false };
         default:
             return state;
     }

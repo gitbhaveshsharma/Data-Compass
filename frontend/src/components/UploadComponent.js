@@ -73,7 +73,7 @@ const UploadComponent = () => {
                 p: { xs: 2, md: 5 },
             }}
         >
-            <Typography variant="h4" sx={{ mb: 2 }}>
+            <Typography variant="h5" sx={{ mb: 2 }}>
                 Drop file to upload
             </Typography>
             <Box

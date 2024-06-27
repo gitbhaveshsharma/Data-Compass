@@ -170,7 +170,7 @@ export default function AdminDrawer({ children }) {
               >
                <DataSaverOnIcon/>
               </ListItemIcon>
-              <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Data Assgined" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
             <ListItemButton
               component={Link}

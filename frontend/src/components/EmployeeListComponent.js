@@ -4,12 +4,11 @@ import { FixedSizeList } from 'react-window';
 import { fetchEmployees } from '../redux/employeeActions';
 import { distributeData, fetchDataCounts, fetchAssignedData } from '../redux/dataActions';
 import ListItem from '@mui/material/ListItem';
+import { Grid, Card, Box, Typography } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
 const EmployeeListComponent = () => {
@@ -81,7 +80,7 @@ const EmployeeListComponent = () => {
     return (
         <Container>
             <Box textAlign="center" mb={4}>
-                <h2>Employee List</h2>
+                <Typography variant="h5" sx={{ textAlign: 'center' }} gutterBottom>Employee List</Typography>
                 {loading ? (
                     <p>Loading...</p>
                 ) : error ? (
@@ -89,10 +88,10 @@ const EmployeeListComponent = () => {
                 ) : (
                     <Grid container spacing={2} justifyContent="center">
                         <Grid item xs={12} sm={6}>
-                            <Box mb={2}>
-                                <h3>Verify</h3>
+                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Verify Dept. </Typography>
                                 <FixedSizeList
-                                    height={390}
+                                    height={300}
                                     width="100%"
                                     itemSize={46}
                                     itemCount={verifyEmployees.length}
@@ -101,13 +100,13 @@ const EmployeeListComponent = () => {
                                 >
                                     {({ index, style }) => renderRow({ index, style, employeesList: verifyEmployees })}
                                 </FixedSizeList>
-                            </Box>
+                            </Card>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Box mb={2}>
-                                <h3>Flead</h3>
+                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Flead Dept. </Typography>
                                 <FixedSizeList
-                                    height={390}
+                                    height={300}
                                     width="100%"
                                     itemSize={46}
                                     itemCount={fleadEmployees.length}
@@ -116,7 +115,7 @@ const EmployeeListComponent = () => {
                                 >
                                     {({ index, style }) => renderRow({ index, style, employeesList: fleadEmployees })}
                                 </FixedSizeList>
-                            </Box>
+                            </Card>
                         </Grid>
                     </Grid>
                 )}

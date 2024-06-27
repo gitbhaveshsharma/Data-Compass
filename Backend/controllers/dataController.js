@@ -307,6 +307,41 @@ const getCallbackData = async (req, res) => {
     }
 };
 
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
+        res.json(order);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+const deleteProductFromOrder = async (req, res) => {
+    try {
+        const { id, productId } = req.params;
+        const order = await Order.findById(id);
+        order.products.id(productId).deleteOne();
+        await order.save();
+        res.json(order);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+const updateOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const update = req.body;
+        const order = await Order.findByIdAndUpdate(id, update, { new: true });
+        res.json(order);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+
 module.exports = {
     distributeData,
     getDataCounts,
@@ -322,6 +357,8 @@ module.exports = {
     getCallbackData,
     getOrderDataById,
     getCancelDataById,
-    getCallbackDataById
-    
+    getCallbackDataById,
+    updateOrderStatus,
+    deleteProductFromOrder,
+    updateOrder,
 };
