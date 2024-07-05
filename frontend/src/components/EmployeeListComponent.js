@@ -75,7 +75,7 @@ const EmployeeListComponent = () => {
     );
 
     const verifyEmployees = employees.filter(employee => employee.department === 'Verify');
-    const fleadEmployees = employees.filter(employee => employee.department === 'Flead');
+    const fleadEmployees = employees.filter(employee => employee.department === 'flead');
 
     return (
         <Container>

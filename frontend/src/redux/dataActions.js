@@ -28,16 +28,9 @@ export const fetchDataCounts = () => async (dispatch) => {
     }
 };
 
-export const fetchAssignedData = (employeeId) => async (dispatch) => {
-    try {
-        // console.log(`Fetching data for employee ID: ${employeeId}`);
-        const response = await axios.get(`http://localhost:3001/api/data/assigned/${employeeId}`);
-        // console.log('Fetched data:', response.data);
-        dispatch({ type: 'FETCH_ASSIGNED_DATA_SUCCESS', payload: response.data });
-    } catch (error) {
-        console.error('Failed to fetch assigned data:', error);
-        dispatch({ type: 'FETCH_ASSIGNED_DATA_FAILURE', error: error.message });
-    }
+export const fetchAssignedData = (employeeId, role) => async (dispatch) => {
+    const url = role === 'admin' ? 'http://localhost:3001/api/data/assigned/all' : `http://localhost:3001/api/data/assigned/${employeeId}`;
+    fetchData(url, dispatch, 'FETCH_ASSIGNED_DATA_SUCCESS', 'FETCH_ASSIGNED_DATA_FAILURE');
 };
 
 export const fetchOrderData = (employeeId, role) => async (dispatch) => {

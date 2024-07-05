@@ -86,7 +86,7 @@ export const orderData = (id, orderDetails) => async (dispatch) => {
 export const cancelData = (id) => async (dispatch) => {
     try {
         console.log(`Cancelling order with ID: ${id}`);
-        const response = await axios.post(`http://localhost:3001/api/data/${id}/cancel`, { id });
+        const response = await axios.post(`http://localhost:3001/api/data/${id}/cancel`);
         console.log('Order canceled:', response.data);
         dispatch({ type: 'CANCEL_DATA_SUCCESS', payload: response.data });
     } catch (error) {
@@ -94,6 +94,7 @@ export const cancelData = (id) => async (dispatch) => {
         dispatch({ type: 'CANCEL_DATA_FAILURE', error: error.message });
     }
 };
+
 
 export const callbackData = (id) => async (dispatch) => {
     try {

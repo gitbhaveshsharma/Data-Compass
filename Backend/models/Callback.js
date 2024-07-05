@@ -19,6 +19,30 @@ const CallbackSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    city: {
+        type: String,
+        default: '',
+    },
+    state: {
+        type: String,
+        default: '',
+    },
+    zip: {
+        type: String,
+        default: '',
+    },
+    nearBy: {
+        type: String,
+        default: '',
+    },
+    area: {
+        type: String,
+        default: '',
+    },
+    altNumber: {
+        type: String,
+        default: '',
+    },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',

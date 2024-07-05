@@ -7,6 +7,8 @@ import { styled } from '@mui/system';
 import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { FormControl, useFormControlContext } from '@mui/base/FormControl';
+import BillComponent from './BillComponent';
+import CallAttemptComponent from './CallAttemptComponent';
 
 const HelperText = styled((props) => {
     const formControlContext = useFormControlContext();
@@ -41,11 +43,19 @@ const OperationPage = () => {
         name: '',
         number: '',
         address: '',
+        city: '',
+        state: '',
+        zip: '',
+        nearBy: '',
+        area: '',
+        altNumber: ''
     });
     const [message, setMessage] = useState('');
     const [productsInOrder, setProductsInOrder] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [billingDetails, setBillingDetails] = useState({});
+
     useEffect(() => {
         dispatch(fetchDataById(id));
         dispatch(fetchProducts());
@@ -56,7 +66,13 @@ const OperationPage = () => {
             setFormData({
                 name: data.name || '',
                 number: data.number || '',
-                address: data.address || ''
+                address: data.address || '',
+                city: data.city || '',
+                state: data.state || '',
+                zip: data.zip || '',
+                nearBy: data.nearBy || '',
+                area: data.area || '',
+                altNumber: data.altNumber || ''
             });
         }
     }, [data]);
@@ -82,7 +98,7 @@ const OperationPage = () => {
 
     const handleOrder = async () => {
         try {
-            const orderDetails = { ...formData, products: productsInOrder, status: 'pending' };  // Ensure 'pending' status
+            const orderDetails = { ...formData, products: productsInOrder, status: 'pending', billDetails: billingDetails };
             console.log(`Placing order with ID: ${id}, Order Details:`, orderDetails);
             await dispatch(orderData(id, orderDetails));
             setMessage('Order placed successfully!');
@@ -126,14 +142,19 @@ const OperationPage = () => {
             console.log('Product added:', { productName: product.name, quantity, price: product.price });
         }
     };
-    const handleClose = () => {
-        setMessage('')
-    };
 
     const handleRemoveProduct = (index) => {
         const updatedProducts = [...productsInOrder];
         updatedProducts.splice(index, 1);
         setProductsInOrder(updatedProducts);
+    };
+
+    const handleBillDetailsChange = (details) => {
+        setBillingDetails(details);
+    };
+
+    const handleClose = () => {
+        setMessage('');
     };
 
     if (!data || data._id !== id) return (
@@ -154,76 +175,135 @@ const OperationPage = () => {
                     </Alert>
                 </Snackbar>
             )}
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <Grid container spacing={2} maxWidth="md">
-                    <Grid item xs={12} sm={5} md={6}>
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" padding="10px">
+                <Grid container spacing={2} maxWidth="lg">
+
+                    <Grid item xs={12} sm={5} md={5}>
                         <Card>
                             <CardContent>
-                                <Typography variant="h5" component="div">
+                                <Typography variant="h5" component="div" gutterBottom>
                                     Customer Details
                                 </Typography>
-                                <FormControl required fullWidth>
-                                    <TextField
-                                        fullWidth
-                                        margin="normal"
-                                        label="Name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        variant="outlined"
-                                    />
-                                    <HelperText />
-                                </FormControl>
-                                <FormControl required fullWidth>
-                                    <TextField
-                                        fullWidth
-                                        margin="normal"
-                                        label="Number"
-                                        name="number"
-                                        value={formData.number}
-                                        onChange={handleChange}
-                                        variant="outlined"
-                                    />
-                                    <HelperText />
-                                </FormControl>
-                                <FormControl required fullWidth>
-                                    <TextField
-                                        fullWidth
-                                        margin="normal"
-                                        label="Address"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
-                                        variant="outlined"
-                                    />
-                                    <HelperText />
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={6} sm={3}>
-                                            <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>Update</Button>
-                                        </Grid>
-                                        <Grid item xs={6} sm={3}>
-                                            <Button variant="contained" color="success" onClick={handleOrder} fullWidth>Order</Button>
-                                        </Grid>
-                                        <Grid item xs={6} sm={3}>
-                                            <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
-                                        </Grid>
-                                        <Grid item xs={6} sm={3}>
-                                            <Button variant="contained" color="secondary" onClick={handleCallback} fullWidth>Callback</Button>
-                                        </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
                                     </Grid>
-                                </FormControl>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Number"
+                                            name="number"
+                                            value={formData.number}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="City"
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="State"
+                                            name="state"
+                                            value={formData.state}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="ZIP"
+                                            name="zip"
+                                            value={formData.zip}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Near By"
+                                            name="nearBy"
+                                            value={formData.nearBy}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Area"
+                                            name="area"
+                                            value={formData.area}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Alt Number"
+                                            name="altNumber"
+                                            value={formData.altNumber}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Address"
+                                            name="address"
+                                            value={formData.address}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                            multiline
+                                            rows={4}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={2} marginTop={2}>
+                                    <Grid item xs={6} sm={3}>
+                                        <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>Update</Button>
+                                    </Grid>
+                                    <Grid item xs={6} sm={3}>
+                                        <Button variant="contained" color="success" onClick={handleOrder} fullWidth>Order</Button>
+                                    </Grid>
+                                    <Grid item xs={6} sm={3}>
+                                        <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
+                                    </Grid>
+                                    <Grid item xs={6} sm={3}>
+                                        <Button variant="contained" color="secondary" onClick={handleCallback} fullWidth>Callback</Button>
+                                    </Grid>
+                                </Grid>
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} sm={7} md={6}>
+                    <Grid item xs={12} sm={7} md={4}>
                         <Card>
                             <CardContent>
                                 <Typography variant="h5" component="div">
                                     Products
                                 </Typography>
                                 <FormControl required fullWidth>
-                                    <Grid container spacing={2} alignItems="center" sx={{marginTop:'2px'}}>
-                                        <Grid item xs={12} sm={12}>
+                                    <Grid container spacing={2} alignItems="center" sx={{ marginTop: '2px' }}>
+                                        <Grid item xs={12} sm={6}>
                                             <Select
                                                 value={selectedProduct}
                                                 onChange={(e) => setSelectedProduct(e.target.value)}
@@ -240,7 +320,7 @@ const OperationPage = () => {
                                                 ))}
                                             </Select>
                                         </Grid>
-                                        <Grid item xs={12} sm={12}>
+                                        <Grid item xs={12} sm={6}>
                                             <TextField
                                                 fullWidth
                                                 variant="outlined"
@@ -256,28 +336,31 @@ const OperationPage = () => {
                                                 Add Product
                                             </Button>
                                         </Grid>
-                                    </Grid> 
+                                    </Grid>
                                 </FormControl>
                                 {productsInOrder.map((product, index) => (
                                     <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                                        <Typography>{product.productName} - {product.quantity} - ${product.price}</Typography>
+                                        <Typography variant="p">{product.productName} - {product.quantity} - ${product.price}</Typography>
                                         <IconButton color="error" onClick={() => handleRemoveProduct(index)}>
                                             <CloseIcon />
                                         </IconButton>
                                     </div>
                                 ))}
-
                                 <Grid item xs={12} md={3}>
                                 </Grid>
-
                             </CardContent>
                         </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={7} md={3}>
+                        <BillComponent products={productsInOrder} onUpdateBilling={handleBillDetailsChange} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CallAttemptComponent department={'flead'} dataId={id} mobileNumber={formData.number} />
                     </Grid>
                 </Grid>
             </Box>
         </>
     );
 };
-
 
 export default OperationPage;

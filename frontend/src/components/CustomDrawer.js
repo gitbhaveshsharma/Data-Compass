@@ -21,6 +21,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 const drawerWidth = 240;
 
@@ -131,7 +132,6 @@ export default function AdminDrawer({ children }) {
         <Divider />
         <List>
           <ListItem disablePadding sx={{ display: 'block' }}>
-
             <ListItemButton
               component={Link}
               to="/admin-dashboard"
@@ -152,7 +152,7 @@ export default function AdminDrawer({ children }) {
               </ListItemIcon>
               <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-              <ListItemButton
+            <ListItemButton
               component={Link}
               to="/admin-dashboard/data-assgined"
               sx={{
@@ -192,7 +192,7 @@ export default function AdminDrawer({ children }) {
               </ListItemIcon>
               <ListItemText primary="Products" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-             <ListItemButton
+            <ListItemButton
               component={Link}
               to="/admin-dashboard/Register"
               sx={{
@@ -211,6 +211,27 @@ export default function AdminDrawer({ children }) {
                 <HowToRegIcon />
               </ListItemIcon>
               <ListItemText primary="Employee Registration" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+            <ListItemButton
+              component={Link}
+              to="/admin-dashboard/analysis"
+              disabled
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <AnalyticsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Data Analysis" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

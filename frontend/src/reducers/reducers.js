@@ -12,6 +12,7 @@ import {
 import authReducer from './authReducer';
 import operationReducer from './operationReducer';
 import productReducer from './productReducer';
+import callattemptReducer from './callAttemptReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     }),
     auth: authReducer,
     operation: operationReducer,
+    callAttempts: callattemptReducer,
 });
 
 export default rootReducer;

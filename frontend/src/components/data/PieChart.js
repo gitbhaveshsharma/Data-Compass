@@ -6,7 +6,7 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658'];
 
 const PieChartComponent = ({ data }) => {
     return (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={312}>
             <PieChart>
                 <Pie
                     data={data}

@@ -44,10 +44,12 @@ const FreshLeadCard = ({ employeeId }) => {
         setPage(0);
     };
 
-    const rows = Array.isArray(assignedData) ? assignedData.map((data) => ({
-        ...data,
-        address: data.address || 'empty',
-    })) : [];
+    const rows = Array.isArray(assignedData) ? assignedData
+        .filter(data => data.status === 'assigned') 
+        .map((data) => ({
+            ...data,
+            address: data.address || 'empty',
+        })) : [];
 
     return (
         <div style={{ flex: '1 0 21%', border: '1px solid #ccc', padding: '20px' }}>

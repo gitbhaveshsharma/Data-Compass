@@ -16,7 +16,8 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
-
+import UpdateBillComponent from '../UpdateBillComponent'; // Import the UpdateBillComponent
+import CallAttemptComponent from '../CallAttemptComponent';
 const OrderCard = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -34,8 +35,20 @@ const OrderCard = () => {
         name: '',
         number: '',
         address: '',
+        city: '',
+        state: '',
+        zip: '',
+        nearBy: '',
+        area: '',
+        altNumber: '',
         status: '',
-        products: []
+        products: [],
+        billDetails: {
+            discountType: '',
+            discountValue: 0,
+            gstPercentage: 0,
+            totalPrice: 0
+        }
     });
 
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -67,18 +80,40 @@ const OrderCard = () => {
                 name: order.name,
                 number: order.number,
                 address: order.address,
+                city: order.city,
+                state: order.state,
+                zip: order.zip,
+                nearBy: order.nearBy,
+                area: order.area,
+                altNumber: order.altNumber,
                 status: order.status,
-                products: order.products
+                products: order.products,
+                billDetails: {
+                    discountType: order.billDetails[0].discountType,
+                    discountValue: order.billDetails[0].discountValue,
+                    gstPercentage: order.billDetails[0].gstPercentage,
+                    totalPrice: order.billDetails[0].totalPrice
+                }
             });
         }
     }, [order, id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setOrderDetails({
-            ...orderDetails,
-            [name]: value
-        });
+        if (name.startsWith('billDetails.')) {
+            setOrderDetails({
+                ...orderDetails,
+                billDetails: {
+                    ...orderDetails.billDetails,
+                    [name.substring('billDetails.'.length)]: value
+                }
+            });
+        } else {
+            setOrderDetails({
+                ...orderDetails,
+                [name]: value
+            });
+        }
     };
 
     const handleUpdateStatus = (status) => {
@@ -136,6 +171,13 @@ const OrderCard = () => {
         setMessageType('');
     };
 
+    const handleUpdateBilling = (updatedBillDetails) => {
+        setOrderDetails({
+            ...orderDetails,
+            billDetails: updatedBillDetails
+        });
+    };
+
     if (!['Verify', 'admin'].includes(userDepartment)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -168,34 +210,111 @@ const OrderCard = () => {
                     </Alert>
                 </Snackbar>
             )}
-            
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                
-                <Grid container spacing={2} maxWidth="md">
+
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" padding="10px">
+                <Grid container spacing={2} maxWidth="false">
                     <Grid item xs={12} sm={5} md={4}>
                         <Card>
                             <CardContent>
                                 <Typography variant="h5" component="div">
                                     Order Details
                                 </Typography>
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    label="Name"
-                                    name="name"
-                                    value={orderDetails.name}
-                                    onChange={handleInputChange}
-                                    variant="outlined"
-                                />
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    label="Number"
-                                    name="number"
-                                    value={orderDetails.number}
-                                    onChange={handleInputChange}
-                                    variant="outlined"
-                                />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Name"
+                                            name="name"
+                                            value={orderDetails.name}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Number"
+                                            name="number"
+                                            value={orderDetails.number}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="City"
+                                            name="city"
+                                            value={orderDetails.city}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="State"
+                                            name="state"
+                                            value={orderDetails.state}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="ZIP"
+                                            name="zip"
+                                            value={orderDetails.zip}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Near By"
+                                            name="nearBy"
+                                            value={orderDetails.nearBy}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Area"
+                                            name="area"
+                                            value={orderDetails.area}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Alt Number"
+                                            name="altNumber"
+                                            value={orderDetails.altNumber}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
                                 <TextField
                                     fullWidth
                                     margin="normal"
@@ -220,7 +339,7 @@ const OrderCard = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} sm={7} md={8}>
+                    <Grid item xs={12} sm={7} md={5}>
                         <Card>
                             <CardContent>
                                 <Typography variant="h6" component="div">
@@ -289,6 +408,34 @@ const OrderCard = () => {
                                 </Box>
                             </CardContent>
                         </Card>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" component="div">
+                                    Bill Details
+                                </Typography>
+                                <Typography variant="body1">
+                                    Discount Type: {orderDetails.billDetails.discountType}
+                                </Typography>
+                                <Typography variant="body1">
+                                    Discount Value: {orderDetails.billDetails.discountValue.toFixed(2)}
+                                </Typography>
+                                <Typography variant="body1">
+                                    GST Percentage: {orderDetails.billDetails.gstPercentage}
+                                </Typography>
+                                <Typography variant="body1">
+                                    Total Price: {orderDetails.billDetails.totalPrice}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                        <UpdateBillComponent
+                            billDetails={orderDetails.billDetails}
+                            onUpdateBilling={handleUpdateBilling}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
+                        <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
                     </Grid>
                 </Grid>
             </Box>

@@ -13,6 +13,12 @@ const uploadExcel = async (req, res) => {
             name: entry.Name,
             number: entry.Number,
             address: entry.Address || '',
+            city: entry.City || '',
+            state: entry.State || '',
+            zip: entry.Zip || '',
+            nearBy: entry.NearBy || '',
+            area: entry.Area || '',
+            altNumber: entry.AltNumber || '',
             status: 'unassigned',
             department: entry.Department,
         }));
@@ -26,4 +32,3 @@ const uploadExcel = async (req, res) => {
 };
 
 module.exports = { uploadExcel };
-   

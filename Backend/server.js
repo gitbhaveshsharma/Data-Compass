@@ -11,6 +11,7 @@ const dataRoute = require('./routes/dataRoute');
 const authRoutes = require('./routes/authRoute');
 const auth = require('./middleware/auth');
 const productRoutes = require('./routes/productRoutes');
+const callAttemptRoutes = require('./routes/callAttemptRoutes');
 
 const dotenv = require("dotenv");
 
@@ -39,6 +40,9 @@ app.use('/api/employees', employeeRoute);
 app.use('/api/data', dataRoute);
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+
+// Use the callAttempt routes
+app.use('/api/callAttempts', callAttemptRoutes);
 
 // Protecting a route as an example
 app.get('/api/protected', auth, (req, res) => {

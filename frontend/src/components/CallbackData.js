@@ -1,8 +1,7 @@
-// CallbackData.js
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCallbackData } from '../redux/dataActions';
-import DataTable from './data/DataTable'; // Import the reusable DataTable component
+import { fetchAssignedData } from '../redux/dataActions';
+import DataTable from './data/DataTable';
 
 const callbackColumns = [
     { id: 'name', label: 'Name', minWidth: 170 },
@@ -12,13 +11,15 @@ const callbackColumns = [
 
 const CallbackData = ({ employeeId, role }) => {
     const dispatch = useDispatch();
-    const callbackData = useSelector((state) => state.data.callbackData.data);
+    const assignedData = useSelector((state) => state.data.assignedData.assignedData || []);
 
     useEffect(() => {
-        dispatch(fetchCallbackData(employeeId, role));
+        dispatch(fetchAssignedData(employeeId, role));
     }, [dispatch, employeeId, role]);
 
-    return <DataTable columns={callbackColumns} data={callbackData} title="Call back Data" />;
+    const callbackData = assignedData.filter(data => data.status === 'callback');
+
+    return <DataTable columns={callbackColumns} data={callbackData} title="Call back Data" baseURL="/data" />;
 };
 
 export default CallbackData;

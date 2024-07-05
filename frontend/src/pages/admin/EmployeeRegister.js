@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
 
-const departments = ['flead', 'Verify', 'admin'];
+const departments = ['flead', 'verify', 'admin'];
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +22,7 @@ const RegistrationPage = () => {
     email: '',
     password: '',
     department: '',
+    employeeId: '', // Add employeeId to the form data
   });
 
   const [message, setMessage] = useState('');
@@ -45,7 +46,7 @@ const RegistrationPage = () => {
 
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (!formData[key] && key !== 'employeeId') { // Allow employeeId to be optional
         newErrors[key] = 'This field is required';
       }
     });
@@ -62,6 +63,7 @@ const RegistrationPage = () => {
         email: formData.email,
         password: formData.password,
         department: formData.department,
+        employeeId: formData.employeeId, // Include employeeId
       };
       await dispatch(register(userData));
       setMessage('Registration successful!');
@@ -75,7 +77,6 @@ const RegistrationPage = () => {
       <CssBaseline />
       <Box
         sx={{
-          
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -101,7 +102,6 @@ const RegistrationPage = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 error={!!errors.firstName}
-                // helperText={errors.firstName}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -122,7 +122,6 @@ const RegistrationPage = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 error={!!errors.lastName}
-                // helperText={errors.lastName}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -143,7 +142,6 @@ const RegistrationPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 error={!!errors.email}
-                // helperText={errors.email}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -165,7 +163,6 @@ const RegistrationPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 error={!!errors.password}
-                // helperText={errors.password}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -186,7 +183,6 @@ const RegistrationPage = () => {
                 value={formData.department}
                 onChange={handleChange}
                 error={!!errors.department}
-                // helperText={errors.department}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -201,6 +197,16 @@ const RegistrationPage = () => {
                   </MenuItem>
                 ))}
               </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="employeeId"
+                label="Employee ID (Optional)"
+                name="employeeId"
+                value={formData.employeeId}
+                onChange={handleChange}
+              />
             </Grid>
           </Grid>
           <Button

@@ -1,8 +1,14 @@
-// backend/controllers/authController.js
+// controllers/authController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 require('dotenv').config();
+
+const generateEmployeeId = (firstName, lastName) => {
+    const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // Generate a random 4 digit number
+    return initials + randomNum;
+};
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
@@ -23,14 +29,25 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-    const { email, password, name, role, department } = req.body;
+    const { email, password, name, role, department, employeeId } = req.body;
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).send({ error: 'User already exists.' });
         }
 
-        const user = new User({ email, password, name, role, department });
+        let newEmployeeId = employeeId;
+        if (!newEmployeeId) {
+            const [firstName, lastName] = name.split(' ');
+            newEmployeeId = generateEmployeeId(firstName, lastName);
+        }
+
+        const existingEmployeeId = await User.findOne({ employeeId: newEmployeeId });
+        if (existingEmployeeId) {
+            return res.status(400).send({ error: 'Employee ID already exists.' });
+        }
+
+        const user = new User({ email, password, name, role, department, employeeId: newEmployeeId });
         await user.save();
         res.status(201).send({ message: 'User registered successfully.' });
     } catch (error) {

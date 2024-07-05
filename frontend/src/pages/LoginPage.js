@@ -1,13 +1,18 @@
-// src/pages/LoginPage.js
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Avatar, Box, Snackbar, Alert } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '../redux/authActions';
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const LoginPage = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const [errors, setErrors] = useState({});
+    const [message, setMessage] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isAuthenticated, error, user } = useSelector((state) => state.auth);
@@ -17,7 +22,7 @@ const Login = () => {
             if (user.role === 'admin') {
                 navigate('/admin-dashboard');
             } else if (user.role === 'employee') {
-                if (user.department === 'Flead') {
+                if (user.department === 'flead') {
                     navigate('/field-dashboard');
                 } else if (user.department === 'Verify') {
                     navigate('/verify-dashboard');
@@ -30,39 +35,129 @@ const Login = () => {
         }
     }, [isAuthenticated, user, navigate]);
 
+    useEffect(() => {
+        if (error) {
+            setMessage('Invalid credentials or network error');
+        }
+    }, [error]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: '',
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await dispatch(login({ email, password }));
+
+        const newErrors = {};
+        if (!formData.email) {
+            newErrors.email = 'Email is required';
+        }
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setMessage('Please fill in all required fields.');
+            return;
+        }
+
+        await dispatch(login(formData));
+    };
+
+    const handleClose = () => {
+        setMessage('');
     };
 
     return (
-        <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom>
-                Login
-            </Typography>
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Email"
-                    fullWidth
-                    margin="normal"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    marginTop: 8,
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
                     Login
-                </Button>
-                {error && <Typography color="error">{error}</Typography>}
-            </form>
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={formData.email}
+                        onChange={handleChange}
+                        error={!!errors.email}
+                        helperText={errors.email}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: errors.email ? 'red' : '',
+                                },
+                            },
+                        }}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={!!errors.password}
+                        helperText={errors.password}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: errors.password ? 'red' : '',
+                                },
+                            },
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Login
+                    </Button>
+                </Box>
+                {message && (
+                    <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity={message.includes('successful') ? 'success' : 'error'} sx={{ width: '100%' }}>
+                            {message}
+                        </Alert>
+                    </Snackbar>
+                )}
+            </Box>
         </Container>
     );
 };
 
-export default Login;
+export default LoginPage;

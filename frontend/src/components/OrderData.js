@@ -11,7 +11,7 @@ const orderColumns = [
 ];
 
 const getTitleByStatus = (data) => {
-    if (!data || data.length === 0) return 'Under Verification';
+    if (!data || data.length === 0) return 'Wating Order Data';
     const status = data[0].status;
     switch (status) {
         case 'under verification':
@@ -40,7 +40,7 @@ const OrderData = ({ employeeId, role, data, department }) => {
     const displayData = data || orderData;
     const title = getTitleByStatus(displayData);
 
-    return <DataTable columns={orderColumns} data={displayData} title={title} />;
+    return <DataTable columns={orderColumns} data={displayData} title={title} baseURL="/data/order" />;
 };
 
 export default OrderData;

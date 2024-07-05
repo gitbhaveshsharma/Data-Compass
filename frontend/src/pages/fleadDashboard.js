@@ -8,12 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import ChartCard from '../components/ChartCard';
 import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
+import dayjs from 'dayjs';
 
 const FieldDashboard = () => {
     const dispatch = useDispatch();
-    const orderData = useSelector((state) => state.data.orderData.data); 
-    const callbackData = useSelector((state) => state.data.callbackData.data); 
-    const canceledData = useSelector((state) => state.data.canceledData.data); 
+    const orderData = useSelector((state) => state.data.orderData.data);
+    const callbackData = useSelector((state) => state.data.callbackData.data);
+    const canceledData = useSelector((state) => state.data.canceledData.data);
 
     // Fetch user details from Redux store
     const user = useSelector((state) => state.auth.user);
@@ -27,24 +28,40 @@ const FieldDashboard = () => {
         }
     }, [dispatch, employeeId]);
 
-    useEffect(() => {
-        console.log("Order Data:", orderData);
-    }, [orderData]);
+    const processChartData = (orderData, callbackData, canceledData) => {
+        const groupedData = {};
 
-    // Dummy data for charts
-    const chartData = [
-        { quarter: 'Q1', orders: `${Array.isArray(orderData) ? orderData.length : 0}`, canceled:`${Array.isArray(canceledData) ? canceledData.length : 0}`, callbacks: `${Array.isArray(callbackData) ? callbackData.length : 0}` },
-        { quarter: 'Q2', orders: 44, canceled: 6, callbacks: 25 },
-        { quarter: 'Q3', orders: 24, canceled: 49, callbacks: 30 },
-        { quarter: 'Q4', orders: 34, canceled: 30, callbacks: 50 },
-    ];
+        const processData = (data, type) => {
+            data.forEach(item => {
+                const date = dayjs(item.createdAt).startOf('day').format('YYYY-MM-DD');
+                if (!groupedData[date]) {
+                    groupedData[date] = { orders: 0, canceled: 0, callbacks: 0 };
+                }
+                groupedData[date][type] += 1;
+            });
+        };
+
+        processData(orderData, 'orders');
+        processData(callbackData, 'callbacks');
+        processData(canceledData, 'canceled');
+
+        const sortedDates = Object.keys(groupedData).sort((a, b) => dayjs(a).isBefore(dayjs(b)) ? -1 : 1);
+        const chartData = sortedDates.map(date => ({
+            date,
+            ...groupedData[date]
+        }));
+
+        return chartData;
+    };
+
+    const chartData = processChartData(orderData, callbackData, canceledData);
 
     return (
         <Container maxWidth="false">
             <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}> Flead Dashboard </Typography>
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
-                    <Grid item xs={12} md={7}>
+                    <Grid item xs={12} md={6}>
                         <Grid container spacing={4}>
                             <Grid item xs={12} sm={6} md={6}>
                                 <Paper elevation={3}>
@@ -68,7 +85,7 @@ const FieldDashboard = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={5}>
+                    <Grid item xs={12} md={6}>
                         <Paper elevation={3}>
                             <ChartCard data={chartData} />
                         </Paper>

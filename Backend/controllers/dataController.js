@@ -18,8 +18,8 @@ const distributeData = async (req, res) => {
             let unassignedData;
 
             if (department === 'Verify') {
-                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: employeeId }}).limit(dataCount * employeeIds.length);
-            } else if (department === 'Flead') {
+                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: employeeId } }).limit(dataCount * employeeIds.length);
+            } else if (department === 'flead') {
                 unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
             }
 
@@ -27,7 +27,7 @@ const distributeData = async (req, res) => {
                 const assignedData = unassignedData.slice(i * dataCount, (i + 1) * dataCount);
                 assignedData.forEach(data => {
                     data.assignedTo = employeeId;
-                    if (department === 'Flead') {
+                    if (department === 'flead') {
                         data.status = 'assigned';
                     } else if (department === 'Verify') {
                         data.status = 'under verification';
@@ -46,7 +46,6 @@ const distributeData = async (req, res) => {
     }
 };
 
-
 // Fetch data counts
 const getDataCounts = async (req, res) => {
     try {
@@ -63,17 +62,17 @@ const getAssignedData = async (req, res) => {
     const { employeeId } = req.params;
 
     try {
-        console.log(`Received request to fetch data for employee ID: ${employeeId}`);
-        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
-            console.log('Invalid employee ID');
-            return res.status(400).json({ error: 'Invalid employee ID' });
+        let assignedData;
+        if (employeeId === 'all') {
+            assignedData = await Data.find({});
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+                return res.status(400).json({ error: 'Invalid employee ID' });
+            }
+            assignedData = await Data.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
-
-        const assignedData = await Data.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
-        console.log(`Found ${assignedData.length} records for employee ID: ${employeeId}`);
         res.json(assignedData);
     } catch (error) {
-        console.error(`Failed to fetch assigned data for employee ID: ${employeeId}`, error);
         res.status(500).json({ error: 'Failed to fetch assigned data' });
     }
 };
@@ -152,15 +151,13 @@ const getCallbackDataById = async (req, res) => {
     }
 };
 
-
-
 // Update data
 const updateData = async (req, res) => {
     try {
-        const { name, number, address } = req.body;
+        const { name, number, address, city, state, zip, nearBy, area, altNumber } = req.body;
         const data = await Data.findByIdAndUpdate(
             req.params.id,
-            { name, number, address },
+            { name, number, address, city, state, zip, nearBy, area, altNumber },
             { new: true }
         );
         if (!data) {
@@ -175,19 +172,25 @@ const updateData = async (req, res) => {
 
 const orderData = async (req, res) => {
     try {
-        // console.log('Request Body:', req.body);  // Add this line
         const data = await Data.findById(req.params.id);
         if (!data) {
             return res.status(404).json({ message: 'Data not found' });
         }
-        const { products, status } = req.body;
+        const { products, status, billDetails } = req.body;
         const order = new Order({
             dataId: data._id,
             name: data.name,
             number: data.number,
             address: data.address,
+            city: data.city,
+            state: data.state,
+            zip: data.zip,
+            nearBy: data.nearBy,
+            area: data.area,
+            altNumber: data.altNumber,
             assignedTo: data.assignedTo,
             products,
+            billDetails: billDetails || [],  // Ensure billDetails is an array
             status,
         });
         await order.save();
@@ -195,11 +198,10 @@ const orderData = async (req, res) => {
         await data.save();
         res.json(order);
     } catch (error) {
-        console.error('Error:', error);  // Add this line
+        console.error('Error:', error);
         res.status(500).json({ message: error.message });
     }
 };
-
 
 // Fetch all order data for admin or specific employee
 const getOrderedData = async (req, res) => {
@@ -233,6 +235,12 @@ const cancelData = async (req, res) => {
             name: data.name,
             number: data.number,
             address: data.address,
+            city: data.city,
+            state: data.state,
+            zip: data.zip,
+            nearBy: data.nearBy,
+            area: data.area,
+            altNumber: data.altNumber,
             assignedTo: data.assignedTo,
         });
         await cancel.save();
@@ -276,6 +284,12 @@ const callbackData = async (req, res) => {
             name: data.name,
             number: data.number,
             address: data.address,
+            city: data.city,
+            state: data.state,
+            zip: data.zip,
+            nearBy: data.nearBy,
+            area: data.area,
+            altNumber: data.altNumber,
             assignedTo: data.assignedTo,
         });
         await callback.save();
@@ -340,7 +354,6 @@ const updateOrder = async (req, res) => {
         res.status(500).send(error.message);
     }
 };
-
 
 module.exports = {
     distributeData,

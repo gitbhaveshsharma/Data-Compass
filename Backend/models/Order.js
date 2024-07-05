@@ -1,4 +1,3 @@
-// models/Order.js
 const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
@@ -19,6 +18,30 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    city: {
+        type: String,
+        default: '',
+    },
+    state: {
+        type: String,
+        default: '',
+    },
+    zip: {
+        type: String,
+        default: '',
+    },
+    nearBy: {
+        type: String,
+        default: '',
+    },
+    area: {
+        type: String,
+        default: '',
+    },
+    altNumber: {
+        type: String,
+        default: '',
+    },
     products: [{
         productName: {
             type: String,
@@ -29,6 +52,24 @@ const OrderSchema = new mongoose.Schema({
             required: true,
         },
         price: {
+            type: Number,
+            required: true,
+        }
+    }],
+    billDetails: [{
+        discountType: {
+            type: String,
+            required: true,
+        },
+        discountValue: {
+            type: Number,
+            required: true,
+        },
+        gstPercentage: {
+            type: Number,
+            required: true,
+        },
+        totalPrice: {
             type: Number,
             required: true,
         }
