@@ -11,13 +11,25 @@ import {
     fetchProducts
 } from '../../redux/productActions';
 import {
-    Card, CardContent, Typography, List, ListItem, ListItemText,
+    Card, CardContent, Typography, Divider, List, ListItem, ListItemText,
     CircularProgress, Box, Button, IconButton, Grid, TextField, Alert, Snackbar, MenuItem, Select, FormControl
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
 import UpdateBillComponent from '../UpdateBillComponent'; // Import the UpdateBillComponent
 import CallAttemptComponent from '../CallAttemptComponent';
+import Chip from '@mui/material/Chip';
+
+const Root = styled('div')(({ theme }) => ({
+    width: '100%',
+    ...theme.typography.body2,
+    color: theme.palette.text.secondary,
+    '& > :not(style) ~ :not(style)': {
+        marginTop: theme.spacing(2),
+    },
+}));
+
 const OrderCard = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -171,11 +183,11 @@ const OrderCard = () => {
         setMessageType('');
     };
 
-    const handleUpdateBilling = (updatedBillDetails) => {
-        setOrderDetails({
-            ...orderDetails,
+    const handleBillingUpdate = (updatedBillDetails) => {
+        setOrderDetails((prevDetails) => ({
+            ...prevDetails,
             billDetails: updatedBillDetails
-        });
+        }));
     };
 
     if (!['Verify', 'admin'].includes(userDepartment)) {
@@ -350,8 +362,9 @@ const OrderCard = () => {
                                         <ListItem key={index} disableGutters>
                                             <ListItemText
                                                 primary={`${product.productName} (x${product.quantity})`}
-                                                secondary={`Price: $${product.price}`}
+                                                secondary={`Price: ₹${product.price} x ${product.quantity} = ₹${product.price * product.quantity}`}
                                             />
+                                            
                                             <IconButton onClick={() => handleDeleteProduct(product._id)} aria-label="delete">
                                                 <DeleteIcon />
                                             </IconButton>
@@ -374,10 +387,10 @@ const OrderCard = () => {
                                                 <MenuItem value="" disabled>Select a product</MenuItem>
                                                 {products.map((product) => (
                                                     <MenuItem key={product.id} value={product.name}>
-                                                        {product.name} - ${product.price}
+                                                        {product.name} - ₹{product.price}
                                                     </MenuItem>
                                                 ))}
-                                            </Select>
+                                            </Select>   
                                         </Grid>
                                         <Grid item xs={5}>
                                             <TextField
@@ -410,8 +423,9 @@ const OrderCard = () => {
                         </Card>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                        <Card>
-                            <CardContent>
+                        <Root>
+                        <Card >
+                            <CardContent >
                                 <Typography variant="h6" component="div">
                                     Bill Details
                                 </Typography>
@@ -419,20 +433,25 @@ const OrderCard = () => {
                                     Discount Type: {orderDetails.billDetails.discountType}
                                 </Typography>
                                 <Typography variant="body1">
-                                    Discount Value: {orderDetails.billDetails.discountValue.toFixed(2)}
+                                    Discount Value:  {orderDetails.billDetails.discountValue.toFixed(2)}
                                 </Typography>
                                 <Typography variant="body1">
                                     GST Percentage: {orderDetails.billDetails.gstPercentage}
                                 </Typography>
                                 <Typography variant="body1">
-                                    Total Price: {orderDetails.billDetails.totalPrice}
+                                    Total Price: ₹ {orderDetails.billDetails.totalPrice}
                                 </Typography>
-                            </CardContent>
-                        </Card>
+                                    <Divider>
+                                        <Chip label="Update Bill Details" size="large" />
+                                    </Divider>
                         <UpdateBillComponent
                             billDetails={orderDetails.billDetails}
-                            onUpdateBilling={handleUpdateBilling}
+                            products={orderDetails.products}
+                            onUpdateBilling={handleBillingUpdate}
                         />
+                            </CardContent>
+                            </Card>
+                        </Root>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
                         <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />

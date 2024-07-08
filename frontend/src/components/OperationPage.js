@@ -3,35 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDataById, updateData, orderData, cancelData, callbackData } from '../redux/operationActions';
 import { fetchProducts } from '../redux/productActions';
-import { styled } from '@mui/system';
-import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
-import { FormControl, useFormControlContext } from '@mui/base/FormControl';
+import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListItemText, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton } from '@mui/material';
+import { FormControl } from '@mui/base/FormControl';
 import BillComponent from './BillComponent';
 import CallAttemptComponent from './CallAttemptComponent';
-
-const HelperText = styled((props) => {
-    const formControlContext = useFormControlContext();
-    const [dirty, setDirty] = React.useState(false);
-
-    React.useEffect(() => {
-        if (formControlContext?.filled) {
-            setDirty(true);
-        }
-    }, [formControlContext]);
-
-    if (formControlContext === undefined) {
-        return null;
-    }
-
-    const { required, filled } = formControlContext;
-    const showRequiredError = dirty && required && !filled;
-
-    return showRequiredError ? <p {...props}>This field is required.</p> : null;
-})`
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.875rem;
-`;
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const OperationPage = () => {
     const { id } = useParams();
@@ -176,7 +152,7 @@ const OperationPage = () => {
                 </Snackbar>
             )}
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" padding="10px">
-                <Grid container spacing={2} maxWidth="lg">
+                <Grid container spacing={2} maxWidth="false">
 
                     <Grid item xs={12} sm={5} md={5}>
                         <Card>
@@ -301,6 +277,19 @@ const OperationPage = () => {
                                 <Typography variant="h5" component="div">
                                     Products
                                 </Typography>
+                                <List>
+                                    {productsInOrder.map((product, index) => (
+                                        <ListItem key={index} disableGutters>
+                                            <ListItemText
+                                                primary={`${product.productName} (x${product.quantity})`}
+                                                secondary={`Price: ₹${product.price} x ${product.quantity} = ₹${(product.price * product.quantity).toFixed(2)}`}
+                                            />
+                                            <IconButton color="error" onClick={() => handleRemoveProduct(index)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ListItem>
+                                    ))}
+                                </List>
                                 <FormControl required fullWidth>
                                     <Grid container spacing={2} alignItems="center" sx={{ marginTop: '2px' }}>
                                         <Grid item xs={12} sm={6}>
@@ -337,15 +326,7 @@ const OperationPage = () => {
                                             </Button>
                                         </Grid>
                                     </Grid>
-                                </FormControl>
-                                {productsInOrder.map((product, index) => (
-                                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                                        <Typography variant="p">{product.productName} - {product.quantity} - ${product.price}</Typography>
-                                        <IconButton color="error" onClick={() => handleRemoveProduct(index)}>
-                                            <CloseIcon />
-                                        </IconButton>
-                                    </div>
-                                ))}
+                                </FormControl>                                
                                 <Grid item xs={12} md={3}>
                                 </Grid>
                             </CardContent>
