@@ -13,7 +13,6 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 const BillComponent = ({ products, onUpdateBilling }) => {
-    const dispatch = useDispatch();
     const [discountType, setDiscountType] = useState('amount');
     const [discountValue, setDiscountValue] = useState(0);
     const [gstPercentage, setGstPercentage] = useState(5);

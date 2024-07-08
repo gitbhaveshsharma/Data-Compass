@@ -7,7 +7,7 @@ import { login } from '../redux/authActions';
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
-        email: '',
+        employeeId: '',
         password: '',
     });
 
@@ -57,8 +57,8 @@ const LoginPage = () => {
         e.preventDefault();
 
         const newErrors = {};
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
+        if (!formData.employeeId) {
+            newErrors.employeeId = 'Employee ID is required';
         }
         if (!formData.password) {
             newErrors.password = 'Password is required';
@@ -99,19 +99,19 @@ const LoginPage = () => {
                         margin="normal"
                         required
                         fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
+                        id="employeeId"
+                        label="Employee ID"
+                        name="employeeId"
+                        autoComplete="employeeId"
                         autoFocus
-                        value={formData.email}
+                        value={formData.employeeId}
                         onChange={handleChange}
-                        error={!!errors.email}
-                        helperText={errors.email}
+                        error={!!errors.employeeId}
+                        helperText={errors.employeeId}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: errors.email ? 'red' : '',
+                                    borderColor: errors.employeeId ? 'red' : '',
                                 },
                             },
                         }}

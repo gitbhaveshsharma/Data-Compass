@@ -1,4 +1,3 @@
-// controllers/authController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -11,11 +10,11 @@ const generateEmployeeId = (firstName, lastName) => {
 };
 
 exports.login = async (req, res) => {
-    const { email, password } = req.body;
+    const { employeeId, password } = req.body;
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ employeeId });
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(400).send({ error: 'Invalid email or password.' });
+            return res.status(400).send({ error: 'Invalid employee ID or password.' });
         }
 
         const token = jwt.sign({ id: user._id, role: user.role, department: user.department }, process.env.JWT_SECRET, {
