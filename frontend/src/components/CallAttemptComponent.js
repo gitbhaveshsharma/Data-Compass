@@ -78,15 +78,15 @@ const CallAttemptComponent = ({ dataId, mobileNumber, department }) => {
         }
     };
 
-    const handleUpdateCallAttempt = async (id) => {
-        try {
-            await dispatch(updateCallAttempt(id, formData));
-            setMessage('Call attempt updated successfully!');
-        } catch (error) {
-            console.error('Update call attempt failed:', error);
-            setMessage('Failed to update call attempt.');
-        }
-    };
+    // const handleUpdateCallAttempt = async (id) => {
+    //     try {
+    //         await dispatch(updateCallAttempt(id, formData));
+    //         setMessage('Call attempt updated successfully!');
+    //     } catch (error) {
+    //         console.error('Update call attempt failed:', error);
+    //         setMessage('Failed to update call attempt.');
+    //     }
+    // };
 
     const handleDeleteCallAttempt = async (id) => {
         try {
