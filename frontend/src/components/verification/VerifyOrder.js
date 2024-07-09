@@ -17,9 +17,13 @@ import {
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
+import AddAlarmIcon from '@mui/icons-material/AddAlarm';
 import UpdateBillComponent from '../UpdateBillComponent'; // Import the UpdateBillComponent
 import CallAttemptComponent from '../CallAttemptComponent';
 import Chip from '@mui/material/Chip';
+import AlarmModal from '../AlarmComponent';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const Root = styled('div')(({ theme }) => ({
     width: '100%',
@@ -42,7 +46,8 @@ const OrderCard = () => {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
     const [countdown, setCountdown] = useState(5);
-
+    const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+    const [alarmSet, setAlarmSet] = useState(false);
     const [orderDetails, setOrderDetails] = useState({
         name: '',
         number: '',
@@ -100,6 +105,7 @@ const OrderCard = () => {
                 altNumber: order.altNumber,
                 status: order.status,
                 products: order.products,
+                employeeId: order.assignedTo,
                 billDetails: {
                     discountType: order.billDetails[0].discountType,
                     discountValue: order.billDetails[0].discountValue,
@@ -189,6 +195,26 @@ const OrderCard = () => {
             billDetails: updatedBillDetails
         }));
     };
+    const handleOpenAlarmModal = () => {
+        setAlarmModalOpen(true);
+    };
+
+    const handleCloseAlarmModal = () => {
+        setAlarmModalOpen(false);
+    };
+    const handleAlarmSet = () => {
+        setAlarmSet(true); // Set the alarmSet state to true when the alarm is set
+    };
+
+    const handleCallbackClick = () => {
+        if (!alarmSet) {
+            setMessage('Please set the alarm first.');
+            setMessageType('error');
+            return;
+        }
+        handleUpdateStatus('callback');
+    };
+
 
     if (!['Verify', 'admin'].includes(userDepartment)) {
         return (
@@ -409,7 +435,18 @@ const OrderCard = () => {
                                     </Grid>
                                 </FormControl>
                                 <Box display="flex" justifyContent="space-between" mt={2}>
-                                    <Button variant="contained" color="secondary" onClick={() => handleUpdateStatus('callback')}>
+                                    <IconButton
+                                        color="primary"
+                                        onClick={handleOpenAlarmModal}
+                                    >
+                                        <AddAlarmIcon />
+                                    </IconButton>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={handleCallbackClick}
+                                        disabled={!alarmSet} // Disable the button if the alarm is not set
+                                    >
                                         Callback
                                     </Button>
                                     <Button variant="contained" color="success" onClick={() => handleUpdateStatus('verified')}>
@@ -458,6 +495,17 @@ const OrderCard = () => {
                     </Grid>
                 </Grid>
             </Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <AlarmModal
+                    open={alarmModalOpen}
+                    handleClose={handleCloseAlarmModal}
+                    initialNumber={orderDetails.number}
+                    onAlarmSet={handleAlarmSet}
+                    initialDataId={id}
+                    initialDepartment={'verify'}
+                    initialEmployeeId={orderDetails.employeeId}
+                />
+            </LocalizationProvider>
         </>
     );
 };

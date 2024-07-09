@@ -5,14 +5,13 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const uploadRoute = require('./routes/uploadRoute');
-// const registerRoutes = require("./routes/registerRoutes");
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
 const authRoutes = require('./routes/authRoute');
 const auth = require('./middleware/auth');
 const productRoutes = require('./routes/productRoutes');
 const callAttemptRoutes = require('./routes/callAttemptRoutes');
-
+const alarmRoutes = require('./routes/alarmRoutes');
 const dotenv = require("dotenv");
 
 dotenv.config(); // Load environment variables
@@ -43,6 +42,10 @@ app.use('/api/products', productRoutes);
 
 // Use the callAttempt routes
 app.use('/api/callAttempts', callAttemptRoutes);
+
+// Use the alarm routes
+app.use('/api/alarms', alarmRoutes);
+
 
 // Protecting a route as an example
 app.get('/api/protected', auth, (req, res) => {

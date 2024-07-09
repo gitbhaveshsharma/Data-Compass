@@ -13,6 +13,7 @@ import authReducer from './authReducer';
 import operationReducer from './operationReducer';
 import productReducer from './productReducer';
 import callattemptReducer from './callAttemptReducer';
+import alarmReducer from './adminReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
     auth: authReducer,
     operation: operationReducer,
     callAttempts: callattemptReducer,
+    alarms: alarmReducer,
 });
 
 export default rootReducer;

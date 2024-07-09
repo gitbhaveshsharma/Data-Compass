@@ -7,8 +7,11 @@ import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListIte
 import { FormControl } from '@mui/base/FormControl';
 import BillComponent from './BillComponent';
 import CallAttemptComponent from './CallAttemptComponent';
+import AddAlarmIcon from '@mui/icons-material/AddAlarm';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import AlarmModal from './AlarmComponent';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const OperationPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -31,7 +34,8 @@ const OperationPage = () => {
     const [selectedProduct, setSelectedProduct] = useState('');
     const [quantity, setQuantity] = useState('');
     const [billingDetails, setBillingDetails] = useState({});
-
+    const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+    const [alarmSet, setAlarmSet] = useState(false);
     useEffect(() => {
         dispatch(fetchDataById(id));
         dispatch(fetchProducts());
@@ -48,7 +52,8 @@ const OperationPage = () => {
                 zip: data.zip || '',
                 nearBy: data.nearBy || '',
                 area: data.area || '',
-                altNumber: data.altNumber || ''
+                altNumber: data.altNumber || '',
+                employeeId: data.assignedTo || '',
             });
         }
     }, [data]);
@@ -60,7 +65,7 @@ const OperationPage = () => {
             [name]: value
         }));
     };
-
+    
     const handleUpdate = async () => {
         try {
             console.log(`Updating data with ID: ${id}, Data:`, formData);
@@ -98,6 +103,11 @@ const OperationPage = () => {
     };
 
     const handleCallback = async () => {
+        if (!alarmSet) {
+            alert('Please set an alarm before requesting a callback.');
+            return;
+        }
+
         try {
             console.log(`Requesting callback with ID: ${id}`);
             await dispatch(callbackData(id));
@@ -131,6 +141,16 @@ const OperationPage = () => {
 
     const handleClose = () => {
         setMessage('');
+    };
+    const handleOpenAlarmModal = () => {
+        setAlarmModalOpen(true);
+    };
+
+    const handleCloseAlarmModal = () => {
+        setAlarmModalOpen(false);
+    };
+    const handleAlarmSet = () => {
+        setAlarmSet(true); // Update alarmSet state when alarm is set
     };
 
     if (!data || data._id !== id) return (
@@ -252,9 +272,12 @@ const OperationPage = () => {
                                             multiline
                                             rows={4}
                                         />
+                                        {/* <IconButton color="primary" onClick={handleOpenAlarmModal} >
+                                            <AddAlarmIcon />
+                                        </IconButton> */}
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={2} marginTop={2}>
+                                <Grid container spacing={1} marginTop={2}>
                                     <Grid item xs={6} sm={3}>
                                         <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>Update</Button>
                                     </Grid>
@@ -265,11 +288,16 @@ const OperationPage = () => {
                                         <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
                                     </Grid>
                                     <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="secondary" onClick={handleCallback} fullWidth>Callback</Button>
+                                        <Button variant="contained" color="secondary" onClick={handleCallback} disabled={!alarmSet} fullWidth>Callback</Button>                                    </Grid>
+                                    <Grid item xs={6} sm={3}>
+                                        <IconButton color="primary" onClick={handleOpenAlarmModal}>
+                                            <AddAlarmIcon />
+                                        </IconButton>
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
+
                     </Grid>
                     <Grid item xs={12} sm={7} md={4}>
                         <Card>
@@ -340,6 +368,17 @@ const OperationPage = () => {
                     </Grid>
                 </Grid>
             </Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <AlarmModal
+                    open={alarmModalOpen}
+                    handleClose={handleCloseAlarmModal}
+                    initialNumber={formData.number}
+                    initialDataId={id}
+                    initialDepartment={'flead'}
+                    initialEmployeeId={formData.employeeId}
+                    onAlarmSet={handleAlarmSet}
+                />
+            </LocalizationProvider>
         </>
     );
 };
