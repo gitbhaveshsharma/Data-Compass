@@ -377,6 +377,7 @@ const OperationPage = () => {
                     initialDepartment={'flead'}
                     initialEmployeeId={formData.employeeId}
                     onAlarmSet={handleAlarmSet}
+                    initialName={formData.name}
                 />
             </LocalizationProvider>
         </>

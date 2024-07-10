@@ -39,16 +39,18 @@ export const fetchAlarms = () => async (dispatch) => {
 
 export const fetchAlarmsByEmployeeId = (employeeId) => async (dispatch) => {
     try {
-        const response = await axios.get(`/api/alarms/employee/${employeeId}`);
+        const response = await axios.get(`http://localhost:3001/api/alarms/employee/${employeeId}`);
+        console.log('Fetched alarms:', response.data);
         dispatch({ type: 'FETCH_ALARMS_BY_EMPLOYEE_ID_SUCCESS', payload: response.data });
     } catch (error) {
+        console.error('Error fetching alarms:', error); 
         dispatch({ type: 'FETCH_ALARMS_BY_EMPLOYEE_ID_FAILURE', error: error.message });
     }
 };
 
 export const updateAlarm = (id, alarmData) => async (dispatch) => {
     try {
-        const response = await axios.put(`/api/alarms/${id}`, alarmData);
+        const response = await axios.put(`http://localhost:3001/api/alarms/${id}`, alarmData);
         dispatch({ type: 'UPDATE_ALARM_SUCCESS', payload: response.data });
     } catch (error) {
         dispatch({ type: 'UPDATE_ALARM_FAILURE', error: error.message });
@@ -57,7 +59,7 @@ export const updateAlarm = (id, alarmData) => async (dispatch) => {
 
 export const deleteAlarm = (id) => async (dispatch) => {
     try {
-        await axios.delete(`/api/alarms/${id}`);
+        await axios.delete(`http://localhost:3001/api/alarms/${id}`);
         dispatch({ type: 'DELETE_ALARM_SUCCESS', payload: id });
     } catch (error) {
         dispatch({ type: 'DELETE_ALARM_FAILURE', error: error.message });

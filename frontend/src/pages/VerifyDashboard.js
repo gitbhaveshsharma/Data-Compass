@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import { fetchOrderData } from '../redux/dataActions';
 import OrderDataCard from '../components/OrderData';
+import AlarmAlertComponent from '../components/AlarmAlertComponent';
 
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
@@ -74,6 +75,15 @@ const VerifyDashboard = () => {
                                 </Paper>
                             </Grid>
                         </Grid>
+                    </Grid>
+                </Grid>
+            </Box>
+            <Box sx={{ flexGrow: 1, p: 2 }}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3}>
+                            <AlarmAlertComponent employeeId={employeeId} department={'verify'} />
+                        </Paper>
                     </Grid>
                 </Grid>
             </Box>

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import FreshLeadCard from '../components/FreshLeadCard';
 import OrderDataCard from '../components/OrderData';
 import CanceledDataCard from '../components/CanceledData';
 import CallbackDataCard from '../components/CallbackData';
-import { Grid, Paper, Box, Typography } from '@mui/material';
+import AlarmAlertComponent from '../components/AlarmAlertComponent';
+import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import Container from '@mui/material/Container';
 import ChartCard from '../components/ChartCard';
 import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
 import dayjs from 'dayjs';
@@ -16,7 +16,6 @@ const FieldDashboard = () => {
     const callbackData = useSelector((state) => state.data.callbackData.data);
     const canceledData = useSelector((state) => state.data.canceledData.data);
 
-    // Fetch user details from Redux store
     const user = useSelector((state) => state.auth.user);
     const employeeId = user ? user.id : '';
 
@@ -58,7 +57,7 @@ const FieldDashboard = () => {
 
     return (
         <Container maxWidth="false">
-            <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}> Flead Dashboard </Typography>
+            <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography>
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
@@ -88,6 +87,15 @@ const FieldDashboard = () => {
                     <Grid item xs={12} md={6}>
                         <Paper elevation={3}>
                             <ChartCard data={chartData} />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Box>
+            <Box sx={{ flexGrow: 1, p: 2 }}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3}>
+                            <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
                         </Paper>
                     </Grid>
                 </Grid>

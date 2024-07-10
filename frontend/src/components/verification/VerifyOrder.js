@@ -500,6 +500,7 @@ const OrderCard = () => {
                     open={alarmModalOpen}
                     handleClose={handleCloseAlarmModal}
                     initialNumber={orderDetails.number}
+                    initialName={orderDetails.name}
                     onAlarmSet={handleAlarmSet}
                     initialDataId={id}
                     initialDepartment={'verify'}

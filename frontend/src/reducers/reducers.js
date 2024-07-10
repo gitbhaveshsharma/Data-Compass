@@ -13,7 +13,7 @@ import authReducer from './authReducer';
 import operationReducer from './operationReducer';
 import productReducer from './productReducer';
 import callattemptReducer from './callAttemptReducer';
-import alarmReducer from './adminReducer';
+import alarmReducer from './alarmReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,

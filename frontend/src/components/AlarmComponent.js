@@ -11,11 +11,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/AdapterDayjs';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialDepartment, initialEmployeeId, onAlarmSet }) => {
+const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialName, initialDepartment, initialEmployeeId, onAlarmSet }) => {
     const dispatch = useDispatch();
     const [number, setNumber] = useState('');
     const [dataId, setDataId] = useState('');
     const [department, setDepartment] = useState('');
+    const [customerName, setCustomerName] = useState('');
     const [employeeId, setEmployeeId] = useState('');
     const [alarmTime, setAlarmTime] = useState(dayjs());
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -25,12 +26,13 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialDe
         setDataId(initialDataId);
         setDepartment(initialDepartment);
         setEmployeeId(initialEmployeeId);
-    }, [initialNumber, initialDataId, initialDepartment, initialEmployeeId]);
+        setCustomerName(initialName);
+    }, [initialNumber, initialDataId, initialDepartment, initialEmployeeId, initialName]);
 
     const handleSubmit = () => {
         const localAlarmTime = dayjs(alarmTime);
         const utcAlarmTime = localAlarmTime.utc();
-        const alarmData = { number, dataId, department, employeeId, alarmTime: utcAlarmTime.toDate() };
+        const alarmData = { number, dataId, department, employeeId, customerName, alarmTime: utcAlarmTime.toDate() };
         dispatch(createAlarm(alarmData));
         setSnackbarOpen(true);
         handleClose();
@@ -57,8 +59,8 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialDe
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <TextField
-                            label="Department"
-                            value={department}
+                            label="Customer Name"
+                            value={customerName}
                             onChange={(e) => setDepartment(e.target.value)}
                             fullWidth
                             margin="normal"
@@ -92,6 +94,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialDe
                         />
 
                     </Grid>
+                    
                     <Grid item xs={12} md={12}>
                         <Button variant="contained" color="primary" onClick={handleSubmit} style={{ width: 'fit-content', marginTop: '16px' }}>
                             Set Alarm

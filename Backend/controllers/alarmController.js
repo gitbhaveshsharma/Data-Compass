@@ -2,7 +2,7 @@ const Alarm = require('../models/Alarm');
 const moment = require('moment-timezone');
 
 const createAlarm = async (req, res) => {
-    const { number, dataId, department, employeeId, alarmTime } = req.body;
+    const { number, dataId, department, employeeId, alarmTime, customerName, status } = req.body;
     try {
         const newAlarm = new Alarm({
             number,
@@ -10,14 +10,17 @@ const createAlarm = async (req, res) => {
             department,
             employeeId,
             alarmTime,
+            customerName,
+            status,
         });
-        
+
         const savedAlarm = await newAlarm.save();
         res.status(201).json(savedAlarm);
     } catch (error) {
         res.status(500).json({ message: 'Error creating alarm', error });
     }
 };
+
 const getAlarms = async (req, res) => {
     try {
         const alarms = await Alarm.find();
@@ -65,15 +68,17 @@ const getAlarmsByEmployeeId = async (req, res) => {
 };
 
 const updateAlarm = async (req, res) => {
+    const { id } = req.params;
+    const updatedData = req.body;
+
     try {
-        const { number, dataId, department, employeeId, alarmTime } = req.body;
-        const alarm = await Alarm.findByIdAndUpdate(req.params.id, { number, dataId, department, employeeId, alarmTime }, { new: true });
+        const alarm = await Alarm.findByIdAndUpdate(id, updatedData, { new: true });
         if (!alarm) {
             return res.status(404).json({ message: 'Alarm not found' });
         }
         res.status(200).json(alarm);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating alarm', error });
+        res.status(500).json({ message: error.message });
     }
 };
 

@@ -4,7 +4,7 @@ const initialState = {
     error: null,
 };
 
-export const alarmReducer = (state = initialState, action) => {
+const alarmReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'CREATE_ALARM_SUCCESS':
             return { ...state, alarms: [...state.alarms, action.payload], loading: false };
@@ -27,10 +27,12 @@ export const alarmReducer = (state = initialState, action) => {
         case 'DELETE_ALARM_FAILURE':
             return { ...state, error: action.error, loading: false };
         case 'FETCH_ALARMS_BY_EMPLOYEE_ID_SUCCESS':
-            return { ...state, error: action.error, loading: false };
+            return { ...state, alarms: action.payload, loading: false };
         case 'FETCH_ALARMS_BY_EMPLOYEE_ID_FAILURE':
             return { ...state, error: action.error, loading: false };
         default:
             return state;
     }
 };
+
+export default alarmReducer;
