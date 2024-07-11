@@ -38,6 +38,10 @@ export const fetchOrderData = (employeeId, role) => async (dispatch) => {
     fetchData(url, dispatch, 'FETCH_ORDER_DATA_SUCCESS', 'FETCH_ORDER_DATA_FAILURE');
 };
 
+export const fetchVerifiedOrders = () => async (dispatch) => {
+    fetchData('http://localhost:3001/api/data/orders/status/verify', dispatch, 'FETCH_VERIFIED_ORDERS_SUCCESS', 'FETCH_VERIFIED_ORDERS_FAILURE');
+};
+
 export const fetchCanceledData = (employeeId, role) => async (dispatch) => {
     const url = role === 'admin' ? 'http://localhost:3001/api/data/canceled/all' : `http://localhost:3001/api/data/canceled/${employeeId}`;
     fetchData(url, dispatch, 'FETCH_CANCELED_DATA_SUCCESS', 'FETCH_CANCELED_DATA_FAILURE');

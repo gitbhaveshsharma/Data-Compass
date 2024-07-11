@@ -355,6 +355,15 @@ const updateOrder = async (req, res) => {
     }
 };
 
+const getVerifyStatusOrders = async (req, res) => {
+    try {
+        const verifyStatusOrders = await Order.find({ status: 'verified' });
+        res.json(verifyStatusOrders);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch verify status orders' });
+    }
+};
+
 module.exports = {
     distributeData,
     getDataCounts,
@@ -374,4 +383,5 @@ module.exports = {
     updateOrderStatus,
     deleteProductFromOrder,
     updateOrder,
+    getVerifyStatusOrders,
 };

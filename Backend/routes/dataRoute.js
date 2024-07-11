@@ -16,7 +16,8 @@ const {
     getCallbackDataById,
     updateOrderStatus,
     deleteProductFromOrder,
-    updateOrder
+    updateOrder,
+    getVerifyStatusOrders
 } = require('../controllers/dataController');
 
 const router = express.Router();
@@ -38,5 +39,5 @@ router.get('/callback/:id', getCallbackDataById);
 router.put('/order/:id/status', updateOrderStatus);
 router.delete('/order/:id/product/:productId', deleteProductFromOrder);
 router.put('/order/:id', updateOrder);
-
+router.get('/orders/status/verify', getVerifyStatusOrders);
 module.exports = router;

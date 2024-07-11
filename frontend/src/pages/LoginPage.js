@@ -26,6 +26,8 @@ const LoginPage = () => {
                     navigate('/field-dashboard');
                 } else if (user.department === 'Verify') {
                     navigate('/verify-dashboard');
+                } else if (user.department === 'logistics') {
+                    navigate('/logistics-dashboard');
                 } else {
                     navigate('/');
                 }

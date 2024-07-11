@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
 
-const departments = ['flead', 'verify', 'admin'];
+const departments = ['flead', 'verify', 'admin', 'logistics'];
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -43,10 +43,10 @@ const RegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    // Allow employeeId to be optional
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key] && key !== 'employeeId') { // Allow employeeId to be optional
+      if (!formData[key] && key !== 'employeeId') { 
         newErrors[key] = 'This field is required';
       }
     });

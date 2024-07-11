@@ -94,6 +94,10 @@ const orderDataReducer = (state = orderDataInitialState, action) => {
             return { ...state, loading: false, data: action.payload };
         case 'FETCH_ORDER_DATA_FAILURE':
             return { ...state, loading: false, error: action.payload };
+        case 'FETCH_VERIFIED_ORDERS_SUCCESS':
+            return { ...state, data: action.payload };
+        case 'FETCH_VERIFIED_ORDERS_FAILURE':
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }
