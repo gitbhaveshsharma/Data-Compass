@@ -1,6 +1,5 @@
-// src/components/UploadComponent.js
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { uploadExcel } from '../redux/uploadActions';
 import { fetchDataCounts } from '../redux/dataActions';
 import { styled } from '@mui/material/styles';
@@ -12,7 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
 
 const VisuallyHiddenInput = styled('input')({
     display: 'none',
@@ -21,9 +19,11 @@ const VisuallyHiddenInput = styled('input')({
 const UploadComponent = () => {
     const [file, setFile] = useState(null);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState(false); // Added success state
     const fileInputRef = useRef(null);
     const dispatch = useDispatch();
+
+    const { message, duplicateCount } = useSelector(state => state.admin);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -38,14 +38,14 @@ const UploadComponent = () => {
         dispatch(uploadExcel(file)).then(() => {
             dispatch(fetchDataCounts());
             setFile(null);  // Reset the file state
-            setSuccess(true);  // Show success message
+            setSuccess(true); // Show success message
             fileInputRef.current.value = null;  // Reset the file input
         });
     };
 
     const handleClose = () => {
         setError('');
-        setSuccess(false);
+        setSuccess(false); // Ensure success state is reset
     };
 
     const handleDrop = (e) => {
@@ -135,7 +135,7 @@ const UploadComponent = () => {
             {success && (
                 <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity="success">
-                        File uploaded successfully!
+                        {message} {duplicateCount} duplicate entries were not stored.
                     </Alert>
                 </Snackbar>
             )}

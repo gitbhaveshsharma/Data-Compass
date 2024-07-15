@@ -170,6 +170,7 @@ const updateData = async (req, res) => {
     }
 };
 
+
 const orderData = async (req, res) => {
     try {
         const data = await Data.findById(req.params.id);
@@ -177,6 +178,9 @@ const orderData = async (req, res) => {
             return res.status(404).json({ message: 'Data not found' });
         }
         const { products, status, billDetails } = req.body;
+
+        const orderId = await Order.generateOrderId();
+
         const order = new Order({
             dataId: data._id,
             name: data.name,
@@ -192,7 +196,9 @@ const orderData = async (req, res) => {
             products,
             billDetails: billDetails || [],  // Ensure billDetails is an array
             status,
+            orderId
         });
+
         await order.save();
         data.status = 'order';
         await data.save();
@@ -202,6 +208,8 @@ const orderData = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // Fetch all order data for admin or specific employee
 const getOrderedData = async (req, res) => {

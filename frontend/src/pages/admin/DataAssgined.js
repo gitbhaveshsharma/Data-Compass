@@ -5,9 +5,6 @@ import EmployeeListComponent from '../../components/EmployeeListComponent';
 import DataCountComponent from '../../components/DataCountComponent';
 
 const DataAssigned = () => {
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
     return (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh" padding={2}>
             <Grid container spacing={2}>

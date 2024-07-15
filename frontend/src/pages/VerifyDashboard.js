@@ -3,8 +3,11 @@ import { Grid, Paper, Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import { fetchOrderData } from '../redux/dataActions';
-import OrderDataCard from '../components/OrderData';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
+import UnderVerificationOrders from '../components/OrderCard/UnderVerificationOrders';
+import CallbackOrders from '../components/OrderCard/CallbackOrders';
+import CanceledOrders from '../components/OrderCard/CanceledOrders';
+import VerifiedOrders from '../components/OrderCard/VerifiedOrders';
 
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
@@ -36,8 +39,15 @@ const VerifyDashboard = () => {
                         <Grid container spacing={4}>
                             <Grid item xs={12} sm={6} md={3}>
                                 <Paper elevation={3}>
-                                    <OrderDataCard
-                                        data={isVerifyOrAdmin ? filterDataByStatus('under verification') : orderData}
+                                    <UnderVerificationOrders
+                                        employeeId={employeeId}
+                                        role={user.role}
+                                        department={department} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Paper elevation={3}>
+                                    <CanceledOrders
                                         employeeId={employeeId}
                                         role={user.role}
                                         department={department}
@@ -46,8 +56,7 @@ const VerifyDashboard = () => {
                             </Grid>
                             <Grid item xs={12} sm={6} md={3}>
                                 <Paper elevation={3}>
-                                    <OrderDataCard
-                                        data={isVerifyOrAdmin ? filterDataByStatus('verified') : orderData}
+                                    <CallbackOrders
                                         employeeId={employeeId}
                                         role={user.role}
                                         department={department}
@@ -56,18 +65,7 @@ const VerifyDashboard = () => {
                             </Grid>
                             <Grid item xs={12} sm={6} md={3}>
                                 <Paper elevation={3}>
-                                    <OrderDataCard
-                                        data={isVerifyOrAdmin ? filterDataByStatus('callback') : orderData}
-                                        employeeId={employeeId}
-                                        role={user.role}
-                                        department={department}
-                                    />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Paper elevation={3}>
-                                    <OrderDataCard
-                                        data={isVerifyOrAdmin ? filterDataByStatus('canceled') : orderData}
+                                    <VerifiedOrders
                                         employeeId={employeeId}
                                         role={user.role}
                                         department={department}
@@ -87,6 +85,7 @@ const VerifyDashboard = () => {
                     </Grid>
                 </Grid>
             </Box>
+
         </Container>
     );
 };

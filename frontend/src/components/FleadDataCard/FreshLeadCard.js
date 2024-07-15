@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAssignedData } from '../redux/dataActions';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { fetchAssignedData } from '../../redux/dataActions';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
-
-const columns = [
-    { id: 'name', label: 'Name', minWidth: 170 },
-    { id: 'number', label: 'Number', minWidth: 100 },
-    { id: 'address', label: 'Address', minWidth: 170 },
-];
+import { columns } from '../../constants/orderColumns';
 
 const FreshLeadCard = ({ employeeId }) => {
     const dispatch = useDispatch();
@@ -16,6 +11,7 @@ const FreshLeadCard = ({ employeeId }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [open, setOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         if (employeeId) {
@@ -44,8 +40,19 @@ const FreshLeadCard = ({ employeeId }) => {
         setPage(0);
     };
 
-    const rows = Array.isArray(assignedData) ? assignedData
-        .filter(data => data.status === 'assigned') 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setPage(0);
+    };
+
+    const filteredRows = assignedData.filter(row =>
+        columns.some(column =>
+            String(row[column.id]).toLowerCase().includes(searchQuery.toLowerCase())
+        )
+    );
+
+    const rows = Array.isArray(filteredRows) ? filteredRows
+        .filter(data => data.status === 'assigned')
         .map((data) => ({
             ...data,
             address: data.address || 'empty',
@@ -59,7 +66,16 @@ const FreshLeadCard = ({ employeeId }) => {
                 View Assigned Data
             </Button>
             <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                <DialogTitle>Assigned Data</DialogTitle>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px' }}>
+                    <DialogTitle style={{ margin: 0 }}>Assigned Data</DialogTitle>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        style={{ width: '300px', maxWidth: '100%' }}
+                    />
+                </div>
                 <DialogContent>
                     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                         <TableContainer sx={{ maxHeight: 440 }}>

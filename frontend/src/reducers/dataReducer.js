@@ -13,6 +13,7 @@ const dataCountsInitialState = {
 
 const assignedDataInitialState = {
     assignedData: [],
+    loading: false,
     error: null,
 };
 

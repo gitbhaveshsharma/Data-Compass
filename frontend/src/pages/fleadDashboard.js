@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import FreshLeadCard from '../components/FreshLeadCard';
-import OrderDataCard from '../components/OrderData';
-import CanceledDataCard from '../components/CanceledData';
-import CallbackDataCard from '../components/CallbackData';
+import FreshLeadCard from '../components/FleadDataCard/FreshLeadCard';
+import PendingOrders from '../components/OrderCard/PendingOrders';
+import CanceledDataCard from '../components/FleadDataCard/CanceledData';
+import CallbackDataCard from '../components/FleadDataCard/CallbackData';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,7 +69,7 @@ const FieldDashboard = () => {
                             </Grid>
                             <Grid item xs={12} sm={6} md={6}>
                                 <Paper elevation={3}>
-                                    <OrderDataCard employeeId={employeeId} />
+                                    <PendingOrders employeeId={employeeId} />
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6} md={6}>

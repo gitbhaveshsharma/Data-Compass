@@ -87,6 +87,39 @@ const OrderSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    orderId: {
+        type: String,
+        unique: true,
+        required: true,
+    }
+});
+
+// Function to generate a unique order ID
+OrderSchema.statics.generateOrderId = async function () {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let orderId;
+    let isUnique = false;
+
+    while (!isUnique) {
+        orderId = 'OSZ';
+        for (let i = 0; i < 7; i++) {
+            orderId += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        const existingOrder = await this.findOne({ orderId });
+        if (!existingOrder) {
+            isUnique = true;
+        }
+    }
+
+    return orderId;
+};
+
+// Pre-save middleware to set the orderId
+OrderSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        this.orderId = await this.constructor.generateOrderId();
+    }
+    next();
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

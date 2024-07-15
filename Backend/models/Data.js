@@ -1,6 +1,8 @@
+// backend/models/Data.js
 const mongoose = require('mongoose');
 
 const dataSchema = new mongoose.Schema({
+    customerId: String,
     name: String,
     number: String,
     address: String,
@@ -13,6 +15,7 @@ const dataSchema = new mongoose.Schema({
     status: { type: String, default: 'unassigned' },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     department: String,
+    activeDate: { type: Date, default: Date.now }, // New field to store the active date
 });
 
 module.exports = mongoose.model('Data', dataSchema);
