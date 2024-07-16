@@ -5,7 +5,8 @@ import {
     fetchOrderDataById,
     updateOrderStatus,
     deleteProductFromOrder,
-    updateOrder
+    updateOrder,
+    updateData
 } from '../../redux/operationActions';
 import {
     fetchProducts
@@ -24,6 +25,7 @@ import Chip from '@mui/material/Chip';
 import AlarmModal from '../AlarmComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import AssignedTo from '../AssignedTo';
 
 const Root = styled('div')(({ theme }) => ({
     width: '100%',
@@ -106,6 +108,7 @@ const OrderCard = () => {
                 status: order.status,
                 products: order.products,
                 employeeId: order.assignedTo,
+                orderId: order.orderId,
                 billDetails: {
                     discountType: order.billDetails[0].discountType,
                     discountValue: order.billDetails[0].discountValue,
@@ -215,6 +218,35 @@ const OrderCard = () => {
         handleUpdateStatus('callback');
     };
 
+    const handleAssignTo = async (employeeInfo) => {
+        if (userDepartment !== employeeInfo.department) {
+            setMessage('Department mismatch. Cannot assign.');
+            setMessageType('error');
+            return;
+        }
+
+        const updatedFormData = {
+            ...orderDetails,
+            assignedTo: employeeInfo._id,
+        };
+        try {
+            if (userDepartment === 'flead') {
+                await dispatch(updateData(id, updatedFormData));
+            } else if (userDepartment === 'Verify') {
+                await dispatch(updateOrder(id, updatedFormData));
+            } else {
+                setMessage('Invalid department.');
+                setMessageType('error');
+                return;
+            }
+            setMessage('Assigned successfully!');
+            setMessageType('success');
+            navigate('/');
+        } catch (error) {
+            setMessage('Failed to assign.');
+            setMessageType('error');
+        }
+    };
 
     if (!['Verify', 'admin'].includes(userDepartment)) {
         return (
@@ -490,8 +522,15 @@ const OrderCard = () => {
                             </Card>
                         </Root>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12}>
-                        <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
+                </Grid>
+            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" padding="10px">
+                <Grid container spacing={2} maxWidth="false">
+                    <Grid item xs={12} md={3}>
+                            <AssignedTo onAssign={handleAssignTo} />
+                    </Grid>
+                    <Grid item xs={12} md={9}>
+                            <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
                     </Grid>
                 </Grid>
             </Box>

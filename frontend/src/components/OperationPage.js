@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataById, updateData, orderData, cancelData, callbackData } from '../redux/operationActions';
+import { fetchDataById, updateData, updateOrder, orderData, cancelData, callbackData } from '../redux/operationActions';
 import { fetchProducts } from '../redux/productActions';
 import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListItemText, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton } from '@mui/material';
 import { FormControl } from '@mui/base/FormControl';
@@ -12,12 +12,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AlarmModal from './AlarmComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import AssignedTo from './AssignedTo';
+
 const OperationPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const data = useSelector((state) => state.operation.data);
     const products = useSelector(state => state.products.products);
+    const user = useSelector((state) => state.auth.user);
+    const userDepartment = user ? user.department : '';
     const [formData, setFormData] = useState({
         name: '',
         number: '',
@@ -27,7 +31,8 @@ const OperationPage = () => {
         zip: '',
         nearBy: '',
         area: '',
-        altNumber: ''
+        altNumber: '',
+        assignedTo: ''
     });
     const [message, setMessage] = useState('');
     const [productsInOrder, setProductsInOrder] = useState([]);
@@ -54,6 +59,8 @@ const OperationPage = () => {
                 area: data.area || '',
                 altNumber: data.altNumber || '',
                 employeeId: data.assignedTo || '',
+                assignedTo: data.assignedTo || '',
+                customerId: data.customerId || ''
             });
         }
     }, [data]);
@@ -65,7 +72,7 @@ const OperationPage = () => {
             [name]: value
         }));
     };
-    
+
     const handleUpdate = async () => {
         try {
             console.log(`Updating data with ID: ${id}, Data:`, formData);
@@ -125,7 +132,7 @@ const OperationPage = () => {
             setProductsInOrder([...productsInOrder, { productName: product.name, quantity: parseInt(quantity, 10), price: product.price }]);
             setSelectedProduct('');
             setQuantity('');
-            console.log('Product added:', { productName: product.name, quantity, price: product.price });
+            // console.log('Product added:', { productName: product.name, quantity, price: product.price });
         }
     };
 
@@ -151,6 +158,33 @@ const OperationPage = () => {
     };
     const handleAlarmSet = () => {
         setAlarmSet(true); // Update alarmSet state when alarm is set
+    };
+
+   const handleAssignTo = async (employeeInfo) => {
+        if (userDepartment !== employeeInfo.department) {
+            setMessage('Department mismatch. Cannot assign.');
+            return;
+        }
+
+        const updatedFormData = {
+            ...formData,
+            assignedTo: employeeInfo._id,
+        };
+        try {
+            if (userDepartment === 'flead') {
+                await dispatch(updateData(id, updatedFormData));
+            } else if (userDepartment === 'verified') {
+                await dispatch(updateOrder(id, updatedFormData));
+            } else {
+                setMessage('Invalid department.');
+                return;
+            }
+            setMessage('Assigned successfully!');
+            navigate('/');
+        } catch (error) {
+            console.error('Assign failed:', error);
+            setMessage('Failed to assign.');
+        }
     };
 
     if (!data || data._id !== id) return (
@@ -363,7 +397,14 @@ const OperationPage = () => {
                     <Grid item xs={12} sm={7} md={3}>
                         <BillComponent products={productsInOrder} onUpdateBilling={handleBillDetailsChange} />
                     </Grid>
-                    <Grid item xs={12}>
+                </Grid>
+            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" padding="10px">
+                <Grid container spacing={2} maxWidth="false">
+                    <Grid item xs={12} md={3}>
+                        <AssignedTo onAssign={handleAssignTo} />
+                    </Grid>
+                    <Grid item xs={12} md={9}>
                         <CallAttemptComponent department={'flead'} dataId={id} mobileNumber={formData.number} />
                     </Grid>
                 </Grid>

@@ -91,7 +91,11 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-    }
+    },
+    customerId: {
+        type: String,
+ 
+    },
 });
 
 // Function to generate a unique order ID

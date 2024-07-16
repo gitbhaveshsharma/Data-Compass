@@ -154,10 +154,10 @@ const getCallbackDataById = async (req, res) => {
 // Update data
 const updateData = async (req, res) => {
     try {
-        const { name, number, address, city, state, zip, nearBy, area, altNumber } = req.body;
+        const { name, number, address, city, state, zip, nearBy, area, altNumber, assignedTo } = req.body;
         const data = await Data.findByIdAndUpdate(
             req.params.id,
-            { name, number, address, city, state, zip, nearBy, area, altNumber },
+            { name, number, address, city, state, zip, nearBy, area, altNumber, assignedTo },
             { new: true }
         );
         if (!data) {
@@ -193,6 +193,7 @@ const orderData = async (req, res) => {
             area: data.area,
             altNumber: data.altNumber,
             assignedTo: data.assignedTo,
+            customerId: data.customerId,
             products,
             billDetails: billDetails || [],  // Ensure billDetails is an array
             status,

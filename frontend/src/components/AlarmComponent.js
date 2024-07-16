@@ -55,6 +55,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                             onChange={(e) => setNumber(e.target.value)}
                             fullWidth
                             margin="normal"
+                            disabled  
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -64,6 +65,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                             onChange={(e) => setDepartment(e.target.value)}
                             fullWidth
                             margin="normal"
+                            disabled  
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -73,6 +75,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                             onChange={(e) => setDataId(e.target.value)}
                             fullWidth
                             margin="normal"
+                            disabled  
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -82,6 +85,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                             onChange={(e) => setEmployeeId(e.target.value)}
                             fullWidth
                             margin="normal"
+                            disabled  
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
