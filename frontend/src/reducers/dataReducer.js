@@ -19,6 +19,7 @@ const assignedDataInitialState = {
 
 const orderDataInitialState = {
     data: [],
+    verifiedOrders:[],
     loading: false,
     error: null,
 };
@@ -96,7 +97,7 @@ const orderDataReducer = (state = orderDataInitialState, action) => {
         case 'FETCH_ORDER_DATA_FAILURE':
             return { ...state, loading: false, error: action.payload };
         case 'FETCH_VERIFIED_ORDERS_SUCCESS':
-            return { ...state, data: action.payload };
+            return { ...state, verifiedOrders: action.payload };
         case 'FETCH_VERIFIED_ORDERS_FAILURE':
             return { ...state, loading: false, error: action.payload };
         default:

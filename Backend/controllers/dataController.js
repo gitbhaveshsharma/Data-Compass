@@ -77,21 +77,30 @@ const getAssignedData = async (req, res) => {
     }
 };
 
-// Update data status and assignedTo field
-const updateDataStatus = async (req, res) => {
-    const { dataId, status, assignedTo } = req.body;
 
+const updateDataHoldStatus = async (req, res) => {
     try {
-        const updatedData = await Data.findByIdAndUpdate(
-            dataId,
-            { status, assignedTo: new mongoose.Types.ObjectId(assignedTo) },
-            { new: true }
-        );
-        res.json(updatedData);
+        const { id } = req.params;
+        const { status } = req.body;
+        const data = await Data.findByIdAndUpdate(id, { status: 'hold' }, { new: true });
+        res.json(data);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update data' });
+        res.status(500).send(error.message);
     }
 };
+
+const updateDataCallbackStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const data = await Data.findByIdAndUpdate(id, { status: 'callback' }, { new: true });
+        res.json(data);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+
 
 // Fetch data by ID
 const getDataById = async (req, res) => {
@@ -139,7 +148,7 @@ const getCancelDataById = async (req, res) => {
 // Fetch callback data by ID
 const getCallbackDataById = async (req, res) => {
     try {
-        const data = await Callback.findById(req.params.id);
+        const data = await Data.findOne({ _id: req.params.id, status: 'callback' });
         if (!data) {
             console.log(`Callback data not found with ID: ${req.params.id}`);
             return res.status(404).json({ message: 'Data not found' });
@@ -281,35 +290,6 @@ const getCanceledData = async (req, res) => {
     }
 };
 
-// Mark data for callback
-const callbackData = async (req, res) => {
-    try {
-        const data = await Data.findById(req.params.id);
-        if (!data) {
-            return res.status(404).json({ message: 'Data not found' });
-        }
-        const callback = new Callback({
-            dataId: data._id,
-            name: data.name,
-            number: data.number,
-            address: data.address,
-            city: data.city,
-            state: data.state,
-            zip: data.zip,
-            nearBy: data.nearBy,
-            area: data.area,
-            altNumber: data.altNumber,
-            assignedTo: data.assignedTo,
-        });
-        await callback.save();
-        data.status = 'callback';
-        await data.save();
-        res.json(callback);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 // Fetch all callback data for admin or specific employee
 const getCallbackData = async (req, res) => {
     const { employeeId } = req.params;
@@ -317,18 +297,23 @@ const getCallbackData = async (req, res) => {
     try {
         let callbackData;
         if (employeeId === 'all') {
-            callbackData = await Callback.find({});
+            callbackData = await Data.find({ status: 'callback' });
         } else {
             if (!mongoose.Types.ObjectId.isValid(employeeId)) {
                 return res.status(400).json({ error: 'Invalid employee ID' });
             }
-            callbackData = await Callback.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
+            callbackData = await Data.find({
+                status: 'callback',
+                assignedTo: new mongoose.Types.ObjectId(employeeId)
+            });
         }
         res.json(callbackData);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch callback data' });
     }
 };
+
+
 
 const updateOrderStatus = async (req, res) => {
     try {
@@ -373,15 +358,49 @@ const getVerifyStatusOrders = async (req, res) => {
     }
 };
 
+const getHoldData = async (req, res) => {
+    const { employeeId } = req.params;
+
+    try {
+        let callbackData;
+        if (employeeId === 'all') {
+            callbackData = await Data.find({ status: 'Hold' });
+        } else {
+            if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+                return res.status(400).json({ error: 'Invalid employee ID' });
+            }
+            callbackData = await Data.find({
+                status: 'Hold',
+                assignedTo: new mongoose.Types.ObjectId(employeeId)
+            });
+        }
+        res.json(callbackData);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch Hold data' });
+    }
+};
+
+const getHoldDataById = async (req, res) => {
+    try {
+        const data = await Data.findOne({ _id: req.params.id, status: 'Hold' });
+        if (!data) {
+            console.log(`Hold data not found with ID: ${req.params.id}`);
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching Hold data:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     distributeData,
     getDataCounts,
     getAssignedData,
-    updateDataStatus,
     getDataById,
     updateData,
     orderData,
-    callbackData,
     cancelData,
     getOrderedData,
     getCanceledData,
@@ -393,4 +412,8 @@ module.exports = {
     deleteProductFromOrder,
     updateOrder,
     getVerifyStatusOrders,
+    updateDataHoldStatus,
+    getHoldData,
+    getHoldDataById,
+    updateDataCallbackStatus
 };

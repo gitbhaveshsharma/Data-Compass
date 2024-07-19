@@ -1,131 +1,143 @@
-// // AnalysisPage.js
-// import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchCallbackData, fetchCanceledData, fetchOrderData } from '../../redux/dataActions';
-// import Container from '@mui/material/Container';
-// import Box from '@mui/material/Box';
-// import Grid from '@mui/material/Grid';
-// import Tabs from '@mui/material/Tabs';
-// import Tab from '@mui/material/Tab';
-// import Typography from '@mui/material/Typography';
-// import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
-// import TextField from '@mui/material/TextField';
-// import DataTable from '../../components/DataTable';
-// import Chart from '../../components/data/BarChart'; // Assuming you have a Chart component
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrderData } from '../../redux/dataActions';
+import { Grid, Paper, RadioGroup, FormControlLabel, Radio, Typography, Box } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { parseISO, getYear, getMonth, getDate, getISOWeek } from 'date-fns';
 
-// const TabPanel = (props) => {
-//     const { children, value, index, ...other } = props;
+const AnalysisPage = () => {
+    const dispatch = useDispatch();
+    const orderData = useSelector((state) => state.data.orderData.data || []);
+    const [view, setView] = useState('year');
 
-//     return (
-//         <div
-//             role="tabpanel"
-//             hidden={value !== index}
-//             id={`tabpanel-${index}`}
-//             aria-labelledby={`tab-${index}`}
-//             {...other}
-//         >
-//             {value === index && (
-//                 <Box sx={{ p: 3 }}>
-//                     <Typography>{children}</Typography>
-//                 </Box>
-//             )}
-//         </div>
-//     );
-// };
+    useEffect(() => {
+        dispatch(fetchOrderData('admin'));
+    }, [dispatch]);
 
-// const AnalysisPage = ({ employeeId, role }) => {
-//     const dispatch = useDispatch();
-//     const [tabIndex, setTabIndex] = useState(0);
-//     const [filter, setFilter] = useState('');
+    const filterDeliveredOrders = (data) => {
+        return data.filter(order => order.status === 'delivered');
+    };
 
-//     const orderData = useSelector((state) => state.data.orderData.data);
-//     const callbackData = useSelector((state) => state.data.callbackData.data);
-//     const canceledData = useSelector((state) => state.data.canceledData.data);
+    const calculateSalesData = (data, view) => {
+        const filteredData = filterDeliveredOrders(data);
+        const salesData = {};
 
-//     useEffect(() => {
-//         dispatch(fetchOrderData(employeeId, role));
-//         dispatch(fetchCallbackData(employeeId, role));
-//         dispatch(fetchCanceledData(employeeId, role));
-//     }, [dispatch, employeeId, role]);
+        filteredData.forEach(order => {
+            const date = parseISO(order.createdAt);
+            const key = view === 'year' ? getYear(date)
+                : view === 'month' ? `${getYear(date)}-${getMonth(date) + 1}`
+                    : view === 'week' ? `${getYear(date)}-W${getISOWeek(date)}`
+                        : `${getYear(date)}-${getMonth(date) + 1}-${getDate(date)}`;
 
-//     const handleTabChange = (event, newIndex) => {
-//         setTabIndex(newIndex);
-//     };
+            if (!salesData[key]) {
+                salesData[key] = { salesCount: 0, totalAmount: 0, products: {} };
+            }
 
-//     const handleFilterChange = (event) => {
-//         setFilter(event.target.value);
-//     };
+            salesData[key].salesCount += 1;
+            salesData[key].totalAmount += order.billDetails[0].totalPrice;
 
-//     const filterData = (data) => {
-//         if (!filter) return data;
-//         return data.filter((item) => item.createdAt.includes(filter));
-//     };
+            order.products.forEach(product => {
+                if (!salesData[key].products[product.productName]) {
+                    salesData[key].products[product.productName] = 0;
+                }
+                salesData[key].products[product.productName] += product.quantity;
+            });
+        });
 
-//     const columns = [
-//         { id: 'id', field: '_id', headerName: 'ID', width: 90 },
-//         { id: 'name', field: 'name', headerName: 'Name', width: 150 },
-//         { id: 'number', field: 'number', headerName: 'Number', width: 150 },
-//         { id: 'address', field: 'address', headerName: 'Address', width: 200 },
-//         { id: 'status', field: 'status', headerName: 'Status', width: 120 },
-//         { id: 'createdAt', field: 'createdAt', headerName: 'Created At', width: 180 },
-//     ];
+        return salesData;
+    };
 
-//     return (
-//         <Container maxWidth={false}>
-//             <Box sx={{ flexGrow: 1, padding: 2 }}>
-//                 <Grid container spacing={2}>
-//                     {/* Left Grid */}
-//                     <Grid item xs={12} md={6}>
-//                         <Card>
-//                             <CardContent>
-//                                 <TextField
-//                                     label="Filter by Date (YYYY-MM-DD)"
-//                                     variant="outlined"
-//                                     fullWidth
-//                                     value={filter}
-//                                     onChange={handleFilterChange}
-//                                     sx={{ marginBottom: 2 }}
-//                                 />
-//                                 <Tabs value={tabIndex} onChange={handleTabChange}>
-//                                     <Tab label="All Data" />
-//                                     <Tab label="Orders" />
-//                                     <Tab label="Callbacks" />
-//                                     <Tab label="Canceled" />
-//                                 </Tabs>
-//                                 <TabPanel value={tabIndex} index={0}>
-//                                     <Typography>Total Orders: {filterData(orderData).length}</Typography>
-//                                     <Typography>Total Callbacks: {filterData(callbackData).length}</Typography>
-//                                     <Typography>Total Canceled: {filterData(canceledData).length}</Typography>
-//                                 </TabPanel>
-//                                 <TabPanel value={tabIndex} index={1}>
-//                                     <DataTable columns={columns} data={filterData(orderData)} title="Orders" />
-//                                 </TabPanel>
-//                                 <TabPanel value={tabIndex} index={2}>
-//                                     <DataTable columns={columns} data={filterData(callbackData)} title="Callbacks" />
-//                                 </TabPanel>
-//                                 <TabPanel value={tabIndex} index={3}>
-//                                     <DataTable columns={columns} data={filterData(canceledData)} title="Canceled" />
-//                                 </TabPanel>
-//                             </CardContent>
-//                         </Card>
-//                     </Grid>
-//                     {/* Right Grid */}
-//                     <Grid item xs={12} md={6}>
-//                         <Card>
-//                             <CardContent>
-//                                 <Chart
-//                                     orderData={filterData(orderData)}
-//                                     callbackData={filterData(callbackData)}
-//                                     canceledData={filterData(canceledData)}
-//                                 />
-//                             </CardContent>
-//                         </Card>
-//                     </Grid>
-//                 </Grid>
-//             </Box>
-//         </Container>
-//     );
-// };
+    const renderChartData = (salesData) => {
+        return Object.keys(salesData).map(key => ({
+            name: key,
+            salesCount: salesData[key].salesCount,
+            totalAmount: salesData[key].totalAmount,
+            highestSellingProduct: Object.keys(salesData[key].products).reduce((a, b) =>
+                salesData[key].products[a] > salesData[key].products[b] ? a : b, ''
+            ),
+            Quantity: Math.max(...Object.values(salesData[key].products)),
+            productDetails: Object.keys(salesData[key].products).map(product => ({
+                productName: product,
+                quantity: salesData[key].products[product]
+            }))
+        }));
+    };
 
-// export default AnalysisPage;
+    const salesData = calculateSalesData(orderData, view);
+    const chartData = renderChartData(salesData);
+
+    return (
+        <Grid container spacing={2} padding={2}>
+            <Grid item xs={12}>
+                <Paper elevation={3} style={{ backgroundColor: 'white', padding: '16px' }}>
+                    <Box padding={2}>
+                        <Typography variant="h6" component="div" gutterBottom>
+                            Filter Data 
+                        </Typography>
+                        <RadioGroup row value={view} onChange={(e) => setView(e.target.value)}>
+                            <FormControlLabel value="year" control={<Radio />} label="Year" />
+                            <FormControlLabel value="month" control={<Radio />} label="Month" />
+                            <FormControlLabel value="week" control={<Radio />} label="Week" />
+                            <FormControlLabel value="day" control={<Radio />} label="Day" />
+                        </RadioGroup>
+                    </Box>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={3} style={{ backgroundColor: 'white', padding: '16px' }}>
+                    <Box padding={2}>
+                        <Typography variant="h6" component="div" gutterBottom>
+                            Sales Count and Total Amount
+                        </Typography>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={chartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="salesCount" fill="#8884d8" />
+                                <Bar dataKey="totalAmount" fill="#82ca9d" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Box>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={3} style={{ backgroundColor: 'white', padding: '16px' }}>
+                    <Box padding={2}>
+                        <Typography variant="h6" component="div" gutterBottom>
+                            Highest Selling Product Quantities
+                        </Typography>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={chartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="Quantity" fill="#8884d8" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Box>
+                </Paper>
+                <Paper elevation={3} style={{ backgroundColor: 'white', padding: '16px', marginTop: '16px' }}>
+                    <Box padding={2}>
+                        <Typography variant="h6" component="div" gutterBottom>
+                            Highest Selling Product Names
+                        </Typography>
+                        <ul>
+                            {chartData.map(item => (
+                                <li key={item.name}>
+                                    {item.name}: {item.highestSellingProduct}
+                                </li>
+                            ))}
+                        </ul>
+                    </Box>
+                </Paper>
+            </Grid>
+        </Grid>
+    );
+};
+
+export default AnalysisPage;

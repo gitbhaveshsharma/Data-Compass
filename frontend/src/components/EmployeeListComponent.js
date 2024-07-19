@@ -4,7 +4,7 @@ import { FixedSizeList } from 'react-window';
 import { fetchEmployees } from '../redux/employeeActions';
 import { distributeData, fetchDataCounts, fetchAssignedData } from '../redux/dataActions';
 import ListItem from '@mui/material/ListItem';
-import { Grid, Card, Box, Typography } from '@mui/material';
+import { Grid, Paper, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -18,6 +18,9 @@ const EmployeeListComponent = () => {
     const assignedData = useSelector((state) => state.data.assignedData || {});
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [dataCount, setDataCount] = useState(0);
+
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(() => {
         dispatch(fetchEmployees());
@@ -86,10 +89,10 @@ const EmployeeListComponent = () => {
                 ) : error ? (
                     <p>Error: {error}</p>
                 ) : (
-                    <Grid container spacing={2} justifyContent="center">
-                        <Grid item xs={12} sm={6}>
-                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Verify Dept. </Typography>
+                    <Grid container spacing={isSmallScreen ? 2 : 4} justifyContent="center">
+                        <Grid item xs={12} md={6}>
+                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}>Verify Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
                                     width="100%"
@@ -100,11 +103,11 @@ const EmployeeListComponent = () => {
                                 >
                                     {({ index, style }) => renderRow({ index, style, employeesList: verifyEmployees })}
                                 </FixedSizeList>
-                            </Card>
+                            </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Flead Dept. </Typography>
+                        <Grid item xs={12} md={6}>
+                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}>Flead Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
                                     width="100%"
@@ -115,7 +118,7 @@ const EmployeeListComponent = () => {
                                 >
                                     {({ index, style }) => renderRow({ index, style, employeesList: fleadEmployees })}
                                 </FixedSizeList>
-                            </Card>
+                            </Paper>
                         </Grid>
                     </Grid>
                 )}

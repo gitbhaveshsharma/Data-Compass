@@ -215,7 +215,7 @@ export default function AdminDrawer({ children }) {
             <ListItemButton
               component={Link}
               to="/admin-dashboard/analysis"
-              disabled
+              // disabled
               sx={{
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',

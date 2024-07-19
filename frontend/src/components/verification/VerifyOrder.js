@@ -403,9 +403,14 @@ const OrderCard = () => {
                                     onChange={handleInputChange}
                                     variant="outlined"
                                 />
-                                <Button variant="contained" color="success" onClick={handleUpdateOrder} sx={{ mt: 2 }}>
-                                    Update Order
-                                </Button>
+                                <Box display="flex" justifyContent="space-between" mt={2}>
+                                    <Button variant="contained" color="success" onClick={handleUpdateOrder} sx={{ mt: 2 }}>
+                                        Update Order
+                                    </Button>
+                                    <Button variant="contained" color="secondary" onClick={() => handleUpdateStatus('hold')} sx={{ mt: 2 }}>
+                                        Order On Hold
+                                    </Button>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -477,7 +482,7 @@ const OrderCard = () => {
                                         variant="contained"
                                         color="secondary"
                                         onClick={handleCallbackClick}
-                                        disabled={!alarmSet} // Disable the button if the alarm is not set
+                                        disabled={!alarmSet} 
                                     >
                                         Callback
                                     </Button>

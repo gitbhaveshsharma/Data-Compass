@@ -1,9 +1,7 @@
-// src/pages/ProductPage.js
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts, addProduct, removeProduct, updateProductStatus } from '../../redux/productActions';
-import { Container, Grid, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert } from '@mui/material';
-
+import { Container, Grid, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert, Typography, Box } from '@mui/material';
 
 const ProductPage = () => {
     const dispatch = useDispatch();
@@ -71,52 +69,61 @@ const ProductPage = () => {
     };
 
     return (
-        <Container>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={8}>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Tag</TableCell>
-                                    <TableCell>Price</TableCell>
-                                    <TableCell>Quantity</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {products.map((product) => (
-                                    <TableRow key={product._id}>
-                                        <TableCell>{product.name}</TableCell>
-                                        <TableCell>{product.tag}</TableCell>
-                                        <TableCell>{product.price}</TableCell>
-                                        <TableCell>{product.quantity}</TableCell>
-                                        <TableCell>{product.status}</TableCell>
-                                        <TableCell>
-                                            <Button onClick={() => handleRemoveProduct(product._id)} color="secondary">Remove</Button>
-                                            <Button 
-                                                onClick={() => handleUpdateStatus(product._id, product.status === 'available' ? 'out of stock' : 'available')}
-                                                sx={{ backgroundColor: product.status === 'out of stock' ? 'red' : 'primary' }}
-                                            >
-                                                {product.status === 'available' ? 'Set Out of Stock' : 'Set Available'}
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+        <Container maxWidth="lg">
+            <Box sx={{ flexGrow: 1, py: 0 }}>
+                <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }} gutterBottom>
+                    Product Management
+                </Typography>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} md={8}>
+                        <Paper elevation={3} sx={{ p: 2 }}>
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Name</TableCell>
+                                            <TableCell>Tag</TableCell>
+                                            <TableCell>Price</TableCell>
+                                            <TableCell>Quantity</TableCell>
+                                            <TableCell>Status</TableCell>
+                                            <TableCell>Actions</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {products.map((product) => (
+                                            <TableRow key={product._id}>
+                                                <TableCell>{product.name}</TableCell>
+                                                <TableCell>{product.tag}</TableCell>
+                                                <TableCell>{product.price}</TableCell>
+                                                <TableCell>{product.quantity}</TableCell>
+                                                <TableCell>{product.status}</TableCell>
+                                                <TableCell>
+                                                    <Button onClick={() => handleRemoveProduct(product._id)} color="secondary">Remove</Button>
+                                                    <Button
+                                                        onClick={() => handleUpdateStatus(product._id, product.status === 'available' ? 'out of stock' : 'available')}
+                                                        sx={{ ml: 1, backgroundColor: product.status === 'out of stock' ? 'red' : 'primary', color: 'white' }}
+                                                    >
+                                                        {product.status === 'available' ? 'Set Out of Stock' : 'Set Available'}
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Paper elevation={3} sx={{ p: 2 }}>
+                            <TextField label="Name" value={productName} onChange={(e) => setProductName(e.target.value)} fullWidth margin="normal" />
+                            <TextField label="Tag" value={productTag} onChange={(e) => setProductTag(e.target.value)} fullWidth margin="normal" />
+                            <TextField label="Price" value={productPrice} onChange={(e) => setProductPrice(e.target.value)} fullWidth margin="normal" />
+                            <TextField label="Quantity" value={productQuantity} onChange={(e) => setProductQuantity(e.target.value)} fullWidth margin="normal" />
+                            <Button onClick={handleAddProduct} variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>Add Product</Button>
+                        </Paper>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    <TextField label="Name" value={productName} onChange={(e) => setProductName(e.target.value)} fullWidth margin="normal" />
-                    <TextField label="Tag" value={productTag} onChange={(e) => setProductTag(e.target.value)} fullWidth margin="normal" />
-                    <TextField label="Price" value={productPrice} onChange={(e) => setProductPrice(e.target.value)} fullWidth margin="normal" />
-                    <TextField label="Quantity" value={productQuantity} onChange={(e) => setProductQuantity(e.target.value)} fullWidth margin="normal" />
-                    <Button onClick={handleAddProduct} variant="contained" color="primary" fullWidth>Add Product</Button>
-                </Grid>
-            </Grid>
+            </Box>
             <Snackbar open={!!message} autoHideDuration={6000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity={status}>
                     {message}

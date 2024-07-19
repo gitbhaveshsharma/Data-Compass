@@ -59,7 +59,7 @@ const FreshLeadCard = ({ employeeId }) => {
         })) : [];
 
     return (
-        <div style={{ flex: '1 0 21%', border: '1px solid #ccc', padding: '20px' }}>
+        <div style={{ flex: '1 0 21%',  padding: '20px' }}>
             <h3>Fresh Lead</h3>
             <p>Assigned Data: {rows.length}</p>
             <Button variant="outlined" onClick={handleOpen}>

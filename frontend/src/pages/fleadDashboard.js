@@ -3,6 +3,7 @@ import FreshLeadCard from '../components/FleadDataCard/FreshLeadCard';
 import PendingOrders from '../components/OrderCard/PendingOrders';
 import CanceledDataCard from '../components/FleadDataCard/CanceledData';
 import CallbackDataCard from '../components/FleadDataCard/CallbackData';
+import HoldData from '../components/FleadDataCard/HoldData';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,50 +57,52 @@ const FieldDashboard = () => {
     const chartData = processChartData(orderData, callbackData, canceledData);
 
     return (
-        <Container maxWidth="false">
+        <Container maxWidth="xl">
             <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography>
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
-                    <Grid item xs={12} md={6}>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={3}>
-                                    <FreshLeadCard employeeId={employeeId} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={3}>
-                                    <PendingOrders employeeId={employeeId} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={3}>
-                                    <CanceledDataCard employeeId={employeeId} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={3}>
-                                    <CallbackDataCard employeeId={employeeId} />
-                                </Paper>
-                            </Grid>
+                    <Grid item xs={12} md={6} container spacing={4}>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3}>
+                                <FreshLeadCard employeeId={employeeId} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3}>
+                                <PendingOrders employeeId={employeeId} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3}>
+                                <CanceledDataCard employeeId={employeeId} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3}>
+                                <CallbackDataCard employeeId={employeeId} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3}>
+                                <HoldData employeeId={employeeId} />
+                            </Paper>
                         </Grid>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <Paper elevation={3}>
-                            <ChartCard data={chartData} />
-                        </Paper>
+                        <Box sx={{ mb: 4 }}>
+                            <Paper elevation={3}>
+                                <ChartCard data={chartData} />
+                            </Paper>
+                        </Box>
+                        <Box>
+                            <Paper elevation={3}>
+                                <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
+                            </Paper>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
-            <Box sx={{ flexGrow: 1, p: 2 }}>
-                <Grid container spacing={4}>
-                    <Grid item xs={12} md={6}>
-                        <Paper elevation={3}>
-                            <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
-                        </Paper>
-                    </Grid>
-                </Grid>
-            </Box>
+            
         </Container>
     );
 };

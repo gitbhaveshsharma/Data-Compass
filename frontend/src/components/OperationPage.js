@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataById, updateData, updateOrder, orderData, cancelData, callbackData } from '../redux/operationActions';
+import { fetchDataById, updateData, updateOrder, updateDataHoldStatus, updateDataCallbackStatus, orderData, cancelData } from '../redux/operationActions';
 import { fetchProducts } from '../redux/productActions';
 import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListItemText, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton } from '@mui/material';
 import { FormControl } from '@mui/base/FormControl';
@@ -96,6 +96,36 @@ const OperationPage = () => {
             setMessage('Failed to place order.');
         }
     };
+    //write code to use updateDataStatus action to update the data status
+    
+    const handleUpdateHoldStatus = async () => {
+        try {
+            console.log(`Updating data status with ID: ${id}`);
+            await dispatch(updateDataHoldStatus(id));
+            setMessage('Data status updated successfully into Hold!');
+        } catch (error) {
+            console.error('Update failed:', error);
+            setMessage('Failed to update data status into Hold.');
+        }
+    };
+
+    const handleUpdateCallbackStatus = async () => {
+        if (!alarmSet) {
+                alert('Please set an alarm before requesting a callback.');
+                return;
+            }
+        try {
+            console.log(`Updating data status into Callback with ID: ${id}`);
+            await dispatch(updateDataCallbackStatus(id));
+            setMessage('Data status updated successfully into Callback!');
+            navigate('/');
+        } catch (error) {
+            console.error('Update failed:', error);
+            setMessage('Failed to update data status into Callback.');
+        }
+    };
+
+
 
     const handleCancel = async () => {
         try {
@@ -106,23 +136,6 @@ const OperationPage = () => {
         } catch (error) {
             console.error('Cancel failed:', error);
             setMessage('Failed to cancel order.');
-        }
-    };
-
-    const handleCallback = async () => {
-        if (!alarmSet) {
-            alert('Please set an alarm before requesting a callback.');
-            return;
-        }
-
-        try {
-            console.log(`Requesting callback with ID: ${id}`);
-            await dispatch(callbackData(id));
-            setMessage('Callback request sent successfully!');
-            navigate('/');
-        } catch (error) {
-            console.error('Callback request failed:', error);
-            setMessage('Failed to send callback request.');
         }
     };
 
@@ -186,6 +199,7 @@ const OperationPage = () => {
             setMessage('Failed to assign.');
         }
     };
+
 
     if (!data || data._id !== id) return (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -322,8 +336,10 @@ const OperationPage = () => {
                                         <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
                                     </Grid>
                                     <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="secondary" onClick={handleCallback} disabled={!alarmSet} fullWidth>Callback</Button>                                    </Grid>
+                                        <Button variant="contained" color="secondary" onClick={handleUpdateCallbackStatus} disabled={!alarmSet} fullWidth>Callback</Button>                                    </Grid>
                                     <Grid item xs={6} sm={3}>
+                                        <Grid item xs={6} sm={3}>
+                                            <Button variant="contained" color="secondary" onClick={handleUpdateHoldStatus} fullWidth>Hold</Button>                                    </Grid>
                                         <IconButton color="primary" onClick={handleOpenAlarmModal}>
                                             <AddAlarmIcon />
                                         </IconButton>

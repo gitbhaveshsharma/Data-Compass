@@ -45,10 +45,8 @@ const DataTable = ({ columns, data, title, baseURL }) => {
     })) : [];
 
     return (
-        <div style={{ flex: '1 0 21%', border: '1px solid #ccc', padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ flex: '1 0 21%', padding: '20px' }}>
                 <h3>{title}</h3>
-            </div>
             <p>Data Count: {rows.length}</p>
             <Button variant="outlined" onClick={handleOpen}>
                 View {title}

@@ -34,7 +34,9 @@ export const fetchAssignedData = (employeeId, role) => async (dispatch) => {
 };
 
 export const fetchOrderData = (employeeId, role) => async (dispatch) => {
-    const url = role === 'admin' ? 'http://localhost:3001/api/data/orders/all' : `http://localhost:3001/api/data/orders/${employeeId}`;
+    const url = role === 'admin' || role === 'logistics'
+        ? 'http://localhost:3001/api/data/orders/all'
+        : `http://localhost:3001/api/data/orders/${employeeId}`;
     fetchData(url, dispatch, 'FETCH_ORDER_DATA_SUCCESS', 'FETCH_ORDER_DATA_FAILURE');
 };
 
@@ -50,4 +52,10 @@ export const fetchCanceledData = (employeeId, role) => async (dispatch) => {
 export const fetchCallbackData = (employeeId, role) => async (dispatch) => {
     const url = role === 'admin' ? 'http://localhost:3001/api/data/callbacks/all' : `http://localhost:3001/api/data/callbacks/${employeeId}`;
     fetchData(url, dispatch, 'FETCH_CALLBACK_DATA_SUCCESS', 'FETCH_CALLBACK_DATA_FAILURE');
+};
+
+// fetch hold data 
+export const fetchHoldData = (employeeId, role) => async (dispatch) => {
+    const url = role === 'admin' ? 'http://localhost:3001/api/data/hold/all' : `http://localhost:3001/api/data/hold/${employeeId}`;
+    fetchData(url, dispatch, 'FETCH_HOLD_DATA_SUCCESS', 'FETCH_HOLD_DATA_FAILURE');
 };

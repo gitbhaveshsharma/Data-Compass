@@ -51,6 +51,21 @@ export const fetchCancelDataById = (id) => async (dispatch) => {
     }
 };
 
+//fetch hold data by id
+export const fetchHoldDataById = (id) => async (dispatch) => {
+    try {
+        console.log(`Fetching hold data with ID: ${id}`);
+        const response = await axios.get(`http://localhost:3001/api/data/hold/${id}`);
+        console.log('Fetched hold data:', response.data);
+        dispatch({ type: 'FETCH_HOLD_DATA_SUCCESS', payload: response.data });
+    }
+    catch (error) {
+        console.error('Fetch hold data failed:', error);
+        dispatch({ type: 'FETCH_HOLD_DATA_FAILURE', error: error.message });
+    }
+};
+
+
 export const updateData = (id, data) => async (dispatch) => {
     try {
         // console.log(`Updating data with ID: ${id}, Data:`, data);
@@ -96,18 +111,6 @@ export const cancelData = (id) => async (dispatch) => {
 };
 
 
-export const callbackData = (id) => async (dispatch) => {
-    try {
-        console.log(`Requesting callback with ID: ${id}`);
-        const response = await axios.post(`http://localhost:3001/api/data/${id}/callback`, { id });
-        console.log('Callback requested:', response.data);
-        dispatch({ type: 'CALLBACK_DATA_SUCCESS', payload: response.data });
-    } catch (error) {
-        console.error('Callback request failed:', error);
-        dispatch({ type: 'CALLBACK_DATA_FAILURE', error: error.message });
-    }
-};
-
 export const updateOrderStatus = (id, status) => async (dispatch) => {
     try {
         const response = await axios.put(`http://localhost:3001/api/data/order/${id}/status`, { status });
@@ -138,3 +141,23 @@ export const updateOrder = (id, orderDetails) => async (dispatch) => {
         dispatch({ type: 'UPDATE_ORDER_FAILURE', error: error.message });
     }
 };
+
+export const updateDataHoldStatus = (id, status) => async (dispatch) => {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/data/${id}/status/hold`, { status });
+        dispatch({ type: 'UPDATE_DATA_STATUS_SUCCESS', payload: response.data });
+    } catch (error) {
+        dispatch({ type: 'UPDATE_DATA_STATUS_FAILURE', error: error.message });
+    }
+};
+
+
+export const updateDataCallbackStatus = (id, status) => async (dispatch) => {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/data/${id}/status/callback`, { status });
+        dispatch({ type: 'UPDATE_DATA_STATUS_SUCCESS', payload: response.data });
+    } catch (error) {
+        dispatch({ type: 'UPDATE_DATA_STATUS_FAILURE', error: error.message });
+    }
+};
+
