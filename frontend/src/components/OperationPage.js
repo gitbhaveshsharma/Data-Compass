@@ -430,7 +430,7 @@ const OperationPage = () => {
                     open={alarmModalOpen}
                     handleClose={handleCloseAlarmModal}
                     initialNumber={formData.number}
-                    initialDataId={id}
+                    initialDataId={formData.customerId}
                     initialDepartment={'flead'}
                     initialEmployeeId={formData.employeeId}
                     onAlarmSet={handleAlarmSet}

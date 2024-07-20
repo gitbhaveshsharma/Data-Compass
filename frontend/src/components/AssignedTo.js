@@ -35,7 +35,6 @@ const AssignedTo = ({ onAssign }) => {
 
         const employee = employees.find((emp) => emp.employeeId === employeeId);
         if (employee) {
-            console.log(`Employee _id: ${employee._id}, Department: ${employee.department}`);
             setEmployeeInfo(employee);
         } else {
             setEmployeeInfo(null);

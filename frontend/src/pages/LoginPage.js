@@ -24,7 +24,7 @@ const LoginPage = () => {
             } else if (user.role === 'employee') {
                 if (user.department === 'flead') {
                     navigate('/field-dashboard');
-                } else if (user.department === 'Verify') {
+                } else if (user.department === 'verify') {
                     navigate('/verify-dashboard');
                 } else if (user.department === 'logistics') {
                     navigate('/logistics-dashboard');

@@ -53,7 +53,7 @@ const VerifyEmployeeList = () => {
             const employee = employees.find(emp => emp._id === employeeId);
             return employee.department;
         });
-        await dispatch(autoAssignData('Verify', dataCount, departments));
+        await dispatch(autoAssignData('verify', dataCount, departments));
     };
 
     const renderRow = useCallback(
@@ -79,7 +79,7 @@ const VerifyEmployeeList = () => {
         [selectedEmployees, handleCheckboxChange, assignedData]
     );
 
-    const verifyEmployees = employees.filter(employee => employee.department === 'Verify');
+    const verifyEmployees = employees.filter(employee => employee.department === 'verify');
 
     return (
         <Card variant="outlined" sx={{ p: 2, mb: 2 }}>

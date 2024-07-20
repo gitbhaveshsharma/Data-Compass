@@ -9,8 +9,11 @@ import CallbackOrders from '../../components/OrderCard/CallbackOrders';
 import CanceledOrders from '../../components/OrderCard/CanceledOrders';
 import VerifiedOrders from '../../components/OrderCard/VerifiedOrders';
 import PendingOrders from '../../components/OrderCard/PendingOrders';
+import CheckOrderStatus from '../../components/CheckOrderStatus';
 import ShippingOrder from '../../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../../components/Logistics/DeliveredOrders';
+import HoldOrder from '../../components/OrderCard/HoldOrders';
+
 
 const AdminDashboard = () => {
   const user = useSelector((state) => state.auth.user);
@@ -53,6 +56,7 @@ const AdminDashboard = () => {
                   <DeliveredOrder role={user.role} />
                 </Paper>
               </Grid>
+              
             </Grid>
           </Grid>
           {/* Right grid */}
@@ -76,6 +80,19 @@ const AdminDashboard = () => {
               <Grid item xs={12} sm={6}>
                 <Paper elevation={3}>
                   <CanceledOrders role={user.role} department={department} />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3}>
+                  <HoldOrder
+                    role={user.role}
+                    department={department}
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ p: 2 }}>
+                  <CheckOrderStatus role={user.role} />
                 </Paper>
               </Grid>
             </Grid>

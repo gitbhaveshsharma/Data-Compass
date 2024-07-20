@@ -20,7 +20,19 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+// Secure CORS configuration to allow only trusted origins
+const corsOptions = {
+    origin: function (origin, callback) {
+        
+        if (process.env.ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }, // Update this to your actual frontend domain
+    optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Connect to MongoDB

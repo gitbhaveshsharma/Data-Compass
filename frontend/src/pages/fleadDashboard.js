@@ -4,6 +4,7 @@ import PendingOrders from '../components/OrderCard/PendingOrders';
 import CanceledDataCard from '../components/FleadDataCard/CanceledData';
 import CallbackDataCard from '../components/FleadDataCard/CallbackData';
 import HoldData from '../components/FleadDataCard/HoldData';
+import CheckOrderStatus from '../components/CheckOrderStatus';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -85,6 +86,11 @@ const FieldDashboard = () => {
                         <Grid item xs={12} sm={6}>
                             <Paper elevation={3}>
                                 <HoldData employeeId={employeeId} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
+                                <CheckOrderStatus role={'admin'} />
                             </Paper>
                         </Grid>
                     </Grid>

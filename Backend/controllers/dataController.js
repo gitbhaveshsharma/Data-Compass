@@ -17,7 +17,7 @@ const distributeData = async (req, res) => {
 
             let unassignedData;
 
-            if (department === 'Verify') {
+            if (department === 'verify') {
                 unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: employeeId } }).limit(dataCount * employeeIds.length);
             } else if (department === 'flead') {
                 unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
@@ -29,7 +29,7 @@ const distributeData = async (req, res) => {
                     data.assignedTo = employeeId;
                     if (department === 'flead') {
                         data.status = 'assigned';
-                    } else if (department === 'Verify') {
+                    } else if (department === 'verify') {
                         data.status = 'under verification';
                     }
                     updates.push(data.save());
@@ -120,7 +120,6 @@ const getOrderDataById = async (req, res) => {
     try {
         const data = await Order.findById(req.params.id);
         if (!data) {
-            console.log(`Order data not found with ID: ${req.params.id}`);
             return res.status(404).json({ message: 'Data not found' });
         }
         res.json(data);
@@ -135,7 +134,6 @@ const getCancelDataById = async (req, res) => {
     try {
         const data = await Cancel.findById(req.params.id);
         if (!data) {
-            console.log(`Cancel data not found with ID: ${req.params.id}`);
             return res.status(404).json({ message: 'Data not found' });
         }
         res.json(data);
@@ -150,7 +148,6 @@ const getCallbackDataById = async (req, res) => {
     try {
         const data = await Data.findOne({ _id: req.params.id, status: 'callback' });
         if (!data) {
-            console.log(`Callback data not found with ID: ${req.params.id}`);
             return res.status(404).json({ message: 'Data not found' });
         }
         res.json(data);
@@ -384,7 +381,6 @@ const getHoldDataById = async (req, res) => {
     try {
         const data = await Data.findOne({ _id: req.params.id, status: 'Hold' });
         if (!data) {
-            console.log(`Hold data not found with ID: ${req.params.id}`);
             return res.status(404).json({ message: 'Data not found' });
         }
         res.json(data);

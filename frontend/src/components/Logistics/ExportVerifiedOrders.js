@@ -20,7 +20,7 @@ dayjs.extend(timezone);
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 const formatProduct = (product) => {
-    return `Product: ${product.productName}, Quantity: ${product.quantity}, Price: ${product.price}`;
+    return `Product: ${product.productName}`;
 };
 
 const formatDate = (date) => {
@@ -73,6 +73,7 @@ const ExportVerifiedOrders = () => {
             setSelectedColumns((prev) => prev.filter((col) => col !== name));
         }
     };
+
     const handleSelectAll = () => {
         if (selectedColumns.length === columns.length) {
             setSelectedColumns([]);
@@ -222,24 +223,18 @@ const ExportVerifiedOrders = () => {
                                         </TableHead>
                                         <TableBody>
                                             {filteredOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-                                                <TableRow hover role="checkbox" tabIndex={-1} key={order._id}>
-                                                    {selectedColumns.map((col) => {
-                                                        const value = order[col];
+                                                <TableRow hover role="checkbox" tabIndex={-1} key={order.orderId}>
+                                                    {columns.filter(col => selectedColumns.includes(col.id)).map((column) => {
+                                                        const value = column.id === 'products' && order[column.id].length > 0
+                                                            ? order[column.id].map(product => formatProduct(product)).join(', ')
+                                                            : column.id === 'discountType' || column.id === 'discountValue' || column.id === 'gstPercentage' || column.id === 'totalPrice'
+                                                                ? order.billDetails ? order.billDetails.map(bill => bill[column.id]).join(', ') : ''
+                                                                : column.id === 'createdAt'
+                                                                    ? formatDate(order[column.id])
+                                                                    : order[column.id];
                                                         return (
-                                                            <TableCell key={col} align={columns.find(c => c.id === col).align}>
-                                                                {col === 'products' && order[col].length > 0
-                                                                    ? order[col].map(product => formatProduct(product)).join(', ')
-                                                                    : col === 'discountType'
-                                                                        ? order.billDetails.map(bill => bill.discountType).join(', ')
-                                                                        : col === 'discountValue'
-                                                                            ? order.billDetails.map(bill => bill.discountValue).join(', ')
-                                                                            : col === 'gstPercentage'
-                                                                                ? order.billDetails.map(bill => bill.gstPercentage).join(', ')
-                                                                                : col === 'totalPrice'
-                                                                                    ? order.billDetails.map(bill => bill.totalPrice).join(', ')
-                                                                                    : col === 'createdAt'
-                                                                                        ? formatDate(order[col])
-                                                                                        : value}
+                                                            <TableCell key={column.id} align={column.align}>
+                                                                {value}
                                                             </TableCell>
                                                         );
                                                     })}
@@ -261,39 +256,19 @@ const ExportVerifiedOrders = () => {
                         </div>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleExport} color="primary" variant="contained">
-                            Export Orders
-                        </Button>
-                        <Button onClick={handleExportDialogClose} color="secondary">
-                            Close
-                        </Button>
+                        <Button onClick={handleExportDialogClose} color="secondary">Cancel</Button>
+                        <Button onClick={handleExport} color="primary">Export</Button>
                     </DialogActions>
                 </Dialog>
-
                 <Snackbar
                     open={openSnackbar}
-                    autoHideDuration={6000}
+                    autoHideDuration={3000}
                     onClose={handleCloseSnackbar}
                 >
                     <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-                        Data exported successfully!
+                        Orders exported successfully!
                     </Alert>
                 </Snackbar>
-
-                <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                    <DialogTitle>Data Count</DialogTitle>
-                    <DialogContent>
-                        <div style={{ flex: '1 0 21%', border: '1px solid #ccc', padding: '20px' }}>
-                            <h3>Verified Orders</h3>
-                            <p>Data Count: {orders.length}</p>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDialogClose} color="primary">
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </div>
         </LocalizationProvider>
     );

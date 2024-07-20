@@ -74,7 +74,7 @@ const OrderCard = () => {
     const [quantity, setQuantity] = useState('');
 
     useEffect(() => {
-        if (!['Verify', 'admin'].includes(userDepartment)) {
+        if (!['verify', 'admin'].includes(userDepartment)) {
             setMessage("You don't have access");
             setMessageType('error');
             const timer = setInterval(() => {
@@ -232,7 +232,7 @@ const OrderCard = () => {
         try {
             if (userDepartment === 'flead') {
                 await dispatch(updateData(id, updatedFormData));
-            } else if (userDepartment === 'Verify') {
+            } else if (userDepartment === 'verify') {
                 await dispatch(updateOrder(id, updatedFormData));
             } else {
                 setMessage('Invalid department.');
@@ -248,7 +248,7 @@ const OrderCard = () => {
         }
     };
 
-    if (!['Verify', 'admin'].includes(userDepartment)) {
+    if (!['verify', 'admin'].includes(userDepartment)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
                 <Box textAlign="center">
