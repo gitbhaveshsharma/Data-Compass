@@ -77,8 +77,10 @@ const EmployeeListComponent = () => {
         [selectedEmployees, handleCheckboxChange, assignedData]
     );
 
-    const verifyEmployees = employees.filter(employee => employee.department === 'verify');
-    const fleadEmployees = employees.filter(employee => employee.department === 'flead');
+    // Filter out only active employees
+    const activeEmployees = employees.filter(employee => employee.status === 'active');
+    const verifyEmployees = activeEmployees.filter(employee => employee.department === 'verify');
+    const fleadEmployees = activeEmployees.filter(employee => employee.department === 'flead');
 
     return (
         <Container>

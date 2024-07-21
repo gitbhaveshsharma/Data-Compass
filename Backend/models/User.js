@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "active",
+    },
 });
 
 // Hash password before saving the user

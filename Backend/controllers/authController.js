@@ -28,6 +28,7 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
+    // console.log('Registration request data:', req.body);
     const { email, password, name, role, department, employeeId } = req.body;
     try {
         const existingUser = await User.findOne({ email });
@@ -50,6 +51,7 @@ exports.register = async (req, res) => {
         await user.save();
         res.status(201).send({ message: 'User registered successfully.' });
     } catch (error) {
+        console.error('Registration error:', error); // Log the detailed error
         res.status(500).send({ error: 'Server error.' });
     }
 };
