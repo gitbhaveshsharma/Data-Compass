@@ -10,6 +10,8 @@ import CheckOrderStatus from '../components/CheckOrderStatus';
 import VerifiedOrders from '../components/OrderCard/VerifiedOrders';
 import HoldOrder from '../components/OrderCard/HoldOrders';
 import ChartCard from '../components/ChartCard';
+import LogOut from '../components/Logout';
+import Profile from '../components/Profile'
 import dayjs from 'dayjs';
 
 const VerifyDashboard = () => {
@@ -59,6 +61,12 @@ const VerifyDashboard = () => {
     return (
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Verify Dashboard</Typography>
+            <Profile 
+            name={user.name}
+            email={user.email}
+            employeeID ={user.employeeId}
+            department ={user.department}
+            />
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6} container spacing={4}>
@@ -122,6 +130,7 @@ const VerifyDashboard = () => {
                         </Paper>
                     </Grid>
                 </Grid>
+                  <LogOut/>
             </Box>
         </Container>
     );

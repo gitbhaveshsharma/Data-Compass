@@ -13,6 +13,7 @@ import CheckOrderStatus from '../../components/CheckOrderStatus';
 import ShippingOrder from '../../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../../components/Logistics/DeliveredOrders';
 import HoldOrder from '../../components/OrderCard/HoldOrders';
+import LogOut from '../../components/Logout';
 
 
 const AdminDashboard = () => {
@@ -99,6 +100,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
       </Box>
+      <LogOut/>
     </Container>
   );
 };

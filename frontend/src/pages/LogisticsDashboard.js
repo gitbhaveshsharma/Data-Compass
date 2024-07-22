@@ -4,6 +4,7 @@ import ExportVerifiedOrders from '../components/Logistics/ExportVerifiedOrders';
 import UpdateOrderStatus from '../components/Logistics/UpdateOrderStatus';
 import ShippingOrder from '../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../components/Logistics/DeliveredOrders';
+import LogOut from '../components/Logout';
 
 const LogisticsDashboard = () => {
     return (

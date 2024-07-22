@@ -9,6 +9,7 @@ import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartCard from '../components/ChartCard';
+import LogOut from '../components/Logout';
 import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
 import dayjs from 'dayjs';
 
@@ -107,6 +108,7 @@ const FieldDashboard = () => {
                         </Box>
                     </Grid>
                 </Grid>
+                  <LogOut/>
             </Box>
             
         </Container>
