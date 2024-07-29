@@ -15,9 +15,14 @@ const EmployeeListComponent = () => {
     const dispatch = useDispatch();
     const { employees, loading, error } = useSelector((state) => state.employees);
     const { data } = useSelector((state) => state.data);
-    const assignedData = useSelector((state) => state.data.assignedData || {});
+    const assignedData = useSelector((state) => state.data.assignedData);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [dataCount, setDataCount] = useState(0);
+
+    // Only log when assignedData changes
+    useEffect(() => {
+        console.log(assignedData);
+    }, [assignedData]);
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -26,13 +31,17 @@ const EmployeeListComponent = () => {
         dispatch(fetchEmployees());
     }, [dispatch]);
 
+    // Track fetched employees to avoid re-fetching data
+    const [fetchedEmployeeIds, setFetchedEmployeeIds] = useState(new Set());
+
     useEffect(() => {
-        if (employees.length > 0) {
-            employees.forEach(employee => {
+        employees.forEach(employee => {
+            if (!fetchedEmployeeIds.has(employee._id)) {
                 dispatch(fetchAssignedData(employee._id));
-            });
-        }
-    }, [dispatch, employees]);
+                setFetchedEmployeeIds((prev) => new Set(prev).add(employee._id));
+            }
+        });
+    }, [dispatch, employees, fetchedEmployeeIds]);
 
     const handleCheckboxChange = useCallback(
         (employeeId) => {
@@ -78,7 +87,7 @@ const EmployeeListComponent = () => {
     );
 
     // Filter out only active employees
-    const activeEmployees = employees.filter(employee => employee.status === 'active');
+    const activeEmployees = employees.filter(employee => employee.status !== 'inactive' );
     const verifyEmployees = activeEmployees.filter(employee => employee.department === 'verify');
     const fleadEmployees = activeEmployees.filter(employee => employee.department === 'flead');
 

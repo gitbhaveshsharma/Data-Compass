@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const uploadRoute = require('./routes/uploadRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
+const historyRoutes = require("./routes/historyRoutes");
 const authRoutes = require('./routes/authRoute');
 const productRoutes = require('./routes/productRoutes');
 const callAttemptRoutes = require('./routes/callAttemptRoutes');
@@ -56,6 +57,7 @@ app.use('/api/data', dataRoute);
 app.use('/api/products', productRoutes);
 app.use('/api/callAttempts', callAttemptRoutes);
 app.use('/api/alarms', alarmRoutes);
+app.use("/api/history", historyRoutes);
 
 // Protecting a route
 app.get('/api/protected', (req, res) => {

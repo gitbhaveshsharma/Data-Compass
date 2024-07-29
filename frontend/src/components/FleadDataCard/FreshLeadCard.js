@@ -20,7 +20,7 @@ const FreshLeadCard = ({ employeeId }) => {
     }, [dispatch, employeeId]);
 
     useEffect(() => {
-        console.log("Assigned Data:", assignedData);
+        // console.log("Assigned Data:", assignedData);
     }, [assignedData]);
 
     const handleOpen = () => {

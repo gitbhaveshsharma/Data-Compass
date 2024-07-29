@@ -94,7 +94,10 @@ const OrderSchema = new mongoose.Schema({
     },
     customerId: {
         type: String,
- 
+    },
+    employeeId: {
+        type: String,
+        default: null
     },
 });
 

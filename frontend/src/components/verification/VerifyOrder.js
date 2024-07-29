@@ -89,7 +89,7 @@ const OrderCard = () => {
             dispatch(fetchOrderDataById(id));
             dispatch(fetchProducts());
         } else {
-            console.error('Order ID is undefined');
+            // console.error('Order ID is undefined');
         }
     }, [dispatch, id, userDepartment, navigate]);
 
@@ -150,7 +150,7 @@ const OrderCard = () => {
     };
 
     const handleDeleteProduct = (productId) => {
-        console.log(`Product ID: ${productId}`);
+        // console.log(`Product ID: ${productId}`);
         dispatch(deleteProductFromOrder(id, productId))
             .then(() => {
                 setMessage('Product deleted successfully.');
@@ -183,7 +183,7 @@ const OrderCard = () => {
             }));
             setSelectedProduct('');
             setQuantity('');
-            console.log('Product added:', { productName: product.name, quantity, price: product.price });
+            // console.log('Product added:', { productName: product.name, quantity, price: product.price });
         }
     };
 

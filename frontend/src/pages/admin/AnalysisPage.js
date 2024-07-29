@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderData } from '../../redux/dataActions';
+import LoginHistory from '../../components/LoginHistory';
 import { Grid, Paper, RadioGroup, FormControlLabel, Radio, Typography, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { parseISO, getYear, getMonth, getDate, getISOWeek } from 'date-fns';
@@ -136,6 +137,7 @@ const AnalysisPage = () => {
                     </Box>
                 </Paper>
             </Grid>
+            <Grid item xs={12} md={6}><Paper>  <LoginHistory /></Paper></Grid>
         </Grid>
     );
 };

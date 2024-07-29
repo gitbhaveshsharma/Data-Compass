@@ -14,6 +14,7 @@ const dataSchema = new mongoose.Schema({
     altNumber: String,
     status: { type: String, default: 'unassigned' },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    employeeId: { type: String, default: null },
     department: String,
     activeDate: { type: Date, default: Date.now }, // New field to store the active date
 });

@@ -73,7 +73,7 @@ const CallAttemptComponent = ({ dataId, mobileNumber, department }) => {
             setMessage('Call attempt added successfully!');
             setFormData({ attemptsNumber: '', callStatus: '', callDescription: '', departmentLevel: department, message: '' });
         } catch (error) {
-            console.error('Add call attempt failed:', error);
+            // console.error('Add call attempt failed:', error);
             setMessage(error);  // Set the actual error message
         }
     };
@@ -93,7 +93,7 @@ const CallAttemptComponent = ({ dataId, mobileNumber, department }) => {
             await dispatch(deleteCallAttempt(id));
             setMessage('Call attempt deleted successfully!');
         } catch (error) {
-            console.error('Delete call attempt failed:', error);
+            // console.error('Delete call attempt failed:', error);
             setMessage('Failed to delete call attempt.');
         }
     };

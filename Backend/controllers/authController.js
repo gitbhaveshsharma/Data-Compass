@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const generateEmployeeId = (firstName, lastName) => {
     const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // Generate a random 4 digit number
+    const randomNum = Math.floor(1000 + Math.random() * 9000); 
     return initials + randomNum;
 };
 
@@ -17,11 +17,11 @@ exports.login = async (req, res) => {
             return res.status(400).send({ error: 'Invalid employee ID or password.' });
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role, department: user.department }, process.env.JWT_SECRET, {
-            expiresIn: '3h',
+        const token = jwt.sign({ id: user._id, role: user.role, department: user.department, employeeId: user.employeeId }, process.env.JWT_SECRET, {
+            expiresIn: '13h',
         });
-
-        res.send({ token, user: { id: user._id, role: user.role, department: user.department } });
+        // console.log(user)
+        res.send({ token, user: { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId } });
     } catch (error) {
         res.status(500).send({ error: 'Server error.' });
     }
@@ -51,7 +51,7 @@ exports.register = async (req, res) => {
         await user.save();
         res.status(201).send({ message: 'User registered successfully.' });
     } catch (error) {
-        console.error('Registration error:', error); // Log the detailed error
+        // console.error('Registration error:', error); // Log the detailed error
         res.status(500).send({ error: 'Server error.' });
     }
 };

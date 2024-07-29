@@ -28,7 +28,7 @@ export const loadUser = () => async (dispatch) => {
   if (token && checkTokenExpiration(token)) {
     setAuthToken(token);
     const decoded = jwtDecode(token);
-    dispatch({ type: 'USER_LOADED', payload: { id: decoded.id, role: decoded.role, department: decoded.department } });
+    dispatch({ type: 'USER_LOADED', payload: { id: decoded.id, role: decoded.role, department: decoded.department, employeeId: decoded.employeeId, } });
   } else {
     dispatch({ type: 'AUTH_ERROR' });
   }
@@ -59,5 +59,6 @@ export const logout = () => (dispatch) => {
     localStorage.removeItem('token');
     setAuthToken(null);
     dispatch({ type: 'LOGOUT' });
+    window.location.href = '/login';
 };
 

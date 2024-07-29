@@ -47,7 +47,7 @@ export const fetchAlarmsByEmployeeId = (employeeId) => async (dispatch) => {
         const response = await axios.get(`${API_BASE_URL}/alarms/employee/${employeeId}`, getAuthHeaders());
         dispatch({ type: 'FETCH_ALARMS_BY_EMPLOYEE_ID_SUCCESS', payload: response.data });
     } catch (error) {
-        console.error('Error fetching alarms:', error);
+        // console.error('Error fetching alarms:', error);
         dispatch({ type: 'FETCH_ALARMS_BY_EMPLOYEE_ID_FAILURE', error: error.message });
     }
 };

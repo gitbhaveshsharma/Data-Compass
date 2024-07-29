@@ -75,11 +75,10 @@ const OperationPage = () => {
 
     const handleUpdate = async () => {
         try {
-            console.log(`Updating data with ID: ${id}, Data:`, formData);
+            // console.log(`Updating data with ID: ${id}, Data:`, formData);
             await dispatch(updateData(id, formData));
             setMessage('Data updated successfully!');
         } catch (error) {
-            console.error('Update failed:', error);
             setMessage('Failed to update data.');
         }
     };
@@ -87,12 +86,11 @@ const OperationPage = () => {
     const handleOrder = async () => {
         try {
             const orderDetails = { ...formData, products: productsInOrder, status: 'pending', billDetails: billingDetails };
-            console.log(`Placing order with ID: ${id}, Order Details:`, orderDetails);
+            // console.log(`Placing order with ID: ${id}, Order Details:`, orderDetails);
             await dispatch(orderData(id, orderDetails));
             setMessage('Order placed successfully!');
             navigate('/');
         } catch (error) {
-            console.error('Order failed:', error);
             setMessage('Failed to place order.');
         }
     };
@@ -100,11 +98,11 @@ const OperationPage = () => {
     
     const handleUpdateHoldStatus = async () => {
         try {
-            console.log(`Updating data status with ID: ${id}`);
+            // console.log(`Updating data status with ID: ${id}`);
             await dispatch(updateDataHoldStatus(id));
             setMessage('Data status updated successfully into Hold!');
         } catch (error) {
-            console.error('Update failed:', error);
+            // console.error('Update failed:', error);
             setMessage('Failed to update data status into Hold.');
         }
     };
@@ -115,12 +113,12 @@ const OperationPage = () => {
                 return;
             }
         try {
-            console.log(`Updating data status into Callback with ID: ${id}`);
+            // console.log(`Updating data status into Callback with ID: ${id}`);
             await dispatch(updateDataCallbackStatus(id));
             setMessage('Data status updated successfully into Callback!');
             navigate('/');
         } catch (error) {
-            console.error('Update failed:', error);
+            // console.error('Update failed:', error);
             setMessage('Failed to update data status into Callback.');
         }
     };
@@ -129,12 +127,12 @@ const OperationPage = () => {
 
     const handleCancel = async () => {
         try {
-            console.log(`Cancelling order with ID: ${id}`);
+            // console.log(`Cancelling order with ID: ${id}`);
             await dispatch(cancelData(id));
             setMessage('Order canceled successfully!');
             navigate('/');
         } catch (error) {
-            console.error('Cancel failed:', error);
+            // console.error('Cancel failed:', error);
             setMessage('Failed to cancel order.');
         }
     };
@@ -195,7 +193,6 @@ const OperationPage = () => {
             setMessage('Assigned successfully!');
             navigate('/');
         } catch (error) {
-            console.error('Assign failed:', error);
             setMessage('Failed to assign.');
         }
     };

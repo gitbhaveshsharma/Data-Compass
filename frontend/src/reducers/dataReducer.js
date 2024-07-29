@@ -77,6 +77,7 @@ const assignedDataReducer = (state = assignedDataInitialState, action) => {
             return {
                 ...state,
                 assignedData: action.payload,
+                error: null
             };
         case 'FETCH_ASSIGNED_DATA_FAILURE':
             return {

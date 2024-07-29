@@ -12,13 +12,13 @@ const distributeData = async (req, res) => {
         const assignmentMessages = [];
 
         for (let i = 0; i < employeeIds.length; i++) {
-            const employeeId = employeeIds[i];
+            const { _id, employeeId } = employeeIds[i]; // Destructure _id and employeeId
             const department = departments[i];
 
             let unassignedData;
 
             if (department === 'verify') {
-                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: employeeId } }).limit(dataCount * employeeIds.length);
+                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: _id } }).limit(dataCount * employeeIds.length);
             } else if (department === 'flead') {
                 unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
             }
@@ -26,7 +26,8 @@ const distributeData = async (req, res) => {
             if (unassignedData && unassignedData.length > 0) {
                 const assignedData = unassignedData.slice(i * dataCount, (i + 1) * dataCount);
                 assignedData.forEach(data => {
-                    data.assignedTo = employeeId;
+                    data.assignedTo = _id; // Assign _id to assignedTo
+                    data.employeeId = employeeId; // Assign employeeId to employeeId field
                     if (department === 'flead') {
                         data.status = 'assigned';
                     } else if (department === 'verify') {

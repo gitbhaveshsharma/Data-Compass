@@ -34,8 +34,8 @@ const getEmployeeByEmail = async (req, res) => {
 const updateEmployee = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, password, department, employeeId, status } = req.body;
-
+      const { name, email, password, department, employeeId, status } = req.body;
+      console.log("req form formtend", req.body )
         const employee = await User.findById(id);
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });

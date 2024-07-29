@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderData } from '../redux/dataActions';
@@ -11,24 +11,36 @@ import VerifiedOrders from '../components/OrderCard/VerifiedOrders';
 import HoldOrder from '../components/OrderCard/HoldOrders';
 import ChartCard from '../components/ChartCard';
 import LogOut from '../components/Logout';
-import Profile from '../components/Profile'
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { updateEmployee } from '../redux/employeeActions';
 
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     // Fetch user details from Redux store
     const user = useSelector((state) => state.auth.user);
     const employeeId = user ? user.id : '';
     const department = user ? user.department : '';
 
-    const orderData = useSelector((state) => state.data.orderData.data || []);
-
     useEffect(() => {
-        if (employeeId) {
-            dispatch(fetchOrderData(employeeId));
+        if (!user) {
+            navigate('/login');
+        } else {
+            dispatch(updateEmployee(employeeId, { status: 'online' }))
+                .then(() => {
+                    setMessage('Status updated to online successfully.');
+                })
+                .catch(() => {
+                    setMessage('Failed to update status.');
+                });
+
         }
-    }, [dispatch, employeeId]);
+    }, [user, navigate]);
+
+    const orderData = useSelector((state) => state.data.orderData.data || []);
 
     const processChartData = (data) => {
         const groupedData = {};
@@ -61,12 +73,6 @@ const VerifyDashboard = () => {
     return (
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Verify Dashboard</Typography>
-            <Profile 
-            name={user.name}
-            email={user.email}
-            employeeID ={user.employeeId}
-            department ={user.department}
-            />
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6} container spacing={4}>
@@ -74,7 +80,7 @@ const VerifyDashboard = () => {
                             <Paper elevation={3}>
                                 <UnderVerificationOrders
                                     employeeId={employeeId}
-                                    role={user.role}
+                                    role={user?.role}  // Safely access user role
                                     department={department}
                                 />
                             </Paper>
@@ -83,7 +89,7 @@ const VerifyDashboard = () => {
                             <Paper elevation={3}>
                                 <VerifiedOrders
                                     employeeId={employeeId}
-                                    role={user.role}
+                                    role={user?.role}  // Safely access user role
                                     department={department}
                                 />
                             </Paper>
@@ -92,7 +98,7 @@ const VerifyDashboard = () => {
                             <Paper elevation={3}>
                                 <CanceledOrders
                                     employeeId={employeeId}
-                                    role={user.role}
+                                    role={user?.role}  // Safely access user role
                                     department={department}
                                 />
                             </Paper>
@@ -101,7 +107,7 @@ const VerifyDashboard = () => {
                             <Paper elevation={3}>
                                 <CallbackOrders
                                     employeeId={employeeId}
-                                    role={user.role}
+                                    role={user?.role}  // Safely access user role
                                     department={department}
                                 />
                             </Paper>
@@ -110,14 +116,14 @@ const VerifyDashboard = () => {
                             <Paper elevation={3}>
                                 <HoldOrder
                                     employeeId={employeeId}
-                                    role={user.role}
+                                    role={user?.role}  // Safely access user role
                                     department={department}
                                 />
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                        <CheckOrderStatus role={'admin'} />
+                                <CheckOrderStatus role={'admin'} />
                             </Paper>
                         </Grid>
                     </Grid>
@@ -130,8 +136,8 @@ const VerifyDashboard = () => {
                         </Paper>
                     </Grid>
                 </Grid>
-                  <LogOut/>
             </Box>
+            <LogOut employeeId={user?.employeeId} />
         </Container>
     );
 };

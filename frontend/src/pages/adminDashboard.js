@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProductPage from './admin/ProductPage';
 import Dashboard from './admin/Dashboard';
@@ -7,9 +7,8 @@ import DataAssigned from './admin/DataAssgined';
 import AdminDrawer from '../components/CustomDrawer';
 import AnalysisPage from './admin/AnalysisPage';
 
-
-
 const AdminDashboard = () => {
+
     return (
         <AdminDrawer>
                 <Routes>

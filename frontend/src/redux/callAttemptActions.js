@@ -25,12 +25,12 @@ const getAuthHeaders = () => {
 export const fetchCallAttempts = (dataId) => async (dispatch) => {
     dispatch({ type: FETCH_CALL_ATTEMPTS_REQUEST });
     try {
-        console.log(`Fetching call attempts for dataId: ${dataId}`); // Debug log
+        // console.log(`Fetching call attempts for dataId: ${dataId}`); // Debug log
         const response = await axios.get(`${API_BASE_URL}/callAttempts/data/${dataId}`, getAuthHeaders());
-        console.log('Fetch call attempts response:', response.data); // Debug log
+        // console.log('Fetch call attempts response:', response.data); // Debug log
         dispatch({ type: FETCH_CALL_ATTEMPTS_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error('Fetch call attempts error:', error.message); // Debug log
+        // console.error('Fetch call attempts error:', error.message); // Debug log
         dispatch({ type: FETCH_CALL_ATTEMPTS_FAILURE, payload: error.message });
     }
 };
@@ -41,7 +41,7 @@ export const createCallAttempt = (callAttempt) => async (dispatch) => {
         const response = await axios.post(`${API_BASE_URL}/callAttempts`, callAttempt, getAuthHeaders());
         dispatch({ type: CREATE_CALL_ATTEMPT_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error('Create failed:', error.response.data.message);
+        // console.error('Create failed:', error.response.data.message);
         throw error.response.data.message;
     }
 };
@@ -52,7 +52,7 @@ export const updateCallAttempt = (id, callAttempt) => async (dispatch) => {
         const response = await axios.put(`${API_BASE_URL}/callAttempts/${id}`, callAttempt, getAuthHeaders());
         dispatch({ type: UPDATE_CALL_ATTEMPT_SUCCESS, payload: response.data });
     } catch (error) {
-        console.error('Update failed:', error);
+        // console.error('Update failed:', error);
     }
 };
 
@@ -62,6 +62,6 @@ export const deleteCallAttempt = (id) => async (dispatch) => {
         await axios.delete(`${API_BASE_URL}/callAttempts/${id}`, getAuthHeaders());
         dispatch({ type: DELETE_CALL_ATTEMPT_SUCCESS, payload: id });
     } catch (error) {
-        console.error('Delete failed:', error);
+        // console.error('Delete failed:', error);
     }
 };

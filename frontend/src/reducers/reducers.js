@@ -14,6 +14,7 @@ import operationReducer from './operationReducer';
 import productReducer from './productReducer';
 import callattemptReducer from './callAttemptReducer';
 import alarmReducer from './alarmReducer';
+import historyReducer from './historyReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     operation: operationReducer,
     callAttempts: callattemptReducer,
     alarms: alarmReducer,
+    history: historyReducer,
 });
 
 export default rootReducer;

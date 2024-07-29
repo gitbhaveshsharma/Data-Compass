@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FreshLeadCard from '../components/FleadDataCard/FreshLeadCard';
 import PendingOrders from '../components/OrderCard/PendingOrders';
 import CanceledDataCard from '../components/FleadDataCard/CanceledData';
@@ -6,22 +6,42 @@ import CallbackDataCard from '../components/FleadDataCard/CallbackData';
 import HoldData from '../components/FleadDataCard/HoldData';
 import CheckOrderStatus from '../components/CheckOrderStatus';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
-import { Grid, Paper, Box, Typography, Container } from '@mui/material';
+import { Grid, Paper, Box, Typography, Container, Snackbar, Alert, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartCard from '../components/ChartCard';
 import LogOut from '../components/Logout';
 import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { updateEmployee } from '../redux/employeeActions';
 
 const FieldDashboard = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [message, setMessage] = useState('');
     const orderData = useSelector((state) => state.data.orderData.data);
     const callbackData = useSelector((state) => state.data.callbackData.data);
     const canceledData = useSelector((state) => state.data.canceledData.data);
-
     const user = useSelector((state) => state.auth.user);
     const employeeId = user ? user.id : '';
 
+    // UseEffect for Navigating to Login Page if User is not Authenticated
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+        else {
+            dispatch(updateEmployee(employeeId, { status: 'online' }))
+                .then(() => {
+                    setMessage('Status updated to online successfully.');
+                })
+                .catch(() => {
+                    setMessage('Failed to update status.');
+                });
+        }
+    }, [user, navigate, dispatch, employeeId]);
+
+    // UseEffect for Fetching Order, Callback, and Canceled Data
     useEffect(() => {
         if (employeeId) {
             dispatch(fetchOrderData(employeeId));
@@ -30,6 +50,7 @@ const FieldDashboard = () => {
         }
     }, [dispatch, employeeId]);
 
+    // Process Data for Chart Display
     const processChartData = (orderData, callbackData, canceledData) => {
         const groupedData = {};
 
@@ -58,9 +79,15 @@ const FieldDashboard = () => {
 
     const chartData = processChartData(orderData, callbackData, canceledData);
 
+    // Handle Snackbar Close
+    const handleClose = () => {
+        setMessage('');
+    };
+
     return (
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography>
+            
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6} container spacing={4}>
@@ -108,9 +135,17 @@ const FieldDashboard = () => {
                         </Box>
                     </Grid>
                 </Grid>
-                  <LogOut/>
+
+                <LogOut employeeId={user?.employeeId} id={employeeId} />
             </Box>
-            
+
+            {message && (
+                <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={message.includes('successfully') ? 'success' : 'error'} sx={{ width: '100%' }}>
+                        {message}
+                    </Alert>
+                </Snackbar>
+            )}
         </Container>
     );
 };
