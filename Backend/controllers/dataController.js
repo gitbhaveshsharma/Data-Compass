@@ -1,8 +1,10 @@
+const cron = require('node-cron');
 const mongoose = require('mongoose');
 const Data = require('../models/Data');
 const Order = require('../models/Order');
 const Cancel = require('../models/Cancel');
 const Callback = require('../models/Callback');
+const User = require('../models/User');
 
 const distributeData = async (req, res) => {
     const { employeeIds, dataCount, departments } = req.body;
@@ -57,6 +59,68 @@ const getDataCounts = async (req, res) => {
         res.status(500).json({ message: 'Error fetching data counts' });
     }
 };
+
+const autoAssignOrders = async () => {
+    try {
+        // Fetch eligible employees from the verify department
+        const employees = await User.find({
+            department: 'verify',
+            status: { $in: ['active', 'online', 'offline'] }
+        }).sort({ _id: 1 });
+
+        if (employees.length === 0) {
+            console.log('No eligible employees found in the verify department.');
+            return;
+        }
+
+        // Fetch pending orders
+        const pendingOrders = await Order.find({ status: 'pending' }).sort({ createdAt: 1 });
+
+        if (pendingOrders.length === 0) {
+            console.log('No pending orders to assign.');
+            return;
+        }
+
+        // Check if the number of pending orders meets the threshold
+        const threshold = 5;
+        if (pendingOrders.length < threshold) {
+            console.log(`Pending orders (${pendingOrders.length}) have not reached the threshold (${threshold}).`);
+            return;
+        }
+
+        // Distribute orders to employees in a round-robin fashion
+        let assignedCount = 0;
+        let employeeIndex = employees.findIndex(emp => !emp.assigned) || 0;
+
+        for (const order of pendingOrders) {
+            const employee = employees[employeeIndex];
+            order.assignedTo = employee._id;
+            order.employeeId = employee.employeeId;
+            order.status = 'under verification';
+            await order.save();
+
+            employee.assigned = true;
+            await employee.save();
+
+            assignedCount++;
+            employeeIndex = (employeeIndex + 1) % employees.length;
+
+            // Reset assignment flags if last employee received an order
+            if (employeeIndex === 0) {
+                employees.forEach(emp => emp.assigned = false);
+                await Promise.all(employees.map(emp => emp.save()));
+            }
+        }
+
+        console.log(`${assignedCount} orders have been distributed to employees.`);
+    } catch (error) {
+        console.error('Error in auto-assign orders:', error);
+    }
+};
+
+// Schedule the task to run every 2 minutes
+cron.schedule('*/2 * * * *', autoAssignOrders);
+
 
 // Fetch data assigned to a specific employee
 const getAssignedData = async (req, res) => {
@@ -177,7 +241,6 @@ const updateData = async (req, res) => {
     }
 };
 
-
 const orderData = async (req, res) => {
     try {
         const data = await Data.findById(req.params.id);
@@ -187,6 +250,10 @@ const orderData = async (req, res) => {
         const { products, status, billDetails } = req.body;
 
         const orderId = await Order.generateOrderId();
+
+        // Calculate expected delivery date (e.g., 7 days from now)
+        const expectedDeliveryDate = new Date();
+        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
         const order = new Order({
             dataId: data._id,
@@ -204,7 +271,8 @@ const orderData = async (req, res) => {
             products,
             billDetails: billDetails || [],  // Ensure billDetails is an array
             status,
-            orderId
+            orderId,
+            expectedDeliveryDate, // Set the expected delivery date
         });
 
         await order.save();
@@ -412,5 +480,5 @@ module.exports = {
     updateDataHoldStatus,
     getHoldData,
     getHoldDataById,
-    updateDataCallbackStatus
+    updateDataCallbackStatus,
 };

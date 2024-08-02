@@ -23,9 +23,10 @@ import UpdateBillComponent from '../UpdateBillComponent'; // Import the UpdateBi
 import CallAttemptComponent from '../CallAttemptComponent';
 import Chip from '@mui/material/Chip';
 import AlarmModal from '../AlarmComponent';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AssignedTo from '../AssignedTo';
+import dayjs from 'dayjs'
 
 const Root = styled('div')(({ theme }) => ({
     width: '100%',
@@ -43,6 +44,7 @@ const OrderCard = () => {
     const order = useSelector((state) => state.operation.ordersData);
     const products = useSelector((state) => state.products.products);
     const user = useSelector((state) => state.auth.user);
+    const [expectedDeliveryDate, setExpectedDeliveryDate] = useState(dayjs());
     const userDepartment = user ? user.department : '';
 
     const [message, setMessage] = useState('');
@@ -67,7 +69,8 @@ const OrderCard = () => {
             discountValue: 0,
             gstPercentage: 0,
             totalPrice: 0
-        }
+        },
+        expectedDeliveryDate: ''
     });
 
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -113,8 +116,11 @@ const OrderCard = () => {
                     discountType: order.billDetails[0].discountType,
                     discountValue: order.billDetails[0].discountValue,
                     gstPercentage: order.billDetails[0].gstPercentage,
-                    totalPrice: order.billDetails[0].totalPrice
-                }
+                    totalPrice: order.billDetails[0].totalPrice,
+                    paymentMethod: order.billDetails[0].paymentMethod,
+                    transactionId: order.billDetails[0].transactionId
+                },
+                expectedDeliveryDate: order.expectedDeliveryDate
             });
         }
     }, [order, id]);
@@ -394,15 +400,35 @@ const OrderCard = () => {
                                     onChange={handleInputChange}
                                     variant="outlined"
                                 />
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    label="Status"
-                                    name="status"
-                                    value={orderDetails.status}
-                                    onChange={handleInputChange}
-                                    variant="outlined"
-                                />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6} sx={{marginTop:'16px'}}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                label="Expected Delivery Date"
+                                                value={expectedDeliveryDate}
+                                                onChange={(newValue) => {
+                                                    setExpectedDeliveryDate(newValue);
+                                                    setOrderDetails(prevDetails => ({
+                                                        ...prevDetails,
+                                                        expectedDeliveryDate: newValue.format('YYYY-MM-DD')
+                                                    }));
+                                                }}
+                                                renderInput={(params) => <TextField {...params} fullWidth />}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Status"
+                                            name="status"
+                                            value={orderDetails.status}
+                                            onChange={handleInputChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
                                 <Box display="flex" justifyContent="space-between" mt={2}>
                                     <Button variant="contained" color="success" onClick={handleUpdateOrder} sx={{ mt: 2 }}>
                                         Update Order
@@ -427,7 +453,7 @@ const OrderCard = () => {
                                                 primary={`${product.productName} (x${product.quantity})`}
                                                 secondary={`Price: ₹${product.price} x ${product.quantity} = ₹${product.price * product.quantity}`}
                                             />
-                                            
+
                                             <IconButton onClick={() => handleDeleteProduct(product._id)} aria-label="delete">
                                                 <DeleteIcon />
                                             </IconButton>
@@ -453,7 +479,7 @@ const OrderCard = () => {
                                                         {product.name} - ₹{product.price}
                                                     </MenuItem>
                                                 ))}
-                                            </Select>   
+                                            </Select>
                                         </Grid>
                                         <Grid item xs={5}>
                                             <TextField
@@ -482,7 +508,7 @@ const OrderCard = () => {
                                         variant="contained"
                                         color="secondary"
                                         onClick={handleCallbackClick}
-                                        disabled={!alarmSet} 
+                                        disabled={!alarmSet}
                                     >
                                         Callback
                                     </Button>
@@ -498,32 +524,38 @@ const OrderCard = () => {
                     </Grid>
                     <Grid item xs={12} md={3}>
                         <Root>
-                        <Card >
-                            <CardContent >
-                                <Typography variant="h6" component="div">
-                                    Bill Details
-                                </Typography>
-                                <Typography variant="body1">
-                                    Discount Type: {orderDetails.billDetails.discountType}
-                                </Typography>
-                                <Typography variant="body1">
-                                    Discount Value:  {orderDetails.billDetails.discountValue.toFixed(2)}
-                                </Typography>
-                                <Typography variant="body1">
-                                    GST Percentage: {orderDetails.billDetails.gstPercentage}
-                                </Typography>
-                                <Typography variant="body1">
-                                    Total Price: ₹ {orderDetails.billDetails.totalPrice}
-                                </Typography>
+                            <Card >
+                                <CardContent >
+                                    <Typography variant="h6" component="div">
+                                        Bill Details
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Discount Type: {orderDetails.billDetails.discountType}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Discount Value:  {orderDetails.billDetails.discountValue.toFixed(2)}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        GST Percentage: {orderDetails.billDetails.gstPercentage}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Payment Method: {orderDetails.billDetails.paymentMethod}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Transaction Id: {orderDetails.billDetails.transactionId || 'NA'}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Total Price: ₹ {orderDetails.billDetails.totalPrice}
+                                    </Typography>
                                     <Divider>
                                         <Chip label="Update Bill Details" size="large" />
                                     </Divider>
-                        <UpdateBillComponent
-                            billDetails={orderDetails.billDetails}
-                            products={orderDetails.products}
-                            onUpdateBilling={handleBillingUpdate}
-                        />
-                            </CardContent>
+                                    <UpdateBillComponent
+                                        billDetails={orderDetails.billDetails}
+                                        products={orderDetails.products}
+                                        onUpdateBilling={handleBillingUpdate}
+                                    />
+                                </CardContent>
                             </Card>
                         </Root>
                     </Grid>
@@ -532,10 +564,10 @@ const OrderCard = () => {
             <Box display="flex" justifyContent="center" alignItems="center" padding="10px">
                 <Grid container spacing={2} maxWidth="false">
                     <Grid item xs={12} md={3}>
-                            <AssignedTo onAssign={handleAssignTo} />
+                        <AssignedTo onAssign={handleAssignTo} />
                     </Grid>
                     <Grid item xs={12} md={9}>
-                            <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
+                        <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
                     </Grid>
                 </Grid>
             </Box>

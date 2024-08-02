@@ -10,7 +10,7 @@ import { Grid, Paper, Box, Typography, Container, Snackbar, Alert, Button } from
 import { useDispatch, useSelector } from 'react-redux';
 import ChartCard from '../components/ChartCard';
 import LogOut from '../components/Logout';
-import { fetchOrderData, fetchCallbackData, fetchCanceledData } from '../redux/dataActions';
+import { fetchAssignedData } from '../redux/dataActions';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
@@ -19,9 +19,7 @@ const FieldDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
-    const orderData = useSelector((state) => state.data.orderData.data);
-    const callbackData = useSelector((state) => state.data.callbackData.data);
-    const canceledData = useSelector((state) => state.data.canceledData.data);
+    const assignedData = useSelector((state) => state.data.assignedData.assignedData || []);
     const user = useSelector((state) => state.auth.user);
     const employeeId = user ? user.id : '';
 
@@ -29,8 +27,7 @@ const FieldDashboard = () => {
     useEffect(() => {
         if (!user) {
             navigate('/login');
-        }
-        else {
+        } else {
             dispatch(updateEmployee(employeeId, { status: 'online' }))
                 .then(() => {
                     setMessage('Status updated to online successfully.');
@@ -41,17 +38,15 @@ const FieldDashboard = () => {
         }
     }, [user, navigate, dispatch, employeeId]);
 
-    // UseEffect for Fetching Order, Callback, and Canceled Data
+    // UseEffect for Fetching Assigned Data
     useEffect(() => {
         if (employeeId) {
-            dispatch(fetchOrderData(employeeId));
-            dispatch(fetchCallbackData(employeeId));
-            dispatch(fetchCanceledData(employeeId));
+            dispatch(fetchAssignedData(employeeId));
         }
     }, [dispatch, employeeId]);
 
     // Process Data for Chart Display
-    const processChartData = (orderData, callbackData, canceledData) => {
+    const processChartData = (assignedData) => {
         const groupedData = {};
 
         const processData = (data, type) => {
@@ -64,9 +59,9 @@ const FieldDashboard = () => {
             });
         };
 
-        processData(orderData, 'orders');
-        processData(callbackData, 'callbacks');
-        processData(canceledData, 'canceled');
+        processData(assignedData.filter(item => item.status === 'order'), 'orders');
+        processData(assignedData.filter(item => item.status === 'callback'), 'callbacks');
+        processData(assignedData.filter(item => item.status === 'cancel'), 'canceled');
 
         const sortedDates = Object.keys(groupedData).sort((a, b) => dayjs(a).isBefore(dayjs(b)) ? -1 : 1);
         const chartData = sortedDates.map(date => ({
@@ -77,7 +72,7 @@ const FieldDashboard = () => {
         return chartData;
     };
 
-    const chartData = processChartData(orderData, callbackData, canceledData);
+    const chartData = processChartData(assignedData);
 
     // Handle Snackbar Close
     const handleClose = () => {

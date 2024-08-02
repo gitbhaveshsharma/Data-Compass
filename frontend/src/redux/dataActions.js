@@ -77,3 +77,4 @@ export const fetchHoldData = (employeeId, role) => async (dispatch) => {
     const url = role === 'admin' ? `${API_BASE_URL}/data/hold/all` : `${API_BASE_URL}/data/hold/${employeeId}`;
     await fetchData(url, 'FETCH_HOLD_DATA_SUCCESS', 'FETCH_HOLD_DATA_FAILURE', dispatch);
 };
+

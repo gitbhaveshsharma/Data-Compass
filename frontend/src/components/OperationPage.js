@@ -244,6 +244,7 @@ const OperationPage = () => {
                                             value={formData.number}
                                             onChange={handleChange}
                                             variant="outlined"
+                                            type="number"
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -304,6 +305,7 @@ const OperationPage = () => {
                                             value={formData.altNumber}
                                             onChange={handleChange}
                                             variant="outlined"
+                                            type="number"
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -317,9 +319,6 @@ const OperationPage = () => {
                                             multiline
                                             rows={4}
                                         />
-                                        {/* <IconButton color="primary" onClick={handleOpenAlarmModal} >
-                                            <AddAlarmIcon />
-                                        </IconButton> */}
                                     </Grid>
                                 </Grid>
                                 <Grid container spacing={1} marginTop={2}>
@@ -390,6 +389,7 @@ const OperationPage = () => {
                                                 variant="outlined"
                                                 label="Quantity"
                                                 value={quantity}
+                                                type="number"
                                                 onChange={(e) => setQuantity(e.target.value)}
                                                 placeholder="Enter quantity"
                                                 sx={{ minWidth: '150px' }}

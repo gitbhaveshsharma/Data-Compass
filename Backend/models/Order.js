@@ -72,7 +72,19 @@ const OrderSchema = new mongoose.Schema({
         totalPrice: {
             type: Number,
             required: true,
-        }
+        },
+        paymentMethod: {
+            type: String,
+            enum: ['COD', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI'],
+            required: true,
+        },
+        transactionId: {
+            type: String,
+            required: function () {
+                return this.paymentMethod !== 'COD';
+            },
+            default: '',
+        },
     }],
     status: {
         type: String,
@@ -98,6 +110,9 @@ const OrderSchema = new mongoose.Schema({
     employeeId: {
         type: String,
         default: null
+    },
+    expectedDeliveryDate: {
+        type: Date,
     },
 });
 

@@ -1,4 +1,3 @@
-// models/User.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -35,6 +34,10 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "inactive", "online", "offline"],
         default: "active",
     },
+    assigned: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 // Hash password before saving the user

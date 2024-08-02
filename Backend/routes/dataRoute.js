@@ -20,7 +20,7 @@ const {
     updateDataHoldStatus,
     updateDataCallbackStatus,
     getHoldData,
-    getHoldDataById
+    getHoldDataById,
 } = require('../controllers/dataController');
 
 const router = express.Router();

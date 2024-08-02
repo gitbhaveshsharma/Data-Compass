@@ -36,9 +36,8 @@ const VerifyDashboard = () => {
                 .catch(() => {
                     setMessage('Failed to update status.');
                 });
-
         }
-    }, [user, navigate]);
+    }, [user, navigate, dispatch, employeeId]);
 
     const orderData = useSelector((state) => state.data.orderData.data || []);
 
@@ -137,7 +136,7 @@ const VerifyDashboard = () => {
                     </Grid>
                 </Grid>
             </Box>
-            <LogOut employeeId={user?.employeeId} />
+            <LogOut employeeId={user?.employeeId} id={employeeId}/>
         </Container>
     );
 };

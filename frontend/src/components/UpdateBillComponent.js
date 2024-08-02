@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Box, Button } from '@mui/material';
+import { Typography, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Box, Button, Select, MenuItem } from '@mui/material';
 
 const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
     const [discountType, setDiscountType] = useState(billDetails.discountType || 'amount');
@@ -7,12 +7,15 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
     const [gstPercentage, setGstPercentage] = useState(billDetails.gstPercentage || '');
     const [totalPrice, setTotalPrice] = useState(0);
     const [originalPrice, setOriginalPrice] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState(billDetails.paymentMethod || 'COD');
+    const [transactionId, setTransactionId] = useState(billDetails.transactionId || '');
+    const [transactionIdError, setTransactionIdError] = useState('');
 
     useEffect(() => {
         const originalTotal = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
         setOriginalPrice(originalTotal);
         setTotalPrice(calculateTotalPrice(discountValue, discountType, gstPercentage, originalTotal));
-    }, [products]);
+    }, [products, discountValue, discountType, gstPercentage]);
 
     const calculateTotalPrice = (discountValue, discountType, gst, originalPrice) => {
         let discountedPrice = originalPrice;
@@ -61,13 +64,33 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
         return originalPrice - totalPrice;
     };
 
+    const handlePaymentMethodChange = (e) => {
+        setPaymentMethod(e.target.value);
+        if (e.target.value === 'COD') {
+            setTransactionId(''); // Clear transaction ID if COD is selected
+            setTransactionIdError(''); // Clear any existing error
+        }
+    };
+
+    const handleTransactionIdChange = (e) => {
+        setTransactionId(e.target.value);
+        setTransactionIdError(''); // Clear error when user starts typing
+    };
+
     const handleSavePrice = () => {
+        if (paymentMethod !== 'COD' && !transactionId) {
+            setTransactionIdError('Transaction ID is required for this payment method.');
+            return;
+        }
+
         const updatedBillDetails = {
             ...billDetails,
             discountType,
             discountValue,
             gstPercentage,
-            totalPrice: parseFloat(totalPrice).toFixed(2)
+            totalPrice: parseFloat(totalPrice).toFixed(2),
+            paymentMethod,
+            transactionId: paymentMethod !== 'COD' ? transactionId : '', // Only save transactionId if payment method is not COD
         };
         onUpdateBilling(updatedBillDetails);
     };
@@ -99,6 +122,28 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
                 variant="outlined"
                 type="number"
             />
+            <FormControl fullWidth margin="normal">
+                <FormLabel>Payment Method</FormLabel>
+                <Select value={paymentMethod} onChange={handlePaymentMethodChange}>
+                    <MenuItem value="COD">Cash on Delivery</MenuItem>
+                    <MenuItem value="CreditCard">Credit Card</MenuItem>
+                    <MenuItem value="DebitCard">Debit Card</MenuItem>
+                    <MenuItem value="NetBanking">Net Banking</MenuItem>
+                    <MenuItem value="UPI">UPI</MenuItem>
+                </Select>
+            </FormControl>
+            {paymentMethod !== 'COD' && (
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Transaction ID"
+                    value={transactionId}
+                    onChange={handleTransactionIdChange}
+                    variant="outlined"
+                    error={!!transactionIdError}
+                    helperText={transactionIdError || "Please enter the transaction ID if not using COD."}
+                />
+            )}
             <Box marginTop={2}>
                 <Typography variant="body1">
                     {discountType === 'amount'
@@ -107,7 +152,13 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
                 </Typography>
                 <Typography variant="body1">Total Price: ₹{totalPrice.toFixed(2)}</Typography>
             </Box>
-            <Button variant="contained" color="primary" onClick={handleSavePrice} sx={{ marginTop: 2 }}>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSavePrice}
+                sx={{ marginTop: 2 }}
+                disabled={paymentMethod !== 'COD' && !transactionId} // Disable button if transactionId is required but not provided
+            >
                 Save Price
             </Button>
         </>

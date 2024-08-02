@@ -31,7 +31,7 @@ const LogisticsDashboard = () => {
                     setMessage('Failed to update status.');
                 });
         }
-        }, [user, navigate, employeeId]);
+        }, [user, navigate, dispatch, employeeId]);
 
     return (
         <>
@@ -64,7 +64,7 @@ const LogisticsDashboard = () => {
                 </Grid>
             </Box>
             </Container>
-            <LogOut employeeId={user?.employeeId} />
+            <LogOut employeeId={user?.employeeId} id={employeeId}/>
         </>
     );
 };

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { createAlarm } from '../redux/alarmActions';
 import { Modal, TextField, Button, Typography, Grid, Snackbar } from '@mui/material';
-import { MobileTimePicker } from '@mui/x-date-pickers';
+import { MobileDateTimePicker } from '@mui/x-date-pickers'; // Use MobileDateTimePicker instead of MobileTimePicker
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { LocalizationProvider } from '@mui/x-date-pickers/AdapterDayjs';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -19,6 +18,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
     const [customerName, setCustomerName] = useState('');
     const [employeeId, setEmployeeId] = useState('');
     const [alarmTime, setAlarmTime] = useState(dayjs());
+    const [comment, setComment] = useState(''); // New state for comment
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
     const handleSubmit = () => {
         const localAlarmTime = dayjs(alarmTime);
         const utcAlarmTime = localAlarmTime.utc();
-        const alarmData = { number, dataId, department, employeeId, customerName, alarmTime: utcAlarmTime.toDate() };
+        const alarmData = { number, dataId, department, employeeId, customerName, alarmTime: utcAlarmTime.toDate(), comment };
         dispatch(createAlarm(alarmData));
         setSnackbarOpen(true);
         handleClose();
@@ -62,7 +62,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                         <TextField
                             label="Customer Name"
                             value={customerName}
-                            onChange={(e) => setDepartment(e.target.value)}
+                            onChange={(e) => setCustomerName(e.target.value)}
                             fullWidth
                             margin="normal"
                             disabled  
@@ -89,16 +89,22 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-
-                        <MobileTimePicker
-                            label="Alarm Time"
+                        <TextField
+                            label="Comment" 
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6} sx={{marginTop:'15px'}}>
+                        <MobileDateTimePicker
+                            label="Alarm Date and Time" 
                             value={alarmTime}
                             onChange={(newValue) => setAlarmTime(newValue)}
                             renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
                         />
-
                     </Grid>
-                    
                     <Grid item xs={12} md={12}>
                         <Button variant="contained" color="primary" onClick={handleSubmit} style={{ width: 'fit-content', marginTop: '16px' }}>
                             Set Alarm

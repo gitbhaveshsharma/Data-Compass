@@ -20,7 +20,9 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
     const [updatedAlarmData, setUpdatedAlarmData] = useState({
         number: '',
         customerName: '',
-        status: ''
+        status: '',
+        comment: '', // Add comment field
+        alarmTime: '' // Add alarmTime field
     });
 
     useEffect(() => {
@@ -66,7 +68,9 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
         setUpdatedAlarmData({
             number: alarm.number,
             customerName: alarm.customerName || '',
-            status: alarm.status
+            status: alarm.status,
+            comment: alarm.comment || '', // Initialize comment field
+            alarmTime: dayjs(alarm.alarmTime).format('YYYY-MM-DDTHH:mm:ss') // Initialize alarmTime field
         });
         setModalOpen(true);
     };
@@ -76,7 +80,15 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
     };
 
     const handleUpdateAlarm = () => {
-        dispatch(updateAlarm(currentAlarm._id, updatedAlarmData))
+        const updatedData = {
+            number: updatedAlarmData.number,
+            customerName: updatedAlarmData.customerName,
+            status: updatedAlarmData.status,
+            comment: updatedAlarmData.comment, // Update comment field
+            alarmTime: dayjs(updatedAlarmData.alarmTime).toDate() // Update alarmTime field
+        };
+
+        dispatch(updateAlarm(currentAlarm._id, updatedData))
             .then(() => {
                 setSnackbarMessage('Alarm updated successfully');
                 setSnackbarSeverity('success');
@@ -192,17 +204,23 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
                             fullWidth
                             margin="normal"
                         />
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel>Status</InputLabel>
-                            <Select
-                                name="status"
-                                value={updatedAlarmData.status}
-                                onChange={handleInputChange}
-                            >
-                                <MenuItem value="active">Active</MenuItem>
-                                <MenuItem value="inactive">Inactive</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <TextField
+                            label="Comment"
+                            name="comment"
+                            value={updatedAlarmData.comment}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Alarm Time"
+                            name="alarmTime"
+                            type="datetime-local"
+                            value={dayjs(updatedAlarmData.alarmTime).format('YYYY-MM-DDTHH:mm')}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                        />
                         <Button variant="contained" color="primary" onClick={handleUpdateAlarm} sx={{ mt: 2 }}>
                             Update
                         </Button>

@@ -16,6 +16,7 @@ import callattemptReducer from './callAttemptReducer';
 import alarmReducer from './alarmReducer';
 import historyReducer from './historyReducer';
 
+
 const rootReducer = combineReducers({
     admin: adminReducer,
     employees: employeeReducer,

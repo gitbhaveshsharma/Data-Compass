@@ -8,6 +8,7 @@ const alarmSchema = new mongoose.Schema({
     alarmTime: { type: Date, required: true },
     customerName: { type: String, required: false },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    comment: { type: String, required: false }, 
 });
 
 module.exports = mongoose.model('Alarm', alarmSchema);

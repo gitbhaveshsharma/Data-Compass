@@ -2,16 +2,27 @@ const Alarm = require('../models/Alarm');
 const moment = require('moment-timezone');
 
 const createAlarm = async (req, res) => {
-    const { number, dataId, department, employeeId, alarmTime, customerName, status } = req.body;
+    const { number, dataId, department, employeeId, alarmTime, customerName, status, comment, date } = req.body;
     try {
+        // Handle the case where the date is provided and adjust alarmTime accordingly
+        let alarmDate = alarmTime;
+        if (date) {
+            alarmDate = moment(date).set({
+                hour: moment(alarmTime).hour(),
+                minute: moment(alarmTime).minute(),
+                second: moment(alarmTime).second(),
+            }).toDate();
+        }
+
         const newAlarm = new Alarm({
             number,
             dataId,
             department,
             employeeId,
-            alarmTime,
+            alarmTime: alarmDate,
             customerName,
             status,
+            comment, // Add comment field
         });
 
         const savedAlarm = await newAlarm.save();
