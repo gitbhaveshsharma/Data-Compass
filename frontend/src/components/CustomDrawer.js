@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -90,7 +90,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function AdminDrawer({ children }) {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -126,7 +125,7 @@ export default function AdminDrawer({ children }) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {document.dir === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -148,7 +147,7 @@ export default function AdminDrawer({ children }) {
                   justifyContent: 'center',
                 }}
               >
-               <DashboardIcon/>
+                <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
@@ -168,9 +167,9 @@ export default function AdminDrawer({ children }) {
                   justifyContent: 'center',
                 }}
               >
-               <DataSaverOnIcon/>
+                <DataSaverOnIcon />
               </ListItemIcon>
-              <ListItemText primary="Data Assgined" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Data Assigned" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
             <ListItemButton
               component={Link}
@@ -194,7 +193,7 @@ export default function AdminDrawer({ children }) {
             </ListItemButton>
             <ListItemButton
               component={Link}
-              to="/admin-dashboard/Register"
+              to="/admin-dashboard/register"
               sx={{
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',
@@ -215,7 +214,6 @@ export default function AdminDrawer({ children }) {
             <ListItemButton
               component={Link}
               to="/admin-dashboard/analysis"
-              // disabled
               sx={{
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',

@@ -69,7 +69,7 @@ const autoAssignOrders = async () => {
         }).sort({ _id: 1 });
 
         if (employees.length === 0) {
-            console.log('No eligible employees found in the verify department.');
+            // console.log('No eligible employees found in the verify department.');
             return;
         }
 
@@ -77,14 +77,14 @@ const autoAssignOrders = async () => {
         const pendingOrders = await Order.find({ status: 'pending' }).sort({ createdAt: 1 });
 
         if (pendingOrders.length === 0) {
-            console.log('No pending orders to assign.');
+            // console.log('No pending orders to assign.');
             return;
         }
 
         // Check if the number of pending orders meets the threshold
         const threshold = 5;
         if (pendingOrders.length < threshold) {
-            console.log(`Pending orders (${pendingOrders.length}) have not reached the threshold (${threshold}).`);
+            // console.log(`Pending orders (${pendingOrders.length}) have not reached the threshold (${threshold}).`);
             return;
         }
 
@@ -112,7 +112,7 @@ const autoAssignOrders = async () => {
             }
         }
 
-        console.log(`${assignedCount} orders have been distributed to employees.`);
+        // console.log(`${assignedCount} orders have been distributed to employees.`);
     } catch (error) {
         console.error('Error in auto-assign orders:', error);
     }
@@ -310,31 +310,59 @@ const getOrderedData = async (req, res) => {
 // Mark data as canceled
 const cancelData = async (req, res) => {
     try {
-        const data = await Data.findById(req.params.id);
+        // Determine the department from request (assuming req.body or req.query contains this information)
+        const department = req.body.department || req.query.department;
+
+        let data;
+
+        // Fetch the data based on the department
+        if (department === 'flead') {
+            data = await Data.findById(req.params.id);
+        } else if (department === 'verify' || department === 'logistics') {
+            data = await Order.findById(req.params.id);
+        } else {
+            return res.status(400).json({ message: 'Invalid department' });
+        }
+
         if (!data) {
             return res.status(404).json({ message: 'Data not found' });
         }
+
+        // Create a new Cancel document
         const cancel = new Cancel({
             dataId: data._id,
             name: data.name,
             number: data.number,
-            address: data.address,
-            city: data.city,
-            state: data.state,
-            zip: data.zip,
-            nearBy: data.nearBy,
-            area: data.area,
-            altNumber: data.altNumber,
+            address: data.address || '',
+            city: data.city || '',
+            state: data.state || '',
+            zip: data.zip || '',
+            nearBy: data.nearBy || '',
+            area: data.area || '',
+            altNumber: data.altNumber || '',
+            products: data.products || [], // Use data.products if it exists
+            billDetails: data.billDetails || [], // Use data.billDetails if it exists
+            status: 'canceled', // Ensure status is 'canceled'
             assignedTo: data.assignedTo,
+            orderId: data.orderId || '', // Use data.orderId if it exists
+            customerId: data.customerId || '',
+            employeeId: data.employeeId || null,
+            expectedDeliveryDate: data.expectedDeliveryDate || null,
+            department: department, // Set the department field
         });
+
         await cancel.save();
-        data.status = 'cancel';
+
+        // Update the original data's status
+        data.status = 'canceled';
         await data.save();
+
         res.json(cancel);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Fetch all canceled data for admin or specific employee
 const getCanceledData = async (req, res) => {

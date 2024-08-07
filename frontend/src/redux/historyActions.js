@@ -19,13 +19,13 @@ export const recordHistory = (historyData) => async (dispatch) => {
         return Promise.resolve(response.data);
     } catch (error) {
         if (error.response) {
-            console.log('Response error:', error.response.data);
+            // console.log('Response error:', error.response.data);
             dispatch({ type: 'RECORD_HISTORY_FAILURE', payload: error.response.data.message || error.message });
         } else if (error.request) {
-            console.log('Request error:', error.request);
+            // console.log('Request error:', error.request);
             dispatch({ type: 'RECORD_HISTORY_FAILURE', payload: 'No response received from the server.' });
         } else {
-            console.log('Error:', error.message);
+            // console.log('Error:', error.message);
             dispatch({ type: 'RECORD_HISTORY_FAILURE', payload: error.message });
         }
         return Promise.reject(error.message);

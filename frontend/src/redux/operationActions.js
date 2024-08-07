@@ -28,7 +28,7 @@ export const fetchDataById = (id) => async (dispatch) => {
 // FATCH ORDER BY ID 
 export const fetchOrderDataById = (id) => async (dispatch) => {
     try {
-        console.log(`Fetching order data with ID: ${id}`);
+        // console.log(`Fetching order data with ID: ${id}`);
         const response = await axios.get(`${API_BASE_URL}/data/order/${id}`, getAuthHeaders());
         // console.log('Fetched order data:', response.data);
         dispatch({ type: 'FETCH_ORDERED_DATA_SUCCESS', payload: response.data });
@@ -41,7 +41,7 @@ export const fetchOrderDataById = (id) => async (dispatch) => {
 //fatch call back data by id
 export const fetchCallbackDataById = (id) => async (dispatch) => {
     try {
-        console.log(`Fetching callback data with ID: ${id}`);
+        // console.log(`Fetching callback data with ID: ${id}`);
         const response = await axios.get(`${API_BASE_URL}/data/callback/${id}`, getAuthHeaders());
         // console.log('Fetched callback data:', response.data);
         dispatch({ type: 'FETCH_CALLBACK_DATA_SUCCESS', payload: response.data });
@@ -117,17 +117,19 @@ export const orderData = (id, orderDetails) => async (dispatch) => {
     }
 };
 
-export const cancelData = (id) => async (dispatch) => {
+export const cancelData = (id, department) => async (dispatch) => {
     try {
-        // console.log(`Cancelling order with ID: ${id}`);
-        const response = await axios.post(`${API_BASE_URL}/data/${id}/cancel`, getAuthHeaders());
-        // console.log('Order canceled:', response.data);
+        const response = await axios.post(
+            `${API_BASE_URL}/data/${id}/cancel`,
+            { department }, // Pass the department in the request body
+            getAuthHeaders()
+        );
         dispatch({ type: 'CANCEL_DATA_SUCCESS', payload: response.data });
     } catch (error) {
-        // console.error('Cancel data failed:', error);
         dispatch({ type: 'CANCEL_DATA_FAILURE', error: error.message });
     }
 };
+
 
 
 export const updateOrderStatus = (id, status) => async (dispatch) => {

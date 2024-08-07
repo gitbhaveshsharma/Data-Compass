@@ -2,12 +2,13 @@
 const User = require('../models/User');
 
 const getEmployees = async (req, res) => {
-    try {
-        const employees = await User.find({ role: 'employee' });
-        res.status(200).json(employees);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching employees' });
-    }
+  try {
+    const employees = await User.find({ role: 'employee' }).select('-password -_v');
+
+    res.status(200).json(employees);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching employees' });
+  }
 };
 
 const getEmployeeByEmail = async (req, res) => {
@@ -35,7 +36,6 @@ const updateEmployee = async (req, res) => {
     try {
         const { id } = req.params;
       const { name, email, password, department, employeeId, status } = req.body;
-      console.log("req form formtend", req.body )
         const employee = await User.findById(id);
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });

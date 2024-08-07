@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDataCounts } from '../redux/dataActions';
-import { Box, Card, Paper, Typography, CircularProgress } from '@mui/material';
+import { Box, Paper, Typography, CircularProgress } from '@mui/material';
 
 const DataCountComponent = () => {
     const dispatch = useDispatch();

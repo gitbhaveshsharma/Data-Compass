@@ -36,7 +36,7 @@ const uploadExcel = async (req, res) => {
                 altNumber: entry.AltNumber || '',
                 status: 'unassigned',
                 department: entry.Department,
-                activeDate: Date.now(), // Set the current time as the active date
+                activeDate: Date.now(), 
             };
         });
 

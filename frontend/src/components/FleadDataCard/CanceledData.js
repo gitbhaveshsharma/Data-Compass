@@ -12,7 +12,7 @@ const CanceledData = ({ employeeId, role }) => {
         dispatch(fetchAssignedData(employeeId, role));
     }, [dispatch, employeeId, role]);
 
-    const canceledData = assignedData.filter(data => data.status === 'cancel');
+    const canceledData = assignedData.filter(data => data.status === 'canceled');
 
     return <DataTable columns={canceledColumns} data={canceledData} title="Canceled Data" baseURL="/data" />;
 };

@@ -25,9 +25,9 @@ export const fetchEmployees = () => async (dispatch) => {
 
 export const updateEmployee = (id, updatedData) => async (dispatch) => {
     try {
-        console.log('Attempting to update employee:', id, updatedData);
+        // console.log('Attempting to update employee:', id, updatedData);
         const res = await axios.put(`${API_BASE_URL}/employees/${id}`, updatedData, getAuthHeaders());
-        console.log('Update successful, response:', res.data);
+        // console.log('Update successful, response:', res.data);
         dispatch({ type: 'UPDATE_EMPLOYEE_SUCCESS', payload: res.data });
     } catch (error) {
         // console.error('Update failed:', error.response ? error.response.data : error.message);

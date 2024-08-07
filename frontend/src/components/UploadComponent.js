@@ -11,22 +11,75 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
+import DownloadIcon from '@mui/icons-material/Download';
+import Tooltip from '@mui/material/Tooltip';
+import * as XLSX from 'xlsx';
+import Papa from 'papaparse';
 
 const VisuallyHiddenInput = styled('input')({
     display: 'none',
 });
 
+const validHeaders = ['Name', 'Number', 'Address', 'City', 'State', 'Zip', 'NearBy', 'Area', 'AltNumber'];
+
 const UploadComponent = () => {
     const [file, setFile] = useState(null);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false); // Added success state
+    const [success, setSuccess] = useState(false);
     const fileInputRef = useRef(null);
     const dispatch = useDispatch();
 
     const { message, duplicateCount } = useSelector(state => state.admin);
 
+    const validateFile = (file) => {
+        const fileName = file.name.toLowerCase();
+
+        if (fileName.endsWith('.csv')) {
+            // Handle CSV file
+            Papa.parse(file, {
+                header: true,
+                complete: (results) => {
+                    const headers = results.meta.fields;
+                    if (headers.length !== validHeaders.length || !headers.every(header => validHeaders.includes(header))) {
+                        setError('Invalid file format or structure. Please upload the correct file.');
+                        return false;
+                    }
+                    setError('');
+                    return true;
+                },
+                error: () => {
+                    setError('Error reading the CSV file.');
+                    return false;
+                }
+            });
+        } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+            // Handle Excel file
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const headers = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
+
+                if (headers.length !== validHeaders.length || !headers.every(header => validHeaders.includes(header))) {
+                    setError('Invalid file format or structure. Please upload the correct file.');
+                    return false;
+                }
+                setError('');
+                return true;
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            setError('Unsupported file type. Please upload a CSV or Excel file.');
+            return false;
+        }
+    };
+
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+        validateFile(selectedFile);
     };
 
     const handleUpload = () => {
@@ -35,23 +88,26 @@ const UploadComponent = () => {
             return;
         }
 
-        dispatch(uploadExcel(file)).then(() => {
-            dispatch(fetchDataCounts());
-            setFile(null);  // Reset the file state
-            setSuccess(true); // Show success message
-            fileInputRef.current.value = null;  // Reset the file input
-        });
+        if (validateFile(file)) {
+            dispatch(uploadExcel(file)).then(() => {
+                dispatch(fetchDataCounts());
+                setFile(null);
+                setSuccess(true);
+                fileInputRef.current.value = null;
+            });
+        }
     };
 
     const handleClose = () => {
         setError('');
-        setSuccess(false); // Ensure success state is reset
+        setSuccess(false);
     };
 
     const handleDrop = (e) => {
         e.preventDefault();
         const droppedFile = e.dataTransfer.files[0];
         setFile(droppedFile);
+        validateFile(droppedFile);
     };
 
     const handleDragOver = (e) => {
@@ -61,6 +117,13 @@ const UploadComponent = () => {
     const handleRemoveFile = () => {
         setFile(null);
         fileInputRef.current.value = null;
+    };
+
+    const handleDownloadTemplate = () => {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet([validHeaders]);
+        XLSX.utils.book_append_sheet(wb, ws, 'Template');
+        XLSX.writeFile(wb, 'template.xlsx');
     };
 
     return (
@@ -95,11 +158,13 @@ const UploadComponent = () => {
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
             >
+
                 <VisuallyHiddenInput
                     type="file"
                     onChange={handleFileChange}
                     ref={fileInputRef}
                 />
+
                 {file ? (
                     <Box
                         sx={{
@@ -111,20 +176,39 @@ const UploadComponent = () => {
                         <Typography variant="body1">{file.name}</Typography>
                         <IconButton size="small" onClick={handleRemoveFile}>
                             <CloseIcon fontSize="small" />
+
                         </IconButton>
                     </Box>
                 ) : (
                     <CloudUploadIcon sx={{ fontSize: 48, color: 'grey' }} />
+
                 )}
+
             </Box>
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<CloudUploadIcon />}
-                onClick={handleUpload}
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                }}
             >
-                Upload file
-            </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<CloudUploadIcon />}
+                    onClick={handleUpload}
+                >
+
+                    Upload file
+                </Button>
+                <Tooltip title="Download template" arrow>
+                    <IconButton
+                        onClick={handleDownloadTemplate}
+                        sx={{ ml: 2 }}
+                    >
+                        <DownloadIcon />
+                    </IconButton>
+                </Tooltip>
+            </Box>
             {error && (
                 <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity="error">

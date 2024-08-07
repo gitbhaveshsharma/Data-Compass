@@ -6,7 +6,8 @@ import {
     updateOrderStatus,
     deleteProductFromOrder,
     updateOrder,
-    updateData
+    updateData,
+    cancelData
 } from '../../redux/operationActions';
 import {
     fetchProducts
@@ -153,6 +154,7 @@ const OrderCard = () => {
                 setMessage(`Failed to update order status: ${error.message}`);
                 setMessageType('error');
             });
+        handleCancel()
     };
 
     const handleDeleteProduct = (productId) => {
@@ -167,7 +169,7 @@ const OrderCard = () => {
                 setMessageType('error');
             });
     };
-
+    
     const handleUpdateOrder = () => {
         dispatch(updateOrder(id, orderDetails))
             .then(() => {
@@ -222,6 +224,17 @@ const OrderCard = () => {
             return;
         }
         handleUpdateStatus('callback');
+    };
+
+    const handleCancel = async () => {
+        try {
+            const department = 'verify'; // or 'verify', 'logistics', etc. Set the appropriate department here
+            await dispatch(cancelData(id, department)); // Pass the department
+            setMessage('Order canceled successfully!');
+            navigate('/');
+        } catch (error) {
+            setMessage('Failed to cancel order.');
+        }
     };
 
     const handleAssignTo = async (employeeInfo) => {

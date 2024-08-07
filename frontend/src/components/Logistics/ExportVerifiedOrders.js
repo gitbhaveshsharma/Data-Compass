@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchVerifiedOrders } from '../../redux/dataActions';
 import {
     Button, Checkbox, TextField, FormControlLabel, Snackbar, Alert,
-    Typography, Dialog, DialogTitle, DialogContent, DialogActions, Paper,
+    Dialog, DialogTitle, DialogContent, DialogActions, Paper,
     Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow
 } from '@mui/material';
 import { saveAs } from 'file-saver';
@@ -45,7 +45,12 @@ const columns = [
     { id: 'area', label: 'Area', minWidth: 170 },
     { id: 'altNumber', label: 'Alt Number', minWidth: 170 },
     { id: 'createdAt', label: 'Created At', minWidth: 170 },
+    { id: 'paymentMethod', label: 'Payment Method', minWidth: 170 },
+    { id: 'transactionId', label: 'Transaction ID', minWidth: 170 },
+    { id: 'expectedDeliveryDate', label: 'Expected Delivery Date', minWidth: 170 },
+    { id: 'employeeId', label: 'Employee ID', minWidth: 170 },
 ];
+
 
 const ExportVerifiedOrders = () => {
     const dispatch = useDispatch();
@@ -58,7 +63,7 @@ const ExportVerifiedOrders = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [setDialogOpen] = useState(false);
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
     useEffect(() => {
@@ -94,9 +99,9 @@ const ExportVerifiedOrders = () => {
             selectedColumns.forEach((col) => {
                 if (col === 'products' && order[col].length > 0) {
                     filteredOrder[col] = order[col].map(product => formatProduct(product)).join(', ');
-                } else if (col === 'discountType' || col === 'discountValue' || col === 'gstPercentage' || col === 'totalPrice') {
+                } else if (col === 'discountType' || col === 'discountValue' || col === 'gstPercentage' || col === 'totalPrice' || col === 'paymentMethod' || col === 'transactionId') {
                     filteredOrder[col] = order.billDetails ? order.billDetails.map(bill => bill[col]).join(', ') : '';
-                } else if (col === 'createdAt') {
+                } else if (col === 'createdAt' || col === 'expectedDeliveryDate') {
                     filteredOrder[col] = formatDate(order[col]);
                 } else {
                     filteredOrder[col] = order[col];
@@ -126,14 +131,6 @@ const ExportVerifiedOrders = () => {
 
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
-    };
-
-    const handleDialogOpen = () => {
-        setDialogOpen(true);
-    };
-
-    const handleDialogClose = () => {
-        setDialogOpen(false);
     };
 
     const handleExportDialogOpen = () => {
@@ -227,7 +224,7 @@ const ExportVerifiedOrders = () => {
                                                     {columns.filter(col => selectedColumns.includes(col.id)).map((column) => {
                                                         const value = column.id === 'products' && order[column.id].length > 0
                                                             ? order[column.id].map(product => formatProduct(product)).join(', ')
-                                                            : column.id === 'discountType' || column.id === 'discountValue' || column.id === 'gstPercentage' || column.id === 'totalPrice'
+                                                            : column.id === 'discountType' || column.id === 'discountValue' || column.id === 'gstPercentage' || column.id === 'totalPrice' || column.id === 'paymentMethod' || column.id === 'transactionId'
                                                                 ? order.billDetails ? order.billDetails.map(bill => bill[column.id]).join(', ') : ''
                                                                 : column.id === 'createdAt'
                                                                     ? formatDate(order[column.id])

@@ -43,6 +43,45 @@ const CancelSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    products: [{
+        productName: {
+            type: String,
+        },
+        quantity: {
+            type: Number,
+        },
+        price: {
+            type: Number,
+        }
+    }],
+    billDetails: [{
+        discountType: {
+            type: String,
+        },
+        discountValue: {
+            type: Number,
+        },
+        gstPercentage: {
+            type: Number,
+        },
+        totalPrice: {
+            type: Number,
+        },
+        paymentMethod: {
+            type: String,
+            enum: ['COD', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI'],
+        },
+        transactionId: {
+            type: String,
+            required: function () {
+                return this.paymentMethod !== 'COD';
+            },
+            default: '',
+        },
+    }],
+    status: {
+        type: String,
+    },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',
@@ -50,6 +89,23 @@ const CancelSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+    },
+    orderId: {
+        type: String,
+    },
+    customerId: {
+        type: String,
+    },
+    employeeId: {
+        type: String,
+        default: null,
+    },
+    expectedDeliveryDate: {
+        type: Date,
+    },
+    department: { 
+        type: String,
+        required: true,
     },
 });
 

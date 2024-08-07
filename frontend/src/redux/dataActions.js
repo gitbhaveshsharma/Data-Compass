@@ -29,7 +29,7 @@ export const distributeData = (selectedEmployees, dataCount, departments) => asy
         });
 
         const res = await axios.post(`${API_BASE_URL}/data/distribute`, { employeeIds, dataCount, departments }, getAuthHeaders());
-        console.log(res)
+        // console.log(res)
         dispatch({ type: 'DISTRIBUTE_DATA_SUCCESS', payload: res.data });
     } catch (error) {
         dispatch({ type: 'DISTRIBUTE_DATA_FAIL', payload: error.message });

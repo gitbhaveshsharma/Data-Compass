@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { register } from '../redux/authActions';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -73,8 +72,7 @@ const RegistrationPage = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    <Container>
       <Box
         sx={{
           display: 'flex',

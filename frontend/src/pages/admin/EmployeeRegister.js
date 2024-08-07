@@ -6,7 +6,7 @@ import EmployeeRegistration from '../../components/EmployeeRegistration';
 const EmployeeManagementPage = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <FetchEmployeeDetails />

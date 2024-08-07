@@ -72,12 +72,12 @@ const AdminDashboard = () => {
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Paper elevation={3} sx={{ p: 2 }}>
+                <Paper elevation={3}>
                   <ShippingOrder role={user?.role} />
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Paper elevation={3} sx={{ p: 2 }}>
+                <Paper elevation={3} >
                   <DeliveredOrder role={user?.role} />
                 </Paper>
               </Grid>

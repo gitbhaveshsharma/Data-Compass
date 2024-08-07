@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { loadUser, logout  } from './redux/authActions';
+import { loadUser} from './redux/authActions';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/adminDashboard';
 import FieldDashboard from './pages/fleadDashboard';
@@ -10,7 +10,6 @@ import VerifyOrder from './components/verification/VerifyOrder';
 import VerifyDashboard from './pages/VerifyDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import OperationPage from './components/OperationPage';
-import CssBaseline from '@mui/material/CssBaseline';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -20,7 +19,6 @@ const App = () => {
 
     return (
         <>
-        <CssBaseline />
         <Router>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />

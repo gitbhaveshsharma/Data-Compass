@@ -127,16 +127,15 @@ const OperationPage = () => {
 
     const handleCancel = async () => {
         try {
-            // console.log(`Cancelling order with ID: ${id}`);
-            await dispatch(cancelData(id));
+            const department = 'flead'; // or 'verify', 'logistics', etc. Set the appropriate department here
+            await dispatch(cancelData(id, department)); // Pass the department
             setMessage('Order canceled successfully!');
             navigate('/');
         } catch (error) {
-            // console.error('Cancel failed:', error);
             setMessage('Failed to cancel order.');
         }
     };
-
+    
     const handleAddProduct = () => {
         const product = products.find(p => p.name === selectedProduct);
         if (product) {

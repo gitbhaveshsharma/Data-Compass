@@ -61,7 +61,7 @@ const FieldDashboard = () => {
 
         processData(assignedData.filter(item => item.status === 'order'), 'orders');
         processData(assignedData.filter(item => item.status === 'callback'), 'callbacks');
-        processData(assignedData.filter(item => item.status === 'cancel'), 'canceled');
+        processData(assignedData.filter(item => item.status === 'canceled'), 'canceled');
 
         const sortedDates = Object.keys(groupedData).sort((a, b) => dayjs(a).isBefore(dayjs(b)) ? -1 : 1);
         const chartData = sortedDates.map(date => ({
