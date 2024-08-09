@@ -28,10 +28,6 @@ const operationReducer = (state = initialState, action) => {
             return { ...state, data: action.payload, loading: false };
         case 'CANCEL_DATA_FAILURE':
             return { ...state, error: action.error, loading: false };
-        case 'CALLBACK_DATA_SUCCESS':
-            return { ...state, data: action.payload, loading: false };
-        case 'CALLBACK_DATA_FAILURE':
-            return { ...state, error: action.error, loading: false };
         case 'FETCH_ORDERED_DATA_SUCCESS':
             return { ...state, ordersData: action.payload, loading: false };
         case 'FETCH_ORDERED_DATA_FAILURE':
@@ -55,6 +51,18 @@ const operationReducer = (state = initialState, action) => {
         case 'UPDATE_ORDER_SUCCESS':
             return { ...state, ordersData: action.payload, loading: false };
         case 'UPDATE_ORDER_FAILURE':
+            return { ...state, error: action.error, loading: false };
+        case 'UPDATE_DATA_STATUS_SUCCESS':
+            return { ...state, data: action.payload, loading: false };
+        case 'UPDATE_DATA_STATUS_FAILURE':
+            return { ...state, error: action.error, loading: false };
+        case 'UPDATE_DATA_HOLD_STATUS_SUCCESS':
+            return { ...state, data: action.payload, loading: false };
+        case 'UPDATE_DATA_HOLD_STATUS_FAILURE':
+            return { ...state, error: action.error, loading: false };
+        case 'UPDATE_DATA_CALLBACK_STATUS_SUCCESS':
+            return { ...state, data: action.payload, loading: false };
+        case 'UPDATE_DATA_CALLBACK_STATUS_FAILURE':
             return { ...state, error: action.error, loading: false };
         default:
             return state;

@@ -13,11 +13,13 @@ const dataCountsInitialState = {
 
 const assignedDataInitialState = {
     assignedData: [],
+    loading: false,
     error: null,
 };
 
 const orderDataInitialState = {
     data: [],
+    verifiedOrders:[],
     loading: false,
     error: null,
 };
@@ -75,6 +77,7 @@ const assignedDataReducer = (state = assignedDataInitialState, action) => {
             return {
                 ...state,
                 assignedData: action.payload,
+                error: null
             };
         case 'FETCH_ASSIGNED_DATA_FAILURE':
             return {
@@ -93,6 +96,10 @@ const orderDataReducer = (state = orderDataInitialState, action) => {
         case 'FETCH_ORDER_DATA_SUCCESS':
             return { ...state, loading: false, data: action.payload };
         case 'FETCH_ORDER_DATA_FAILURE':
+            return { ...state, loading: false, error: action.payload };
+        case 'FETCH_VERIFIED_ORDERS_SUCCESS':
+            return { ...state, verifiedOrders: action.payload };
+        case 'FETCH_VERIFIED_ORDERS_FAILURE':
             return { ...state, loading: false, error: action.payload };
         default:
             return state;

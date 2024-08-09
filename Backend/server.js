@@ -1,26 +1,39 @@
-// backend/server.js
+const dotenv = require("dotenv");
+dotenv.config(); // Load environment variables
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const uploadRoute = require('./routes/uploadRoute');
-// const registerRoutes = require("./routes/registerRoutes");
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
+const historyRoutes = require("./routes/historyRoutes");
 const authRoutes = require('./routes/authRoute');
-const auth = require('./middleware/auth');
 const productRoutes = require('./routes/productRoutes');
+const callAttemptRoutes = require('./routes/callAttemptRoutes');
+const alarmRoutes = require('./routes/alarmRoutes');
+const auth = require('./middleware/auth');
 
-const dotenv = require("dotenv");
 
-dotenv.config(); // Load environment variables
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+// Secure CORS configuration to allow only trusted origins
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (process.env.ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Connect to MongoDB
@@ -32,16 +45,22 @@ mongoose
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error(err));
 
-// Routes
+// Auth route (excluded from auth middleware)
+app.use('/api/auth', authRoutes);
+
+// Apply auth middleware to all other routes
+app.use(auth);
+
 app.use('/api/upload', uploadRoute);
-// app.use("/api/auth", registerRoutes);
 app.use('/api/employees', employeeRoute);
 app.use('/api/data', dataRoute);
-app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/callAttempts', callAttemptRoutes);
+app.use('/api/alarms', alarmRoutes);
+app.use("/api/history", historyRoutes);
 
-// Protecting a route as an example
-app.get('/api/protected', auth, (req, res) => {
+// Protecting a route
+app.get('/api/protected', (req, res) => {
     res.send({ message: 'This is a protected route', user: req.user });
 });
 

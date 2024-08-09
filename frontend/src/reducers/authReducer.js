@@ -1,4 +1,4 @@
-// src/redux/authReducer.js
+
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: !!localStorage.getItem('token'),
@@ -12,14 +12,22 @@ const authReducer = (state = initialState, action) => {
         case 'LOGIN_SUCCESS':
             return {
                 ...state,
-                token: action.payload.token,
+                token: localStorage.getItem('token'),
                 isAuthenticated: true,
-                user: action.payload.user,
+                loading: false,
+                error: null,
+            };
+        case 'USER_LOADED':
+            return {
+                ...state,
+                isAuthenticated: true,
+                user: action.payload,
                 loading: false,
                 error: null,
             };
         case 'LOGIN_FAILURE':
         case 'LOGOUT':
+        case 'AUTH_ERROR':
             return {
                 ...state,
                 token: null,

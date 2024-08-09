@@ -1,34 +1,30 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FixedSizeList } from 'react-window';
 import { fetchEmployees } from '../redux/employeeActions';
 import { distributeData, fetchDataCounts, fetchAssignedData } from '../redux/dataActions';
 import ListItem from '@mui/material/ListItem';
-import { Grid, Card, Box, Typography } from '@mui/material';
-import ListItemButton from '@mui/material/ListItemButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import { Grid, Paper, Box, Typography, Snackbar, CircularProgress, Alert, ListItemButton, FormControlLabel, Checkbox, Button, Container } from '@mui/material';
 
 const EmployeeListComponent = () => {
     const dispatch = useDispatch();
     const { employees, loading, error } = useSelector((state) => state.employees);
-    const { data } = useSelector((state) => state.data);
-    const assignedData = useSelector((state) => state.data.assignedData || {});
+    const {unassignedCount, loading: dataCountsLoading, error: dataCountsError } = useSelector((state) => state.dataCounts);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [dataCount, setDataCount] = useState(0);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); 
 
     useEffect(() => {
         dispatch(fetchEmployees());
+        dispatch(fetchDataCounts());
     }, [dispatch]);
 
     useEffect(() => {
-        if (employees.length > 0) {
-            employees.forEach(employee => {
-                dispatch(fetchAssignedData(employee._id));
-            });
-        }
+        employees.forEach(employee => {
+            dispatch(fetchAssignedData(employee._id));
+        });
     }, [dispatch, employees]);
 
     const handleCheckboxChange = useCallback(
@@ -42,19 +38,40 @@ const EmployeeListComponent = () => {
         []
     );
 
-    const handleDistribute = async () => {
+    const handleDistribute = useCallback(async () => {
+        if (dataCount <= 0) {
+            setSnackbarMessage('The number of data to assign must be greater than zero.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+            return;
+        }
+        if (dataCount > unassignedCount) {
+            setSnackbarMessage('Cannot assign more data than unassigned data available.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+            return;
+        }
+
         const departments = selectedEmployees.map(employeeId => {
             const employee = employees.find(emp => emp._id === employeeId);
             return employee.department;
         });
+
         await dispatch(distributeData(selectedEmployees, dataCount, departments));
         dispatch(fetchDataCounts());
+
+        setSnackbarMessage('Data successfully assigned.');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+    }, [dispatch, selectedEmployees, dataCount, employees, unassignedCount]);
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
     };
 
     const renderRow = useCallback(
-        ({ index, style, employeesList }) => {
+        ({ index, style, data: employeesList }) => {
             const employee = employeesList[index];
-            const count = assignedData[employee._id] ? assignedData[employee._id].length : 0;
             return (
                 <ListItem style={style} key={employee._id} component="div" disablePadding>
                     <ListItemButton>
@@ -65,31 +82,32 @@ const EmployeeListComponent = () => {
                                     onChange={() => handleCheckboxChange(employee._id)}
                                 />
                             }
-                            label={`${employee.name} (${count})`}
+                            label={employee.name}
                         />
                     </ListItemButton>
                 </ListItem>
             );
         },
-        [selectedEmployees, handleCheckboxChange, assignedData]
+        [selectedEmployees, handleCheckboxChange]
     );
 
-    const verifyEmployees = employees.filter(employee => employee.department === 'Verify');
-    const fleadEmployees = employees.filter(employee => employee.department === 'Flead');
+    const activeEmployees = useMemo(() => employees.filter(employee => employee.status !== 'inactive'), [employees]);
+    const verifyEmployees = useMemo(() => activeEmployees.filter(employee => employee.department === 'verify'), [activeEmployees]);
+    const fleadEmployees = useMemo(() => activeEmployees.filter(employee => employee.department === 'flead'), [activeEmployees]);
 
     return (
         <Container>
             <Box textAlign="center" mb={4}>
                 <Typography variant="h5" sx={{ textAlign: 'center' }} gutterBottom>Employee List</Typography>
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p>Error: {error}</p>
+                {loading || dataCountsLoading ? (
+                     <CircularProgress />
+                ) : error || dataCountsError ? (
+                    <p>Error: {error || dataCountsError}</p>
                 ) : (
-                    <Grid container spacing={2} justifyContent="center">
-                        <Grid item xs={12} sm={6}>
-                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Verify Dept. </Typography>
+                    <Grid container spacing={4} justifyContent="center">
+                        <Grid item xs={12} md={6}>
+                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}>Verify Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
                                     width="100%"
@@ -98,13 +116,13 @@ const EmployeeListComponent = () => {
                                     overscanCount={4}
                                     itemData={verifyEmployees}
                                 >
-                                    {({ index, style }) => renderRow({ index, style, employeesList: verifyEmployees })}
+                                    {renderRow}
                                 </FixedSizeList>
-                            </Card>
+                            </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                <Typography variant="h6" sx={{ textAlign: 'center' }}> Flead Dept. </Typography>
+                        <Grid item xs={12} md={6}>
+                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+                                <Typography variant="h6" sx={{ textAlign: 'center' }}>Flead Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
                                     width="100%"
@@ -113,9 +131,9 @@ const EmployeeListComponent = () => {
                                     overscanCount={4}
                                     itemData={fleadEmployees}
                                 >
-                                    {({ index, style }) => renderRow({ index, style, employeesList: fleadEmployees })}
+                                    {renderRow}
                                 </FixedSizeList>
-                            </Card>
+                            </Paper>
                         </Grid>
                     </Grid>
                 )}
@@ -123,7 +141,10 @@ const EmployeeListComponent = () => {
                     <input
                         type="number"
                         value={dataCount}
-                        onChange={(e) => setDataCount(Number(e.target.value))}
+                        onChange={(e) => {
+                            const value = Number(e.target.value);
+                            setDataCount(value >= 0 ? value : 0); // Prevent negative numbers
+                        }}
                         placeholder="Number of data to Assign"
                         style={{ height: 32, padding: '0 8px' }}
                     />
@@ -131,16 +152,18 @@ const EmployeeListComponent = () => {
                         Assign To
                     </Button>
                 </Box>
-                {data?.assignmentMessages && (
-                    <Box mt={2}>
-                        {data.assignmentMessages.map((message, index) => (
-                            <p key={index}>{message}</p>
-                        ))}
-                    </Box>
-                )}
             </Box>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };
 
-export default EmployeeListComponent;
+export default React.memo(EmployeeListComponent);

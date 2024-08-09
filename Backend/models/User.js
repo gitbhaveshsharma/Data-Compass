@@ -1,6 +1,5 @@
-// User model
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs"); // For password hashing
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -18,19 +17,33 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["admin", "employee"], // Optional: restrict role values
+        enum: ["admin", "employee"],
         default: "employee",
     },
     department: {
         type: String,
         required: true,
     },
+    employeeId: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive", "online", "offline"],
+        default: "active",
+    },
+    assigned: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 // Hash password before saving the user
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
-        return next(); // Don't re-hash if password is not modified
+        return next();
     }
 
     try {

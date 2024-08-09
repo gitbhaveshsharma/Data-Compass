@@ -1,13 +1,12 @@
-// src/components/BarChartComponent.js
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const BarChartComponent = ({ data }) => {
     return (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={312}>
             <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="quarter" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
                 <Legend />

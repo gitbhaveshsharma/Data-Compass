@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -21,6 +21,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 const drawerWidth = 240;
 
@@ -89,7 +90,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function AdminDrawer({ children }) {
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -125,13 +125,12 @@ export default function AdminDrawer({ children }) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {document.dir === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
           <ListItem disablePadding sx={{ display: 'block' }}>
-
             <ListItemButton
               component={Link}
               to="/admin-dashboard"
@@ -148,11 +147,11 @@ export default function AdminDrawer({ children }) {
                   justifyContent: 'center',
                 }}
               >
-               <DashboardIcon/>
+                <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-              <ListItemButton
+            <ListItemButton
               component={Link}
               to="/admin-dashboard/data-assgined"
               sx={{
@@ -168,9 +167,9 @@ export default function AdminDrawer({ children }) {
                   justifyContent: 'center',
                 }}
               >
-               <DataSaverOnIcon/>
+                <DataSaverOnIcon />
               </ListItemIcon>
-              <ListItemText primary="Data Assgined" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Data Assigned" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
             <ListItemButton
               component={Link}
@@ -192,9 +191,9 @@ export default function AdminDrawer({ children }) {
               </ListItemIcon>
               <ListItemText primary="Products" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-             <ListItemButton
+            <ListItemButton
               component={Link}
-              to="/admin-dashboard/Register"
+              to="/admin-dashboard/register"
               sx={{
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',
@@ -211,6 +210,26 @@ export default function AdminDrawer({ children }) {
                 <HowToRegIcon />
               </ListItemIcon>
               <ListItemText primary="Employee Registration" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+            <ListItemButton
+              component={Link}
+              to="/admin-dashboard/analysis"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <AnalyticsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Data Analysis" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

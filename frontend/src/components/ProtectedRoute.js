@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 
 const ProtectedRoute = ({ role }) => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    const user = useSelector((state) => state.auth.user);
-
+    const user = useSelector((state) => state.auth?.user);
     if (!isAuthenticated || (role && user?.role !== role)) {
         return <Navigate to="/login" replace />;
     }

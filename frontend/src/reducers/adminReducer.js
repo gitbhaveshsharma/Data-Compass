@@ -3,6 +3,8 @@ const initialState = {
     loading: false,
     success: false,
     error: null,
+    message: '',
+    duplicateCount: 0,
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -10,7 +12,13 @@ const adminReducer = (state = initialState, action) => {
         case 'UPLOAD_REQUEST':
             return { ...state, loading: true };
         case 'UPLOAD_SUCCESS':
-            return { ...state, loading: false, success: true };
+            return {
+                ...state,
+                loading: false,
+                success: true,
+                message: action.payload.message,
+                duplicateCount: action.payload.duplicateCount,
+            };
         case 'UPLOAD_FAIL':
             return { ...state, loading: false, error: action.payload };
         default:

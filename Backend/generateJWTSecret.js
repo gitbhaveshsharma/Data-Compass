@@ -12,4 +12,4 @@ const jwtSecret = generateJWTSecret();
 // Write the secret key to a .env file
 fs.writeFileSync(".env", `JWT_SECRET=${jwtSecret}\n`, { flag: "a" });
 
-console.log("JWT secret key generated and saved to .env file.");
+

@@ -1,4 +1,3 @@
-// src/components/ChartCard.js
 import React, { useState } from 'react';
 import { Tab, Tabs, Box, Paper } from '@mui/material';
 import BarChartComponent from './data/BarChart';
@@ -12,7 +11,7 @@ const ChartCard = ({ data }) => {
     };
 
     const barChartData = data.map(item => ({
-        quarter: item.quarter,
+        date: item.date,
         orders: item.orders,
         canceled: item.canceled,
         callbacks: item.callbacks,
@@ -25,15 +24,15 @@ const ChartCard = ({ data }) => {
     ];
 
     return (
-        <Box>
-            <Paper elevation={3} style={{ padding: 16 }}>
+        <Box elevation={3} style={{ padding: 20 }}>
+     
                 <Tabs value={value} onChange={handleChange} aria-label="chart tabs">
                     <Tab label="Bar Chart" />
                     <Tab label="Pie Chart" />
                 </Tabs>
                 {value === 0 && <BarChartComponent data={barChartData} />}
                 {value === 1 && <PieChartComponent data={pieChartData} />}
-            </Paper>
+    
         </Box>
     );
 };
