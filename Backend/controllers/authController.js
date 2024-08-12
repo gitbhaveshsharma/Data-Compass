@@ -11,16 +11,19 @@ const generateEmployeeId = (firstName, lastName) => {
 
 exports.login = async (req, res) => {
     const { employeeId, password } = req.body;
+    console.log(req.body)
     try {
         const user = await User.findOne({ employeeId });
+        console.log(user)
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(400).send({ error: 'Invalid employee ID or password.' });
         }
-
+        
         const token = jwt.sign({ id: user._id, role: user.role, department: user.department, employeeId: user.employeeId }, process.env.JWT_SECRET, {
             expiresIn: '13h',
         });
-        // console.log(user)
+        console.log(token)
+        console.log(user)
         res.send({ token, user: { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId } });
     } catch (error) {
         res.status(500).send({ error: 'Server error.' });

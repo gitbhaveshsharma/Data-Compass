@@ -45,7 +45,15 @@ const EmployeeListComponent = () => {
             setSnackbarOpen(true);
             return;
         }
-        if (dataCount > unassignedCount) {
+
+        // Check if any of the selected employees belong to the 'verify' department
+        const verifyDeptEmployees = selectedEmployees.filter(employeeId => {
+            const employee = employees.find(emp => emp._id === employeeId);
+            return employee.department === 'verify';
+        });
+
+        // Check if dataCount exceeds unassignedCount for non-verify departments only
+        if (verifyDeptEmployees.length === 0 && dataCount > unassignedCount) {
             setSnackbarMessage('Cannot assign more data than unassigned data available.');
             setSnackbarSeverity('error');
             setSnackbarOpen(true);

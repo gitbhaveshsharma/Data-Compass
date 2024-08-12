@@ -32,71 +32,90 @@ const UploadComponent = () => {
     const { message, duplicateCount } = useSelector(state => state.admin);
 
     const validateFile = (file) => {
-        const fileName = file.name.toLowerCase();
+        return new Promise((resolve, reject) => {
+            const fileName = file.name.toLowerCase();
 
-        if (fileName.endsWith('.csv')) {
-            // Handle CSV file
-            Papa.parse(file, {
-                header: true,
-                complete: (results) => {
-                    const headers = results.meta.fields;
+            if (fileName.endsWith('.csv')) {
+                Papa.parse(file, {
+                    header: true,
+                    complete: (results) => {
+                        const headers = results.meta.fields;
+                        if (headers.length !== validHeaders.length || !headers.every(header => validHeaders.includes(header))) {
+                            setError('Invalid file format or structure. Please upload the correct file.');
+                            reject(new Error('Invalid CSV file format or structure.'));
+                        } else {
+                            setError('');
+                            resolve(true);
+                        }
+                    },
+                    error: () => {
+                        setError('Error reading the CSV file.');
+                        reject(new Error('Error reading the CSV file.'));
+                    }
+                });
+            } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const headers = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
+
                     if (headers.length !== validHeaders.length || !headers.every(header => validHeaders.includes(header))) {
                         setError('Invalid file format or structure. Please upload the correct file.');
-                        return false;
+                        reject(new Error('Invalid Excel file format or structure.'));
+                    } else {
+                        setError('');
+                        resolve(true);
                     }
-                    setError('');
-                    return true;
-                },
-                error: () => {
-                    setError('Error reading the CSV file.');
-                    return false;
-                }
-            });
-        } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-            // Handle Excel file
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                const headers = XLSX.utils.sheet_to_json(sheet, { header: 1 })[0];
-
-                if (headers.length !== validHeaders.length || !headers.every(header => validHeaders.includes(header))) {
-                    setError('Invalid file format or structure. Please upload the correct file.');
-                    return false;
-                }
-                setError('');
-                return true;
-            };
-            reader.readAsArrayBuffer(file);
-        } else {
-            setError('Unsupported file type. Please upload a CSV or Excel file.');
-            return false;
-        }
+                };
+                reader.onerror = () => {
+                    setError('Error reading the Excel file.');
+                    reject(new Error('Error reading the Excel file.'));
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                setError('Unsupported file type. Please upload a CSV or Excel file.');
+                reject(new Error('Unsupported file type.'));
+            }
+        });
     };
-
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
-        validateFile(selectedFile);
+        validateFile(selectedFile).catch(err => {
+            console.error(err);  // Log error for debugging purposes
+        });
     };
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         if (!file) {
             setError('Please select a file to upload.');
             return;
         }
 
-        if (validateFile(file)) {
-            dispatch(uploadExcel(file)).then(() => {
-                dispatch(fetchDataCounts());
-                setFile(null);
-                setSuccess(true);
-                fileInputRef.current.value = null;
+        try {
+            const isValid = await validateFile(file);
+            if (!isValid) {
+                return;
+            }
+
+            await dispatch(uploadExcel(file)).catch(err => {
+                console.error('Upload failed:', err);
+                setError('Failed to upload the file. Please try again.');
             });
+
+            dispatch(fetchDataCounts());
+            setFile(null);
+            setSuccess(true);
+            fileInputRef.current.value = null;
+        } catch (err) {
+            console.error('Validation error:', err);
+            setError('Unsupported file type. Please upload a CSV or Excel file.');
         }
     };
+
 
     const handleClose = () => {
         setError('');

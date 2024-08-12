@@ -5,6 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const uploadRoute = require('./routes/uploadRoute');
 const employeeRoute = require('./routes/employeeRoute');
@@ -16,13 +17,10 @@ const callAttemptRoutes = require('./routes/callAttemptRoutes');
 const alarmRoutes = require('./routes/alarmRoutes');
 const auth = require('./middleware/auth');
 
-
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-// Secure CORS configuration to allow only trusted origins
 const corsOptions = {
     origin: function (origin, callback) {
         if (process.env.ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) {
@@ -37,32 +35,43 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose
-    .connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.error(err));
+async function connectDB() {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("MongoDB connected");
+    } catch (err) {
+        console.error(err);
+    }
+}
+connectDB();
 
-// Auth route (excluded from auth middleware)
+// Public routes (excluded from auth middleware)
 app.use('/api/auth', authRoutes);
 
-// Apply auth middleware to all other routes
-app.use(auth);
+// // Serve static files from the "frontend/build" directory
+// app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
-app.use('/api/upload', uploadRoute);
-app.use('/api/employees', employeeRoute);
-app.use('/api/data', dataRoute);
-app.use('/api/products', productRoutes);
-app.use('/api/callAttempts', callAttemptRoutes);
-app.use('/api/alarms', alarmRoutes);
-app.use("/api/history", historyRoutes);
+// Apply auth middleware to all other routes that require authentication
+app.use('/api/upload', auth, uploadRoute);
+app.use('/api/employees', auth, employeeRoute);
+app.use('/api/data', auth, dataRoute);
+app.use('/api/products', auth, productRoutes);
+app.use('/api/callAttempts', auth, callAttemptRoutes);
+app.use('/api/alarms', auth, alarmRoutes);
+app.use('/api/history', auth, historyRoutes);
 
-// Protecting a route
-app.get('/api/protected', (req, res) => {
+// Protecting a route as an example
+app.get('/api/protected', auth, (req, res) => {
     res.send({ message: 'This is a protected route', user: req.user });
 });
+
+// // Handle all other routes and send back the index.html file for frontend routing
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+// });
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
