@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { recordHistory } from './historyActions';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -41,6 +42,10 @@ export const login = (credentials) => async (dispatch) => {
         localStorage.setItem('token', token);
         setAuthToken(token);
         dispatch(loadUser());
+        // Dispatch recordHistory action after user is loaded
+        // const decoded = jwtDecode(token);
+        // console.log(decoded)
+        // dispatch(recordHistory({ employeeId: decoded.employeeId, type: 'login' }));
     } catch (error) {
         dispatch({ type: 'LOGIN_FAILURE', payload: error.message });
     }

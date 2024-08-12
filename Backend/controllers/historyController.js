@@ -7,7 +7,7 @@ const moment = require('moment-timezone');
 
 exports.recordLoginHistory = async (req, res) => {
     const { employeeId, type } = req.body;
-    // console.log("Request received:", req.body);
+    console.log("Request received:", req.body);
     try {
         const user = await User.findOne({ employeeId });
 
@@ -37,7 +37,7 @@ exports.recordLoginHistory = async (req, res) => {
 
         res.status(201).json({ message: "Login history recorded" });
     } catch (error) {
-        // console.error('Error recording login history:', error); 
+        console.error('Error recording login history:', error); 
         res.status(500).json({ message: "Internal server error", error });
     }
 };

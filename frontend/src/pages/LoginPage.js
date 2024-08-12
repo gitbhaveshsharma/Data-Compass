@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Avatar, Box, Snackbar, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '../redux/authActions';
-import { recordHistory } from '../redux/historyActions';
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({ employeeId: '', password: '' });
@@ -21,10 +20,10 @@ const LoginPage = () => {
     }, [isAuthenticated, user]);
 
     const navigateToDashboard = () => {
-        if (user.role === 'admin') {
+        if (user?.role === 'admin') {
             navigate('/admin-dashboard');
-        } else if (user.role === 'employee') {
-            switch (user.department) {
+        } else if (user?.role === 'employee') {
+            switch (user?.department) {
                 case 'flead':
                     navigate('/field-dashboard');
                     break;
@@ -63,7 +62,6 @@ const LoginPage = () => {
         }
 
         await dispatch(login(formData));
-        await dispatch(recordHistory({ employeeId: formData.employeeId, type: 'login' }));
     };
 
     const handleClose = () => {
