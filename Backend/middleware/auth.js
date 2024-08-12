@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
     try {
         // Check if the Authorization header exists
         const authHeader = req.header('Authorization');
-        console.log('Authorization Header:', authHeader); // Log the header
+        // console.log('Authorization Header:', authHeader); // Log the header
 
         if (!authHeader) {
             return res.status(401).send({ error: 'Access denied. No token provided.' });
@@ -14,15 +14,15 @@ const auth = async (req, res, next) => {
 
         // Extract the token from the Authorization header
         const token = authHeader.replace('Bearer ', '');
-        console.log('Token:', token); // Log the token
+        // console.log('Token:', token); // Log the token
 
         // Verify the token and extract the user ID
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded Token:', decoded); // Log the decoded token
+        // console.log('Decoded Token:', decoded); // Log the decoded token
 
         // Find the user by ID
         req.user = await User.findById(decoded.id);
-        console.log('User:', req.user); // Log the user
+        // console.log('User:', req.user); // Log the user
 
         if (!req.user) {
             return res.status(401).send({ error: 'User not found.' });
