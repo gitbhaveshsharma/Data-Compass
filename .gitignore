@@ -18,7 +18,9 @@
 .env.development.local
 .env.test.local
 .env.production.local
-.env
+# Ignore .env files in subdirectories
+backend/.env
+frontend/.env
 
 npm-debug.log*
 yarn-debug.log*
