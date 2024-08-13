@@ -11,7 +11,6 @@ const PendingOrders = ({ employeeId, role }) => {
     useEffect(() => {
         dispatch(fetchOrderData(employeeId, role));
     }, [dispatch, employeeId, role]);
-    console.log("abc",orderData); // Check the structure of orderData
 
 
     const displayData = Array.isArray(orderData) ? orderData
