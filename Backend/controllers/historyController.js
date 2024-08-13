@@ -7,7 +7,7 @@ const moment = require('moment-timezone');
 
 exports.recordLoginHistory = async (req, res) => {
     const { employeeId, type } = req.body;
-    console.log("Request received:", req.body);
+   // console.log("Request received:", req.body);
     try {
         const user = await User.findOne({ employeeId });
 
