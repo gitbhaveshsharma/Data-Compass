@@ -9,16 +9,17 @@ const PendingOrders = ({ employeeId, role }) => {
     const orderData = useSelector((state) => state.data.orderData.data || []);
 
     useEffect(() => {
-        dispatch(fetchOrderData(employeeId, role));
+        if (role) {
+            dispatch(fetchOrderData(employeeId, role));
+        }
     }, [dispatch, employeeId, role]);
 
-
-    const displayData = Array.isArray(orderData) ? orderData
-        .filter(order => order.status === 'pending')  
+    const displayData = orderData
+        .filter(order => order.status === 'pending' && (role === 'admin' || order.assignedTo === employeeId))
         .map(order => ({
             ...order,
             totalPrice: order.billDetails.reduce((sum, item) => sum + item.totalPrice, 0),
-        })) : [];
+        }));
 
     return <DataTable columns={orderColumns} data={displayData} title="Pending Orders" baseURL="/data/order" />;
 };

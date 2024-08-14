@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCallAttempts, createCallAttempt, updateCallAttempt, deleteCallAttempt } from '../redux/callAttemptActions';
+import { fetchCallAttempts, createCallAttempt, deleteCallAttempt } from '../redux/callAttemptActions';
 import { Box, Card, CardContent, Typography, TextField, Button, Select, MenuItem, IconButton, Snackbar, Alert, Grid } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 

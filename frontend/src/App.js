@@ -3,17 +3,18 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loadUser} from './redux/authActions';
 import LoginPage from './pages/LoginPage';
-import AdminDashboard from './pages/adminDashboard';
-import FieldDashboard from './pages/fleadDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import FieldDashboard from './pages/FleadDashboard';
 import LogisticsDashboard from './pages/LogisticsDashboard';
-import VerifyOrder from './components/verification/VerifyOrder';
+import VerifyOperationPage from './pages/OperationPages/VerifyOperationPage';
 import VerifyDashboard from './pages/VerifyDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import OperationPage from './components/OperationPage';
+import FieldOperationPage from './pages/OperationPages/FieldOperationPage';
+
 
 const App = () => {
     const dispatch = useDispatch();
-    React.useEffect(() => {
+    useEffect(() => {
         dispatch(loadUser());
     }, [dispatch]);
 
@@ -29,8 +30,8 @@ const App = () => {
                     <Route path="/field-dashboard" element={<FieldDashboard />} />
                     <Route path="/verify-dashboard" element={<VerifyDashboard />} />
                         <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />    
-                            <Route path="/data/:id" element={<OperationPage />} />
-                            <Route path="/data/order/:id" element={<VerifyOrder />} />
+                        <Route path="/data/:id" element={<FieldOperationPage />} />
+                        <Route path="/data/order/:id" element={<VerifyOperationPage />} />
                 </Route>
                 <Route path="/" element={<LoginPage />} />
             </Routes>

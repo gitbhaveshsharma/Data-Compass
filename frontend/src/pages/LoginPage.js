@@ -4,20 +4,25 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Avatar, Box, Snackbar, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { login } from '../redux/authActions';
-
 const LoginPage = () => {
     const [formData, setFormData] = useState({ employeeId: '', password: '' });
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const { isAuthenticated, user, error } = useSelector((state) => state.auth); // Access error from the state
 
     useEffect(() => {
         if (isAuthenticated) {
             navigateToDashboard();
         }
     }, [isAuthenticated, user]);
+
+    useEffect(() => {
+        if (error) {
+            setMessage(error); // Set the error message to display in the Snackbar
+        }
+    }, [error]);
 
     const navigateToDashboard = () => {
         if (user?.role === 'admin') {
@@ -62,6 +67,7 @@ const LoginPage = () => {
         }
 
         await dispatch(login(formData));
+        setMessage('');
     };
 
     const handleClose = () => {

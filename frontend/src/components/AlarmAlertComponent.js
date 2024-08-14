@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Snackbar, Button, Modal, Box, Typography, Grid, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Alert, Snackbar, Button, Modal, Box, Typography, Grid, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -112,20 +112,6 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
                 setSnackbarSeverity('error');
             });
         setModalOpen(false);
-        setOpenSnackbar(true);
-    };
-
-    const handleToggleStatus = () => {
-        const updatedStatus = currentAlarm.status === 'active' ? 'inactive' : 'active';
-        dispatch(updateAlarm(currentAlarm._id, { status: updatedStatus }))
-            .then(() => {
-                setSnackbarMessage(`Alarm ${updatedStatus === 'active' ? 'activated' : 'deactivated'} successfully`);
-                setSnackbarSeverity('success');
-            })
-            .catch(() => {
-                setSnackbarMessage(`Failed to ${updatedStatus === 'active' ? 'activate' : 'deactivate'} alarm`);
-                setSnackbarSeverity('error');
-            });
         setOpenSnackbar(true);
     };
 

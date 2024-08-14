@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Box, Typography, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderData } from '../redux/dataActions';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import UnderVerificationOrders from '../components/OrderCard/UnderVerificationOrders';
 import CallbackOrders from '../components/OrderCard/CallbackOrders';
@@ -18,7 +17,10 @@ import { updateEmployee } from '../redux/employeeActions';
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
     const [message, setMessage] = useState('');
+    const orderData = useSelector((state) => state.data.orderData.data || []);
+
 
     // Fetch user details from Redux store
     const user = useSelector((state) => state.auth.user);
@@ -37,9 +39,8 @@ const VerifyDashboard = () => {
                     setMessage('Failed to update status.');
                 });
         }
-    }, [user, navigate, dispatch, employeeId]);
+    }, [user, navigate, dispatch, employeeId, setMessage]);
 
-    const orderData = useSelector((state) => state.data.orderData.data || []);
 
     const processChartData = (data) => {
         const groupedData = {};
