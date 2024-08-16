@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmployees } from '../redux/employeeActions';
 import {
-    TextField, Button, Card, CardContent, Typography, Snackbar, Alert,
+    TextField, Button, Card, CardContent, Typography,
     Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box
 } from '@mui/material';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
@@ -12,6 +12,7 @@ const AssignedTo = ({ onAssign }) => {
     const employees = useSelector((state) => state.employees.employees);
     const [employeeId, setEmployeeId] = useState('');
     const [employeeInfo, setEmployeeInfo] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [message, setMessage] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
     const [inputError, setInputError] = useState(false);
@@ -59,9 +60,6 @@ const AssignedTo = ({ onAssign }) => {
         setOpenDialog(false);
     };
 
-    const handleCloseSnackbar = () => {
-        setMessage('');
-    };
 
     return (
         <>

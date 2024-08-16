@@ -60,33 +60,53 @@ const OrderStatusManager = () => {
         setOrders(fetchedOrders);
     };
 
-    const handleUpdateStatus = (status) => {
-        let unverifiedOrders = [];
+    const handleUpdateStatus = async (status) => {
+        let successCount = 0;
+        let failureCount = 0;
+        let verificationFailure = 0;
+        let updatePromises = [];
 
-        orders.forEach(order => {
+        for (let order of orders) {
             if (order && !order.error) {
                 if (status === 'delivered' && order.status === 'verified') {
-                    setMessage(prevMessage => `${prevMessage}Order ${order.orderId} cannot be updated directly from verified to delivered. Update to shipping first. `);
+                    verificationFailure++;
                 } else {
-                    dispatch(updateOrderStatus(order._id, status))
+                    const updatePromise = dispatch(updateOrderStatus(order._id, status))
+                        // eslint-disable-next-line no-loop-func
                         .then(() => {
-                            setMessage(prevMessage => `${prevMessage}Order status updated to ${status} successfully. `);
+                            successCount++;
                         })
-                        .catch((error) => {
-                            setMessage(prevMessage => `${prevMessage}Failed to update order ${order.orderId} status: ${error.message}. `);
+                        .catch(() => {
+                            failureCount++;
                         });
+                    updatePromises.push(updatePromise);
                 }
-            } else if (order.error) {
-                unverifiedOrders.push(order.orderId);
+            } else {
+                failureCount++;
             }
-        });
-
-        if (unverifiedOrders.length > 0) {
-            setMessage(prevMessage => `${prevMessage}Order IDs not verified or incorrect: ${unverifiedOrders.join(', ')}. `);
         }
 
-        // handleClose(false);
+        // Wait for all status updates to complete
+        await Promise.all(updatePromises);
+
+        // Set the final message after processing all orders
+        let finalMessage = '';
+
+        if (successCount > 0) {
+            finalMessage += `Successfully updated ${successCount} order(s) to ${status}. `;
+        }
+
+        if (verificationFailure > 0) {
+            finalMessage += `${verificationFailure} order(s) cannot be updated directly from verified to delivered. Update to shipping first. `;
+        }
+
+        if (failureCount > 0) {
+            finalMessage += `Failed to update ${failureCount} order(s). Some orders were not verified or had other issues.`;
+        }
+
+        setMessage(finalMessage);
     };
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -94,7 +114,7 @@ const OrderStatusManager = () => {
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
-        setPage(0);
+        setPage(0); 
     };
 
     return (

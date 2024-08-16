@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataById, updateData, updateOrder, updateDataHoldStatus, updateDataCallbackStatus, orderData, cancelData } from '../redux/operationActions';
-import { fetchProducts } from '../redux/productActions';
+import { fetchDataById, updateData, updateOrder, updateDataHoldStatus, updateDataCallbackStatus, orderData, cancelData } from '../../redux/operationActions';
+import { fetchProducts } from '../../redux/productActions';
 import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListItemText, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton, FormControl } from '@mui/material';
-import BillComponent from './BillComponent';
-import CallAttemptComponent from './CallAttemptComponent';
+import BillComponent from '../../components/BillComponent';
+import CallAttemptComponent from '../../components/CallAttemptComponent';
 import AddAlarmIcon from '@mui/icons-material/AddAlarm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AlarmModal from './AlarmComponent';
+import AlarmModal from '../../components/AlarmComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import AssignedTo from './AssignedTo';
+import AssignedTo from '../../components/AssignedTo';
 
 const OperationPage = () => {
     const { id } = useParams();
@@ -100,6 +100,7 @@ const OperationPage = () => {
             // console.log(`Updating data status with ID: ${id}`);
             await dispatch(updateDataHoldStatus(id));
             setMessage('Data status updated successfully into Hold!');
+            navigate('/');
         } catch (error) {
             // console.error('Update failed:', error);
             setMessage('Failed to update data status into Hold.');

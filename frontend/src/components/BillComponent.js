@@ -112,7 +112,7 @@ const BillComponent = ({ products, onUpdateBilling }) => {
         }
         setTransactionIdError('');
 
-        const originalTotal = calculateOriginalPrice(products);
+        
         const updatedBillDetails = {
             discountType,
             discountValue,
@@ -183,9 +183,9 @@ const BillComponent = ({ products, onUpdateBilling }) => {
                         <FormLabel>Payment Method</FormLabel>
                         <Select value={paymentMethod} onChange={handlePaymentMethodChange}>
                             <MenuItem value="COD">Cash on Delivery</MenuItem>
-                            <MenuItem value="CreditCard">Credit Card</MenuItem>
-                            <MenuItem value="DebitCard">Debit Card</MenuItem>
-                            <MenuItem value="NetBanking">Net Banking</MenuItem>
+                            <MenuItem value="Credit Card">Credit Card</MenuItem>
+                            <MenuItem value="Debit Card">Debit Card</MenuItem>
+                            <MenuItem value="Net Banking">Net Banking</MenuItem>
                             <MenuItem value="UPI">UPI</MenuItem>
                         </Select>
                     </FormControl>

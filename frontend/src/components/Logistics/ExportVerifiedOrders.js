@@ -63,7 +63,6 @@ const ExportVerifiedOrders = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [setDialogOpen] = useState(false);
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
     useEffect(() => {
