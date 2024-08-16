@@ -18,12 +18,14 @@ const alarmRoutes = require('./routes/alarmRoutes');
 const auth = require('./middleware/auth');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 // Middleware
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+
 const corsOptions = {
     origin: function (origin, callback) {
-        if (process.env.ALLOWED_ORIGINS.indexOf(origin) !== -1 || !origin) {
+        if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -31,6 +33,7 @@ const corsOptions = {
     },
     optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
@@ -38,8 +41,8 @@ app.use(bodyParser.json());
 async function connectDB() {
     try {
         await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            //useNewUrlParser: true,
+            //useUnifiedTopology: true,
         });
         console.log("MongoDB connected");
     } catch (err) {
