@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProductPage from './admin/ProductPage';
 import Dashboard from './admin/Dashboard';

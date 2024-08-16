@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tab, Tabs, Box, Paper } from '@mui/material';
+import { Tab, Tabs, Box } from '@mui/material';
 import BarChartComponent from './data/BarChart';
 import PieChartComponent from './data/PieChart';
 

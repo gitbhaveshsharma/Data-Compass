@@ -15,7 +15,8 @@ const LogisticsDashboard = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
     const employeeId = user ? user.id : '';
-    const [message, setMessage] = useState('');
+    // eslint-disable-next-line no-unused-vars
+    const [ message, setMessage] = useState('');
 
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const LogisticsDashboard = () => {
                     setMessage('Failed to update status.');
                 });
         }
-        }, [user, navigate, dispatch, employeeId]);
+        }, [user, navigate, dispatch, employeeId, setMessage]);
 
     return (
         <>

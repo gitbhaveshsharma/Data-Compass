@@ -25,6 +25,7 @@ const AdminDashboard = () => {
   const employeeId = user ? user.id : '';
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // eslint-disable-next-line no-unused-vars
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const AdminDashboard = () => {
           setMessage('Failed to update status.');
         });
     }
-  }, [employeeId, user, navigate]);
+  }, [employeeId, user, navigate, dispatch, setMessage]);
 
 
   return (
@@ -53,7 +54,7 @@ const AdminDashboard = () => {
             <Grid container spacing={4}>
               <Grid item xs={12} sm={6}>
                 <Paper elevation={3}>
-                  <PendingOrders role={user?.role} department={department} />
+                  <PendingOrders role={user?.role} employeeId="all" />
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={6}>

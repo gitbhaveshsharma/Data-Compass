@@ -2,6 +2,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { recordHistory } from './historyActions';
 
+
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const setAuthToken = (token) => {
@@ -37,19 +38,23 @@ export const loadUser = () => async (dispatch) => {
 
 export const login = (credentials) => async (dispatch) => {
     try {
+        dispatch({ type: 'CLEAR_ERRORS' });
         const res = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
         const token = res.data.token;
         localStorage.setItem('token', token);
         setAuthToken(token);
         dispatch(loadUser());
-        // Dispatch recordHistory action after user is loaded
-        // const decoded = jwtDecode(token);
-        // console.log(decoded)
-        // dispatch(recordHistory({ employeeId: decoded.employeeId, type: 'login' }));
+        const decoded = jwtDecode(token);
+        dispatch(recordHistory({ employeeId: decoded.employeeId, type: 'login' }));
     } catch (error) {
-        dispatch({ type: 'LOGIN_FAILURE', payload: error.message });
+        const errorMessage = error.response && error.response.data && error.response.data.error 
+            ? error.response.data.error 
+            : 'Login failed. Please try again.';
+        
+        dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage });
     }
 };
+
 
 export const register = (userData) => async (dispatch) => {
     try {

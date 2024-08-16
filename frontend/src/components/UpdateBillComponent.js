@@ -31,7 +31,7 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
     };
 
     const handleDiscountChange = (e) => {
-        const value = parseFloat(e.target.value) || 0;
+        const value = Math.max(0, parseFloat(e.target.value) || 0); // Prevent negative values
         setDiscountValue(value);
 
         const newTotalPrice = calculateTotalPrice(value, discountType, gstPercentage, originalPrice);
@@ -48,7 +48,7 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
     };
 
     const handleGstChange = (e) => {
-        const value = parseFloat(e.target.value) || 0;
+        const value = Math.max(0, parseFloat(e.target.value) || 0); // Prevent negative values
         setGstPercentage(value);
 
         const newTotalPrice = calculateTotalPrice(discountValue, discountType, value, originalPrice);
@@ -126,9 +126,9 @@ const UpdateBillComponent = ({ billDetails, products, onUpdateBilling }) => {
                 <FormLabel>Payment Method</FormLabel>
                 <Select value={paymentMethod} onChange={handlePaymentMethodChange}>
                     <MenuItem value="COD">Cash on Delivery</MenuItem>
-                    <MenuItem value="CreditCard">Credit Card</MenuItem>
-                    <MenuItem value="DebitCard">Debit Card</MenuItem>
-                    <MenuItem value="NetBanking">Net Banking</MenuItem>
+                    <MenuItem value="Credit Card">Credit Card</MenuItem>
+                    <MenuItem value="Debit Card">Debit Card</MenuItem>
+                    <MenuItem value="Net Banking">Net Banking</MenuItem>
                     <MenuItem value="UPI">UPI</MenuItem>
                 </Select>
             </FormControl>

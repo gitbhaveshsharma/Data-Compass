@@ -20,13 +20,13 @@ import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
 import AddAlarmIcon from '@mui/icons-material/AddAlarm';
-import UpdateBillComponent from '../UpdateBillComponent'; // Import the UpdateBillComponent
-import CallAttemptComponent from '../CallAttemptComponent';
+import UpdateBillComponent from '../../components/UpdateBillComponent'; // Import the UpdateBillComponent
+import CallAttemptComponent from '../../components/CallAttemptComponent';
 import Chip from '@mui/material/Chip';
-import AlarmModal from '../AlarmComponent';
+import AlarmModal from '../../components/AlarmComponent';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import AssignedTo from '../AssignedTo';
+import AssignedTo from '../../components/AssignedTo';
 import dayjs from 'dayjs'
 
 const Root = styled('div')(({ theme }) => ({
@@ -38,7 +38,7 @@ const Root = styled('div')(({ theme }) => ({
     },
 }));
 
-const OrderCard = () => {
+const VerifyOperationPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -149,12 +149,15 @@ const OrderCard = () => {
             .then(() => {
                 setMessage(`Order status updated to ${status} successfully.`);
                 setMessageType(status === 'canceled' ? 'error' : 'success');
+                if (status === 'canceled') {
+                handleCancel();
+            }
+                navigate('/');
             })
             .catch((error) => {
                 setMessage(`Failed to update order status: ${error.message}`);
                 setMessageType('error');
             });
-        handleCancel()
     };
 
     const handleDeleteProduct = (productId) => {
@@ -600,4 +603,4 @@ const OrderCard = () => {
     );
 };
 
-export default OrderCard;
+export default VerifyOperationPage;
