@@ -19,22 +19,12 @@ const auth = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT;
-<<<<<<< HEAD
-
-// Middleware
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (allowedOrigins.includes(origin) || !origin) {
-=======
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
->>>>>>> 12ccd0b28dc76061dc1d63ed4c850a6c9571460d
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -51,13 +41,8 @@ app.use(bodyParser.json());
 async function connectDB() {
     try {
         await mongoose.connect(process.env.MONGODB_URI, {
-<<<<<<< HEAD
-            //useNewUrlParser: true,
-            //useUnifiedTopology: true,
-=======
             // useNewUrlParser: true,
             // useUnifiedTopology: true,
->>>>>>> 12ccd0b28dc76061dc1d63ed4c850a6c9571460d
         });
         console.log("MongoDB connected");
     } catch (err) {
@@ -69,8 +54,8 @@ connectDB();
 // Public routes (excluded from auth middleware)
 app.use('/api/auth', authRoutes);
 
-// // Serve static files from the "frontend/build" directory
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+// // // Serve static files from the "frontend/build" directory
+// app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
 // Apply auth middleware to all other routes that require authentication
 app.use('/api/upload', auth, uploadRoute);
@@ -87,9 +72,9 @@ app.get('/api/protected', auth, (req, res) => {
 });
 
 // // Handle all other routes and send back the index.html file for frontend routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+// });
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
