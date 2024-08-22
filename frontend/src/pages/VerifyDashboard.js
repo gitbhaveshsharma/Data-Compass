@@ -13,6 +13,7 @@ import LogOut from '../components/Logout';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
+import Header from '../components/Header';
 
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
@@ -71,8 +72,10 @@ const VerifyDashboard = () => {
     const chartData = processChartData(orderData);
 
     return (
+        <>
+            <Header title="Verify Dashboard" />
         <Container maxWidth="xl">
-            <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Verify Dashboard</Typography>
+            {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Verify Dashboard</Typography> */}
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6} container spacing={4}>
@@ -139,6 +142,7 @@ const VerifyDashboard = () => {
             </Box>
             <LogOut employeeId={user?.employeeId} id={employeeId}/>
         </Container>
+        </>
     );
 };
 

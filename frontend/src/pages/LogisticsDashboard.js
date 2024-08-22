@@ -8,6 +8,8 @@ import DeliveredOrder from '../components/Logistics/DeliveredOrders';
 import LogOut from '../components/Logout';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
+import Header from '../components/Header';
+
 
 
 const LogisticsDashboard = () => {
@@ -36,10 +38,11 @@ const LogisticsDashboard = () => {
 
     return (
         <>
-        <Container maxWidth="lg">
-            <Typography variant="h4" sx={{ textAlign: 'center', mt: 4, mb: 4 }}>
+            <Header title="Logistics Dashboard" />
+        <Container maxWidth="lg" sx={{mt: 4}}>
+            {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 4, mb: 4 }}>
                 Logistics Dashboard
-            </Typography>
+            </Typography> */}
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>

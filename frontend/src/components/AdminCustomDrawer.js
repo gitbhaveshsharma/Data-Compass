@@ -1,30 +1,10 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
+import { Box, Drawer as MuiDrawer, AppBar as MuiAppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon } from '@mui/icons-material';
 
 const drawerWidth = 240;
-
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {

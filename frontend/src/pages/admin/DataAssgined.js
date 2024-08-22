@@ -11,9 +11,9 @@ const DataAssigned = () => {
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={4}>
                         <Box mb={2}>
-                            <Paper elevation={3} sx={{ padding: 0 }}>
+                           
                                 <DataCountComponent />
-                            </Paper>
+
                         </Box>
                         <Box mb={2}>
                             <Paper elevation={3} >
