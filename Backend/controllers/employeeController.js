@@ -11,22 +11,19 @@ const getEmployees = async (req, res) => {
   }
 };
 
-const getEmployeeByEmail = async (req, res) => {
+const getEmployeeByEmployeeId = async (req, res) => {
   try {
-    const { email } = req.query;
-    // console.log('Received email:', email); // Log received email
+    const { employeeId } = req.query;
 
-      const employee = await User.findOne({ email: email.trim() });
-    // console.log('Queried employee:', employee); // Log result from database
+    // Find employee by employeeId but exclude password and other sensitive fields
+    const employee = await User.findOne({ employeeId: employeeId.trim() }).select('-password -_v -sensitiveField2');
 
     if (!employee) {
-    //   console.log('Employee not found');
       return res.status(404).json({ message: 'Employee not found' });
     }
 
     res.status(200).json(employee);
   } catch (error) {
-    // console.error('Error querying employee:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -61,6 +58,6 @@ const updateEmployee = async (req, res) => {
 
 module.exports = {
     getEmployees,
-    getEmployeeByEmail,
+  getEmployeeByEmployeeId,
     updateEmployee,
 };

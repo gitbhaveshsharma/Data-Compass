@@ -14,6 +14,7 @@ import { fetchAssignedData } from '../redux/dataActions';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
+import Header from '../components/Header';
 
 const FieldDashboard = () => {
     const dispatch = useDispatch();
@@ -80,8 +81,11 @@ const FieldDashboard = () => {
     };
 
     return (
+        <>
+            <Header title="Flead Dashboard" />
         <Container maxWidth="xl">
-            <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography>
+           
+            {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography> */}
             
             <Box sx={{ flexGrow: 1, p: 2 }}>
                 <Grid container spacing={4}>
@@ -141,7 +145,8 @@ const FieldDashboard = () => {
                     </Alert>
                 </Snackbar>
             )}
-        </Container>
+            </Container>
+        </>
     );
 };
 

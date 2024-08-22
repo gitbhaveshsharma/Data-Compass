@@ -35,10 +35,12 @@ export const updateEmployee = (id, updatedData) => async (dispatch) => {
     }
 };
 
-export const fetchEmployeeByEmail = (email) => async (dispatch) => {
+export const fetchEmployeeByEmployeeId = (employeeId) => async (dispatch) => {
+    console.log("a", employeeId)
     try {
         dispatch({ type: 'FETCH_EMPLOYEE_REQUEST' });
-        const res = await axios.get(`${API_BASE_URL}/employees/email?email=${email}`, getAuthHeaders());
+        const res = await axios.get(`${API_BASE_URL}/employees/employeeId?employeeId=${employeeId}`, getAuthHeaders());
+        console.log("aba", res.data)
         dispatch({
             type: 'FETCH_EMPLOYEE_SUCCESS',
             payload: res.data,

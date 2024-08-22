@@ -4,7 +4,7 @@ import { FixedSizeList } from 'react-window';
 import { fetchEmployees } from '../redux/employeeActions';
 import { distributeData, fetchDataCounts, fetchAssignedData } from '../redux/dataActions';
 import ListItem from '@mui/material/ListItem';
-import { Grid, Paper, Box, Typography, Snackbar, CircularProgress, Alert, ListItemButton, FormControlLabel, Checkbox, Button, Container } from '@mui/material';
+import { Grid, Box, Typography, Snackbar, CircularProgress,  Alert, ListItemButton, FormControlLabel, Checkbox, Button, Container } from '@mui/material';
 
 const EmployeeListComponent = () => {
     const dispatch = useDispatch();
@@ -114,7 +114,7 @@ const EmployeeListComponent = () => {
                 ) : (
                     <Grid container spacing={4} justifyContent="center">
                         <Grid item xs={12} md={6}>
-                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+                            
                                 <Typography variant="h6" sx={{ textAlign: 'center' }}>Verify Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
@@ -126,10 +126,8 @@ const EmployeeListComponent = () => {
                                 >
                                     {renderRow}
                                 </FixedSizeList>
-                            </Paper>
-                        </Grid>
+                                </Grid>
                         <Grid item xs={12} md={6}>
-                            <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
                                 <Typography variant="h6" sx={{ textAlign: 'center' }}>Flead Dept.</Typography>
                                 <FixedSizeList
                                     height={300}
@@ -141,7 +139,7 @@ const EmployeeListComponent = () => {
                                 >
                                     {renderRow}
                                 </FixedSizeList>
-                            </Paper>
+                          
                         </Grid>
                     </Grid>
                 )}

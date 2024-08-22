@@ -4,7 +4,7 @@ import ProductPage from './admin/ProductPage';
 import Dashboard from './admin/Dashboard';
 import Register from './admin/EmployeeRegister';
 import DataAssigned from './admin/DataAssgined';
-import AdminDrawer from '../components/CustomDrawer';
+import AdminDrawer from '../components/AdminCustomDrawer';
 import AnalysisPage from './admin/AnalysisPage';
 
 const AdminDashboard = () => {

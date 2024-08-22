@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployeeByEmail, updateEmployee } from '../redux/employeeActions';
+import { fetchEmployeeByEmployeeId, updateEmployee } from '../redux/employeeActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -13,7 +13,7 @@ const departments = ['flead', 'verify', 'admin', 'logistics'];
 const statuses = ['active', 'inactive'];
 
 const EmployeeDetails = () => {
-    const [emailToFetch, setEmailToFetch] = useState('');
+    const [employeeIdToFetch, setEmployeeIdToFetch] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -28,12 +28,12 @@ const EmployeeDetails = () => {
     const dispatch = useDispatch();
     const { employee, loading, error } = useSelector((state) => state.employees);
 
-    const handleEmailChange = (e) => {
-        setEmailToFetch(e.target.value);
+    const handleEmployeeIdChange = (e) => {
+        setEmployeeIdToFetch(e.target.value);
     };
 
     const fetchEmployee = () => {
-        dispatch(fetchEmployeeByEmail(emailToFetch));
+        dispatch(fetchEmployeeByEmployeeId(employeeIdToFetch));
     };
 
     useEffect(() => {
@@ -97,17 +97,17 @@ const EmployeeDetails = () => {
     };
 
     return (
-       <>
+        <>
             <Typography component="h1" variant="h5">
                 Fetch Employee Details
             </Typography>
             <TextField
                 fullWidth
-                id="emailToFetch"
-                label="Employee Email"
-                name="emailToFetch"
-                value={emailToFetch}
-                onChange={handleEmailChange}
+                id="employeeIdToFetch"
+                label="Employee ID"
+                name="employeeIdToFetch"
+                value={employeeIdToFetch}
+                onChange={handleEmployeeIdChange}
                 sx={{ mt: 2, mb: 2 }}
             />
             <Button
