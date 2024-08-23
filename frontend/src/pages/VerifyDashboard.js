@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Paper, Box, Typography, Container } from '@mui/material';
+import { Grid, Paper, Box,  Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import UnderVerificationOrders from '../components/OrderCard/UnderVerificationOrders';
@@ -9,7 +9,6 @@ import CheckOrderStatus from '../components/CheckOrderStatus';
 import VerifiedOrders from '../components/OrderCard/VerifiedOrders';
 import HoldOrder from '../components/OrderCard/HoldOrders';
 import ChartCard from '../components/ChartCard';
-import LogOut from '../components/Logout';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
@@ -140,7 +139,6 @@ const VerifyDashboard = () => {
                     </Grid>
                 </Grid>
             </Box>
-            <LogOut employeeId={user?.employeeId} id={employeeId}/>
         </Container>
         </>
     );

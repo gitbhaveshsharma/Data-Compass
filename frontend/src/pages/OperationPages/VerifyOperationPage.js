@@ -27,6 +27,7 @@ import AlarmModal from '../../components/AlarmComponent';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AssignedTo from '../../components/AssignedTo';
+import Header from '../../components/Header';
 import dayjs from 'dayjs'
 
 const Root = styled('div')(({ theme }) => ({
@@ -295,6 +296,7 @@ const VerifyOperationPage = () => {
 
     return (
         <>
+            <Header title="Verification Page" />
             {message && (
                 <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity={messageType} sx={{ width: '100%' }}>

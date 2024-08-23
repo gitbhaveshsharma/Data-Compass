@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Link } from '@mui/material';
+import { Button} from '@mui/material';
 import { logout } from '../redux/authActions';
 import { recordHistory } from '../redux/historyActions';
 import { updateEmployee } from '../redux/employeeActions';
@@ -67,21 +67,14 @@ const Logout = ({ employeeId, id}) => {
     }, [employeeId]);
 
     return (
-        <Typography
-            variant="body2"
-            align="center"
-            sx={{ fontSize: '15px', padding: '8px 0', mt: '20px', color: '#b5b5b5' }}
+        <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => handleLogout('manual-logout')}
         >
-            This product is under development and test. If you are having problems, please reach out to the admin.
-            <Link
-                component="button"
-                onClick={() => handleLogout('manual-logout')}
-                sx={{ fontSize: '15px', padding: '0 4px' }}
-            >
-                Click here to logout
-            </Link>
-            : All rights reserved © SevenZin
-        </Typography>
+            Logout
+        </Button>
     );
 };
 

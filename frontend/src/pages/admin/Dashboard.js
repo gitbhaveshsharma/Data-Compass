@@ -13,7 +13,6 @@ import CheckOrderStatus from '../../components/CheckOrderStatus';
 import ShippingOrder from '../../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../../components/Logistics/DeliveredOrders';
 import HoldOrder from '../../components/OrderCard/HoldOrders';
-import LogOut from '../../components/Logout';
 
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../../redux/employeeActions';
@@ -124,7 +123,6 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
       </Box>
-      <LogOut employeeId={user?.employeeId} />
     </Container>
   );
 };

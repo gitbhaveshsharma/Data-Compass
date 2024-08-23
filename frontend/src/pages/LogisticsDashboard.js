@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Paper, Typography, Box } from '@mui/material';
+import { Container, Grid, Paper, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ExportVerifiedOrders from '../components/Logistics/ExportVerifiedOrders';
 import UpdateOrderStatus from '../components/Logistics/UpdateOrderStatus';
 import ShippingOrder from '../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../components/Logistics/DeliveredOrders';
-import LogOut from '../components/Logout';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
 import Header from '../components/Header';
@@ -68,7 +67,6 @@ const LogisticsDashboard = () => {
                 </Grid>
             </Box>
             </Container>
-            <LogOut employeeId={user?.employeeId} id={employeeId}/>
         </>
     );
 };
