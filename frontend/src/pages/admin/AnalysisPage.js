@@ -5,7 +5,9 @@ import LoginHistory from '../../components/LoginHistory';
 import { Grid, Paper, RadioGroup, FormControlLabel, Radio, Typography, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { parseISO, getYear, getMonth, getDate, getISOWeek } from 'date-fns';
-
+import OrdersChart from '../../components/Analytics/OrdersChart';
+import CancelOrdersChart from '../../components/Analytics/CancelOrdersChart';
+import TotalSalesChart from '../../components/Analytics/TotalSalesChart';
 const AnalysisPage = () => {
     const dispatch = useDispatch();
     const orderData = useSelector((state) => state.data.orderData.data || []);
@@ -68,6 +70,19 @@ const AnalysisPage = () => {
     const chartData = renderChartData(salesData);
 
     return (
+        <>
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+                    <OrdersChart role={"admin"} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+                    <CancelOrdersChart role={"admin"} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+                    <TotalSalesChart role={"admin"} />
+            </Grid>
+        </Grid>
+      
         <Grid container spacing={2} padding={2}>
             <Grid item xs={12}>
                 <Paper elevation={3} style={{ backgroundColor: 'white', padding: '16px' }}>
@@ -138,7 +153,8 @@ const AnalysisPage = () => {
                 </Paper>
             </Grid>
             <Grid item xs={12} md={6}><Paper>  <LoginHistory /></Paper></Grid>
-        </Grid>
+            </Grid>
+        </>
     );
 };
 

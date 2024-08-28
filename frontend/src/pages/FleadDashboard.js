@@ -6,10 +6,9 @@ import CallbackDataCard from '../components/FleadDataCard/CallbackData';
 import HoldData from '../components/FleadDataCard/HoldData';
 import CheckOrderStatus from '../components/CheckOrderStatus';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
-import { Grid, Paper, Box, Typography, Container, Snackbar, Alert } from '@mui/material';
+import { Grid, Paper, Box, Container, Snackbar, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartCard from '../components/ChartCard';
-import LogOut from '../components/Logout';
 import { fetchAssignedData } from '../redux/dataActions';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -83,68 +82,63 @@ const FieldDashboard = () => {
     return (
         <>
             <Header title="Flead Dashboard" />
-        <Container maxWidth="xl">
-           
-            {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Flead Dashboard</Typography> */}
-            
-            <Box sx={{ flexGrow: 1, p: 2 }}>
-                <Grid container spacing={4}>
-                    <Grid item xs={12} md={6} container spacing={4}>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3}>
-                                <FreshLeadCard employeeId={employeeId} />
-                            </Paper>
+            <Container maxWidth="xl">
+                <Box sx={{ flexGrow: 1, p: 2 }}>
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} md={6} container spacing={4}>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <FreshLeadCard employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <PendingOrders employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <CanceledDataCard employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <CallbackDataCard employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <HoldData employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
+                                    <CheckOrderStatus role={'admin'} />
+                                </Paper>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3}>
-                                <PendingOrders employeeId={employeeId} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3}>
-                                <CanceledDataCard employeeId={employeeId} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3}>
-                                <CallbackDataCard employeeId={employeeId} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3}>
-                                <HoldData employeeId={employeeId} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                                <CheckOrderStatus role={'admin'} />
-                            </Paper>
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ mb: 4 }}>
+                                <Paper elevation={3}>
+                                    <ChartCard data={chartData} />
+                                </Paper>
+                            </Box>
+                            <Box>
+                                <Paper elevation={3}>
+                                    <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
+                                </Paper>
+                            </Box>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Box sx={{ mb: 4 }}>
-                            <Paper elevation={3}>
-                                <ChartCard data={chartData} />
-                            </Paper>
-                        </Box>
-                        <Box>
-                            <Paper elevation={3}>
-                                <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
-                            </Paper>
-                        </Box>
-                    </Grid>
-                </Grid>
+                </Box>
 
-                <LogOut employeeId={user?.employeeId} id={employeeId} />
-            </Box>
-
-            {message && (
-                <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity={message.includes('successfully') ? 'success' : 'error'} sx={{ width: '100%' }}>
-                        {message}
-                    </Alert>
-                </Snackbar>
-            )}
+                {message && (
+                    <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity={message.includes('successfully') ? 'success' : 'error'} sx={{ width: '100%' }}>
+                            {message}
+                        </Alert>
+                    </Snackbar>
+                )}
             </Container>
         </>
     );
