@@ -6,10 +6,9 @@ import CallbackDataCard from '../components/FleadDataCard/CallbackData';
 import HoldData from '../components/FleadDataCard/HoldData';
 import CheckOrderStatus from '../components/CheckOrderStatus';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
-import { Grid, Paper, Box, Typography, Container, Snackbar, Alert } from '@mui/material';
+import { Grid, Paper, Box, Container, Snackbar, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartCard from '../components/ChartCard';
-import LogOut from '../components/Logout';
 import { fetchAssignedData } from '../redux/dataActions';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -134,8 +133,6 @@ const FieldDashboard = () => {
                         </Box>
                     </Grid>
                 </Grid>
-
-                <LogOut employeeId={user?.employeeId} id={employeeId} />
             </Box>
 
             {message && (
