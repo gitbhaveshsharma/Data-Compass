@@ -14,6 +14,7 @@ const getAuthHeaders = () => {
 const fetchData = async (url, successAction, failureAction, dispatch) => {
     try {
         const response = await axios.get(url, getAuthHeaders());
+        console.log('Fetched data:', response.data); 
         dispatch({ type: successAction, payload: response.data });
     } catch (error) {
         dispatch({ type: failureAction, payload: error.message });
@@ -47,6 +48,7 @@ export const fetchDataCounts = () => async (dispatch) => {
 };
 
 export const fetchAssignedData = (employeeId, role) => async (dispatch) => {
+    console.log('req to backend action', employeeId)
     const url = role === 'admin' ? `${API_BASE_URL}/data/assigned/all` : `${API_BASE_URL}/data/assigned/${employeeId}`;
     await fetchData(url, 'FETCH_ASSIGNED_DATA_SUCCESS', 'FETCH_ASSIGNED_DATA_FAILURE', dispatch);
 };

@@ -1,4 +1,4 @@
-
+// Initial state
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: !!localStorage.getItem('token'),
@@ -7,6 +7,7 @@ const initialState = {
     error: null,
 };
 
+// Auth Reducer
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'LOGIN_SUCCESS':
@@ -45,6 +46,13 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
+                error: null, 
+            };
+        case 'REGISTER_FAILURE': 
+            return {
+                ...state,
+                loading: false,
+                error: action.payload, 
             };
         default:
             return state;

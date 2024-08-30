@@ -79,7 +79,7 @@ const VerifyOperationPage = () => {
     const [quantity, setQuantity] = useState('');
 
     useEffect(() => {
-        if (!['verify', 'admin'].includes(userDepartment)) {
+        if (!['verify', 'admin', 'rto', 'rework'].includes(userDepartment)) {
             setMessage("You don't have access");
             setMessageType('error');
             const timer = setInterval(() => {
@@ -271,7 +271,7 @@ const VerifyOperationPage = () => {
         }
     };
 
-    if (!['verify', 'admin'].includes(userDepartment)) {
+    if (!['verify', 'rto', 'rework'].includes(userDepartment)) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
                 <Box textAlign="center">

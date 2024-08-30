@@ -11,6 +11,8 @@ import VerifyDashboard from './pages/VerifyDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import FieldOperationPage from './pages/OperationPages/FieldOperationPage';
 import Footer from './pages/Footer';
+import ReworkDashboard from './pages/ReworkDashboard';
+import RTODashboard from './pages/RTODashboard';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -29,6 +31,8 @@ const App = () => {
                     <Route path="/field-dashboard" element={<FieldDashboard />} />
                     <Route path="/verify-dashboard" element={<VerifyDashboard />} />
                     <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />
+                    <Route path="/rework-dashboard" element={<ReworkDashboard />} />
+                    <Route path="/rto-dashboard" element={<RTODashboard />} />
                     <Route path="/data/:id" element={<FieldOperationPage />} />
                     <Route path="/data/order/:id" element={<VerifyOperationPage />} />
                 </Route>

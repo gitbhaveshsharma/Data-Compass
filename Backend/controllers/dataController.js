@@ -118,14 +118,117 @@ const autoAssignOrders = async () => {
     }
 };
 
-// Schedule the task to run every 2 minutes
+const autoAssignOrdersForRto = async () => {
+    try {
+        // Fetch eligible employees from the rto department
+        const employees = await User.find({
+            department: 'rto',
+            status: { $in: ['active', 'online', 'offline'] }
+        }).sort({ _id: 1 });
+
+        if (employees.length === 0) {
+            return;
+        }
+
+        // Fetch orders with return order status
+        const returnOrders = await Order.find({ status: 'returned' }).sort({ createdAt: 1 });
+
+        if (returnOrders.length === 0) {
+            return;
+        }
+
+        // Distribute orders to employees in a round-robin fashion
+        let employeeIndex = employees.findIndex(emp => !emp.assigned) || 0;
+
+        for (const order of returnOrders) {
+            const employee = employees[employeeIndex];
+            order.assignedTo = employee._id;
+            order.employeeId = employee.employeeId;
+            order.status = 'under rto';
+            await order.save();
+
+            employee.assigned = true;
+            await employee.save();
+
+            employeeIndex = (employeeIndex + 1) % employees.length;
+
+            // Reset assignment flags if last employee received an order
+            if (employeeIndex === 0) {
+                employees.forEach(emp => emp.assigned = false);
+                await Promise.all(employees.map(emp => emp.save()));
+            }
+        }
+        // console.log(`return items have been distributed to RTO employees.`);
+    } catch (error) {
+        console.error('Error in auto-assign orders for RTO:', error);
+    }
+};
+
+const autoAssignOrdersForRework = async () => {
+    try {
+        // Fetch eligible employees from the rework department
+        const employees = await User.find({
+            department: 'rework',
+            status: { $in: ['active', 'online', 'offline'] }
+        }).sort({ _id: 1 });
+
+        if (employees.length === 0) {
+            return;
+        }
+
+        // Fetch orders with canceled status from the Order model
+        const canceledOrders = await Order.find({ status: 'canceled' }).sort({ createdAt: 1 });
+
+        // Fetch records with canceled status from the Data model
+        const canceledData = await Data.find({ status: 'canceled' }).sort({ createdAt: 1 });
+
+        // Combine the results from both models
+        const canceledItems = [...canceledOrders, ...canceledData];
+
+        if (canceledItems.length === 0) {
+            return;
+        }
+
+        // Distribute orders to employees in a round-robin fashion
+        let employeeIndex = employees.findIndex(emp => !emp.assigned) || 0;
+
+        for (const item of canceledItems) {
+            const employee = employees[employeeIndex];
+
+            // Assign the item to the employee
+            item.assignedTo = employee._id;
+            item.employeeId = employee.employeeId;
+            item.status = 'under rework';
+            await item.save();
+
+            employee.assigned = true;
+            await employee.save();
+
+            employeeIndex = (employeeIndex + 1) % employees.length;
+
+            // Reset assignment flags if last employee received an order
+            if (employeeIndex === 0) {
+                employees.forEach(emp => emp.assigned = false);
+                await Promise.all(employees.map(emp => emp.save()));
+            }
+        }
+
+        // console.log(`${canceledItems.length} canceled items have been distributed to Rework employees.`);
+    } catch (error) {
+        console.error('Error in auto-assign canceled items to Rework:', error);
+    }
+};
+
+// Schedule the tasks to run every 2 minutes
 cron.schedule('*/2 * * * *', autoAssignOrders);
+cron.schedule('*/2 * * * *', autoAssignOrdersForRto);
+cron.schedule('*/2 * * * *', autoAssignOrdersForRework);
 
 
 // Fetch data assigned to a specific employee
 const getAssignedData = async (req, res) => {
     const { employeeId } = req.params;
-
+    console.log("res form backend ", employeeId)
     try {
         let assignedData;
         if (employeeId === 'all') {
@@ -137,6 +240,7 @@ const getAssignedData = async (req, res) => {
             assignedData = await Data.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
         res.json(assignedData);
+        console.log(assignedData)
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch assigned data' });
     }

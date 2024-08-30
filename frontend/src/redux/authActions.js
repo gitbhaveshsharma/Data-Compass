@@ -56,14 +56,18 @@ export const login = (credentials) => async (dispatch) => {
 };
 
 
+// Register action creator
 export const register = (userData) => async (dispatch) => {
-    try {
-        await axios.post(`${API_BASE_URL}/auth/register`, userData);
-        dispatch({ type: 'REGISTER_SUCCESS' });
-    } catch (error) {
-        dispatch({ type: 'REGISTER_FAILURE', payload: error.message });
-    }
+  try {
+    await axios.post(`${API_BASE_URL}/auth/register`, userData);
+    dispatch({ type: 'REGISTER_SUCCESS' });
+  } catch (error) {
+    // console.error('Registration error response:', error.response.data); // Log full response for debugging
+    const errorMessage = error.response?.data?.error || error.message; // Capture backend message or fallback to default
+    dispatch({ type: 'REGISTER_FAILURE', payload: errorMessage });
+  }
 };
+
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('token');
