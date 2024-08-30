@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'; // Import useSelector to access Redux state
 import { register } from '../redux/authActions';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -11,8 +11,9 @@ import Container from '@mui/material/Container';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
-const departments = ['flead', 'verify', 'admin', 'logistics'];
+const departments = ['flead', 'verify', 'rework', 'rto', 'admin', 'logistics'];
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -21,12 +22,13 @@ const RegistrationPage = () => {
     email: '',
     password: '',
     department: '',
-    employeeId: '', 
+    employeeId: '',
   });
 
-  const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false); 
   const dispatch = useDispatch();
+  const error = useSelector((state) => state.auth.error); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,33 +44,33 @@ const RegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Allow employeeId to be optional
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key] && key !== 'employeeId') { 
+      if (!formData[key] && key !== 'employeeId') {
         newErrors[key] = 'This field is required';
       }
     });
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      setMessage('Please fill in all required fields.');
+      setSnackbarOpen(true);
       return;
     }
 
-    try {
-      const userData = {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        password: formData.password,
-        department: formData.department,
-        employeeId: formData.employeeId, // Include employeeId
-      };
-      await dispatch(register(userData));
-      setMessage('Registration successful!');
-    } catch (error) {
-      setMessage('Registration failed. Please try again.');
-    }
+    const userData = {
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      password: formData.password,
+      department: formData.department,
+      employeeId: formData.employeeId,
+    };
+
+    await dispatch(register(userData)); // Dispatch register action
+    setSnackbarOpen(true); // Show Snackbar regardless of success or failure
+  };
+
+  const handleClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -100,6 +102,7 @@ const RegistrationPage = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 error={!!errors.firstName}
+                helperText={errors.firstName}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -120,6 +123,7 @@ const RegistrationPage = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 error={!!errors.lastName}
+                helperText={errors.lastName}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -140,6 +144,7 @@ const RegistrationPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 error={!!errors.email}
+                helperText={errors.email}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -161,6 +166,7 @@ const RegistrationPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 error={!!errors.password}
+                helperText={errors.password}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -181,6 +187,7 @@ const RegistrationPage = () => {
                 value={formData.department}
                 onChange={handleChange}
                 error={!!errors.department}
+                helperText={errors.department}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
@@ -216,7 +223,13 @@ const RegistrationPage = () => {
             Register
           </Button>
         </Box>
-        {message && <Alert severity={message.includes('successful') ? 'success' : 'error'}>{message}</Alert>}
+        {error && (
+          <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={error ? 'error' : 'success'}>
+              {error || 'Registration successful!'}
+            </Alert>
+          </Snackbar>
+        )}
       </Box>
     </Container>
   );

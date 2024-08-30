@@ -88,7 +88,7 @@ const OrderSchema = new mongoose.Schema({
     }],
     status: {
         type: String,
-        enum: ['pending', 'under verification', 'verified', 'shipping', 'delivered', 'callback', 'canceled'],
+        enum: ['pending', 'under verification', 'verified', 'shipping', 'delivered', 'callback', 'canceled', 'returned', 're-delivered', 'return-canceled', 'under rework', 'under rto', 'rework completed', 'rework failed'],
         default: 'pending'
     },
     assignedTo: {

@@ -31,12 +31,11 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-    // console.log('Registration request data:', req.body);
     const { email, password, name, role, department, employeeId } = req.body;
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send({ error: 'User already exists.' });
+            return res.status(400).json({ error: 'User already exists.' });
         }
 
         let newEmployeeId = employeeId;
@@ -47,14 +46,15 @@ exports.register = async (req, res) => {
 
         const existingEmployeeId = await User.findOne({ employeeId: newEmployeeId });
         if (existingEmployeeId) {
-            return res.status(400).send({ error: 'Employee ID already exists.' });
+            return res.status(400).json({ error: 'Employee ID already exists.' });
         }
 
         const user = new User({ email, password, name, role, department, employeeId: newEmployeeId });
         await user.save();
-        res.status(201).send({ message: 'User registered successfully.' });
+
+        return res.status(201).json({ message: 'User registered successfully.' });
     } catch (error) {
-        // console.error('Registration error:', error); // Log the detailed error
-        res.status(500).send({ error: 'Server error.' });
+        console.error('Registration error:', error); // Log the detailed error
+        return res.status(500).json({ error: 'Server error.' });
     }
 };

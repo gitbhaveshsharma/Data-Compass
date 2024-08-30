@@ -39,6 +39,12 @@ const LoginPage = () => {
                 case 'logistics':
                     navigate('/logistics-dashboard');
                     break;
+                case 'rework':
+                    navigate('/rework-dashboard');
+                    break;
+                case 'rto':
+                    navigate('/rto-dashboard');
+                    break;
                 default:
                     navigate('/');
                     break;
