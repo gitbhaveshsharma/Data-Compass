@@ -8,6 +8,7 @@ import DeliveredOrder from '../components/Logistics/DeliveredOrders';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
 import Header from '../components/Header';
+import ReturnedOrder from '../components/Logistics/ReturnedOrder';
 
 
 
@@ -63,7 +64,12 @@ const LogisticsDashboard = () => {
                         <Paper elevation={3} sx={{ p: 2 }}>
                             <DeliveredOrder role={'logistics'} />
                         </Paper>
-                    </Grid>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper elevation={3} sx={{ p: 2 }}>
+                                <ReturnedOrder role={'logistics'} />
+                            </Paper>
+                        </Grid>
                 </Grid>
             </Box>
             </Container>

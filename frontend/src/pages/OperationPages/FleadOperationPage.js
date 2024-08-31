@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataById, updateData, updateOrder, updateDataHoldStatus, updateDataCallbackStatus, orderData, cancelData } from '../../redux/operationActions';
+import { fetchDataById, updateData, updateOrder, updateDataStatus, orderData, cancelData } from '../../redux/operationActions';
 import { fetchProducts } from '../../redux/productActions';
 import { Grid, Typography, Card, CardContent, TextField, List, ListItem, ListItemText, Button, Snackbar, Alert, Box, MenuItem, Select, CircularProgress, IconButton, FormControl } from '@mui/material';
 import BillComponent from '../../components/BillComponent';
@@ -58,7 +58,7 @@ const OperationPage = () => {
                 nearBy: data.nearBy || '',
                 area: data.area || '',
                 altNumber: data.altNumber || '',
-                employeeId: data.assignedTo || '',
+                employeeId: data.employeeId || '',
                 assignedTo: data.assignedTo || '',
                 customerId: data.customerId || ''
             });
@@ -94,36 +94,20 @@ const OperationPage = () => {
             setMessage('Failed to place order.');
         }
     };
-    //write code to use updateDataStatus action to update the data status
-    
-    const handleUpdateHoldStatus = async () => {
-        try {
-            // console.log(`Updating data status with ID: ${id}`);
-            await dispatch(updateDataHoldStatus(id));
-            setMessage('Data status updated successfully into Hold!');
-            navigate('/');
-        } catch (error) {
-            // console.error('Update failed:', error);
-            setMessage('Failed to update data status into Hold.');
-        }
-    };
 
-    const handleUpdateCallbackStatus = async () => {
-        if (!alarmSet) {
-                alert('Please set an alarm before requesting a callback.');
-                return;
-            }
-        try {
-            // console.log(`Updating data status into Callback with ID: ${id}`);
-            await dispatch(updateDataCallbackStatus(id));
-            setMessage('Data status updated successfully into Callback!');
-            navigate('/');
-        } catch (error) {
-            // console.error('Update failed:', error);
-            setMessage('Failed to update data status into Callback.');
-        }
+    const handleUpdateStatus = (status) => {
+        dispatch(updateDataStatus(id, status))
+            .then(() => {
+                setMessage(`Order status updated to ${status} successfully.`);
+                if (status === 'canceled') {
+                    handleCancel();
+                }
+                navigate('/');
+            })
+            .catch((error) => {
+                setMessage(`Failed to update order status: ${error.message}`);
+            });
     };
-
 
 
     const handleCancel = async () => {
@@ -136,7 +120,7 @@ const OperationPage = () => {
             setMessage('Failed to cancel order.');
         }
     };
-    
+
     const handleAddProduct = () => {
         const product = products.find(p => p.name === selectedProduct);
         if (product) {
@@ -171,7 +155,7 @@ const OperationPage = () => {
         setAlarmSet(true); // Update alarmSet state when alarm is set
     };
 
-   const handleAssignTo = async (employeeInfo) => {
+    const handleAssignTo = async (employeeInfo) => {
         if (userDepartment !== employeeInfo.department) {
             setMessage('Department mismatch. Cannot assign.');
             return;
@@ -322,26 +306,80 @@ const OperationPage = () => {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={1} marginTop={2}>
-                                    <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>Update</Button>
+                                <Grid container spacing={2} marginTop={2} alignItems="center">
+                                    <Grid item xs={12} sm={6} md={2}>
+                                        <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>
+                                            Update
+                                        </Button>
                                     </Grid>
-                                    <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="success" onClick={handleOrder} fullWidth>Order</Button>
-                                    </Grid>
-                                    <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="error" onClick={handleCancel} fullWidth>Cancel</Button>
-                                    </Grid>
-                                    <Grid item xs={6} sm={3}>
-                                        <Button variant="contained" color="secondary" onClick={handleUpdateCallbackStatus} disabled={!alarmSet} fullWidth>Callback</Button>                                    </Grid>
-                                    <Grid item xs={6} sm={3}>
-                                        <Grid item xs={6} sm={3}>
-                                            <Button variant="contained" color="secondary" onClick={handleUpdateHoldStatus} fullWidth>Hold</Button>                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={1}>
                                         <IconButton color="primary" onClick={handleOpenAlarmModal}>
                                             <AddAlarmIcon />
                                         </IconButton>
                                     </Grid>
+                                    <Grid item xs={12} sm={6} md={3}>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={() => handleUpdateStatus('callback')}
+                                            disabled={!alarmSet}
+                                            fullWidth
+                                        >
+                                            Callback
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={2}>
+                                        <Button variant="contained" color="secondary" onClick={() => handleUpdateStatus('hold')}
+                                            fullWidth>
+                                            Hold
+                                        </Button>
+                                    </Grid>
+                                    {userDepartment === 'flead' && (
+                                        <>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <Button variant="contained" color="success" onClick={handleOrder} fullWidth>
+                                                    Order
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleUpdateStatus('canceled')}
+                                                    fullWidth
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </Grid>
+                                        </>
+                                    )}
+
+                                    {userDepartment === 'rework' && (
+                                        <>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleUpdateStatus('rework-completed')}
+                                                    fullWidth
+                                                >
+                                                    Rework Completed
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={12} sm={6} md={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleUpdateStatus('rework-failed')}
+                                                    fullWidth
+                                                >
+                                                    Rework Failed
+                                                </Button>
+                                            </Grid>
+                                        </>
+                                    )}
                                 </Grid>
+
                             </CardContent>
                         </Card>
 
@@ -402,7 +440,7 @@ const OperationPage = () => {
                                             </Button>
                                         </Grid>
                                     </Grid>
-                                </FormControl>                                
+                                </FormControl>
                                 <Grid item xs={12} md={3}>
                                 </Grid>
                             </CardContent>
@@ -419,17 +457,17 @@ const OperationPage = () => {
                         <AssignedTo onAssign={handleAssignTo} />
                     </Grid>
                     <Grid item xs={12} md={9}>
-                        <CallAttemptComponent department={'flead'} dataId={id} mobileNumber={formData.number} />
+                        <CallAttemptComponent department={userDepartment} dataId={id} mobileNumber={formData.number} />
                     </Grid>
                 </Grid>
             </Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <AlarmModal
+                <AlarmModal
                     open={alarmModalOpen}
                     handleClose={handleCloseAlarmModal}
                     initialNumber={formData.number}
                     initialDataId={formData.customerId}
-                    initialDepartment={'flead'}
+                    initialDepartment={userDepartment}
                     initialEmployeeId={formData.employeeId}
                     onAlarmSet={handleAlarmSet}
                     initialName={formData.name}

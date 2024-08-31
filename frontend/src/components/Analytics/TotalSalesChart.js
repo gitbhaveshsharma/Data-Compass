@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderData } from '../../redux/dataActions';
 import {
-    Card,
+    Paper,
     Typography,
     Box,
     Dialog,
@@ -127,7 +127,7 @@ const TotalSalesChart = ({ employeeId, role }) => {
     };
 
     return (
-        <Card
+        <Paper elevation={3}
             sx={{
                 p: 3,
                 display: 'flex',
@@ -216,7 +216,7 @@ const TotalSalesChart = ({ employeeId, role }) => {
                     </ResponsiveContainer>
                 </DialogContent>
             </Dialog>
-        </Card>
+        </Paper>
     );
 };
 

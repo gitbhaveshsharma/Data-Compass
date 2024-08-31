@@ -4,7 +4,7 @@ import { fetchOrderData, fetchAssignedData } from '../../redux/dataActions';
 import DataTable from '../data/DataTable';
 import { orderColumns } from '../../constants/orderColumns';
 
-const ReworkCompleted = React.memo(({ employeeId, role }) => {
+const ReworkCallBack = React.memo(({ employeeId, role }) => {
     const dispatch = useDispatch();
     console.log(employeeId);
 
@@ -24,7 +24,7 @@ const ReworkCompleted = React.memo(({ employeeId, role }) => {
     const displayData = useMemo(() => {
         const combinedData = [...orderData, ...assignedData]; // Merging the two datasets
         return combinedData
-            .filter(order => order.status === 'rework-completed' && (role === 'admin' || order.assignedTo === employeeId))
+            .filter(order => order.status === 'callback' && (role === 'admin' || order.assignedTo === employeeId))
             .map(order => ({
                 ...order,
                 totalPrice: (order.billDetails && Array.isArray(order.billDetails))
@@ -39,7 +39,7 @@ const ReworkCompleted = React.memo(({ employeeId, role }) => {
         return hasNonZeroPrice ? "/data/order" : "/data";
     }, [displayData]);
 
-    return <DataTable columns={orderColumns} data={displayData} title="Rework Completed" baseURL={baseURL} />;
+    return <DataTable columns={orderColumns} data={displayData} title="Rework CallBack" baseURL={baseURL} />;
 });
 
-export default ReworkCompleted;
+export default ReworkCallBack;

@@ -125,7 +125,7 @@ const FieldDashboard = () => {
                             </Box>
                             <Box>
                                 <Paper elevation={3}>
-                                    <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
+                                    <AlarmAlertComponent employeeId={user?.employeeId} department={user?.department} />
                                 </Paper>
                             </Box>
                         </Grid>

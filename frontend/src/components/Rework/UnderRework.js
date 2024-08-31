@@ -33,7 +33,13 @@ const UnderRework = React.memo(({ employeeId, role }) => {
             }));
     }, [orderData, assignedData, employeeId, role]);
 
-    return <DataTable columns={orderColumns} data={displayData} title="Under Rework" baseURL="/data/order" />;
+    // Determine baseURL based on totalPrice
+    const baseURL = useMemo(() => {
+        const hasNonZeroPrice = displayData.some(order => order.totalPrice > 0);
+        return hasNonZeroPrice ? "/data/order" : "/data";
+    }, [displayData]);
+
+    return <DataTable columns={orderColumns} data={displayData} title="Under Rework" baseURL={baseURL} />;
 });
 
 export default UnderRework;

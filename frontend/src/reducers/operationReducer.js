@@ -56,14 +56,6 @@ const operationReducer = (state = initialState, action) => {
             return { ...state, data: action.payload, loading: false };
         case 'UPDATE_DATA_STATUS_FAILURE':
             return { ...state, error: action.error, loading: false };
-        case 'UPDATE_DATA_HOLD_STATUS_SUCCESS':
-            return { ...state, data: action.payload, loading: false };
-        case 'UPDATE_DATA_HOLD_STATUS_FAILURE':
-            return { ...state, error: action.error, loading: false };
-        case 'UPDATE_DATA_CALLBACK_STATUS_SUCCESS':
-            return { ...state, data: action.payload, loading: false };
-        case 'UPDATE_DATA_CALLBACK_STATUS_FAILURE':
-            return { ...state, error: action.error, loading: false };
         default:
             return state;
     }

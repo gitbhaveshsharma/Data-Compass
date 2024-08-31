@@ -14,7 +14,7 @@ const Logout = ({ employeeId, id}) => {
     const handleLogout = async (type = 'manual-logout') => {
         try {
             // console.log(`Logging out employeeId: ${employeeId} with type: ${type}`);
-            if (type === 'manual-logout' || 'inactivity-logout') {
+            if (type === 'manual-logout' || type === 'inactivity-logout') {
                 await dispatch(updateEmployee(id, { status: 'offline' }));
             }
             await dispatch(recordHistory({

@@ -48,6 +48,7 @@ const VerifyOperationPage = () => {
     const user = useSelector((state) => state.auth.user);
     const [expectedDeliveryDate, setExpectedDeliveryDate] = useState(dayjs());
     const userDepartment = user ? user.department : '';
+    
 
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
@@ -112,7 +113,8 @@ const VerifyOperationPage = () => {
                 altNumber: order.altNumber,
                 status: order.status,
                 products: order.products,
-                employeeId: order.assignedTo,
+                employeeId: order.employeeId,
+                customerId: order.customerId,
                 orderId: order.orderId,
                 billDetails: {
                     discountType: order.billDetails[0].discountType,
@@ -516,26 +518,76 @@ const VerifyOperationPage = () => {
                                     </Grid>
                                 </FormControl>
                                 <Box display="flex" justifyContent="space-between" mt={2}>
-                                    <IconButton
-                                        color="primary"
-                                        onClick={handleOpenAlarmModal}
-                                    >
-                                        <AddAlarmIcon />
-                                    </IconButton>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={handleCallbackClick}
-                                        disabled={!alarmSet}
-                                    >
-                                        Callback
-                                    </Button>
-                                    <Button variant="contained" color="success" onClick={() => handleUpdateStatus('verified')}>
-                                        Verify Order
-                                    </Button>
-                                    <Button variant="contained" color="error" onClick={() => handleUpdateStatus('canceled')}>
-                                        Cancel Order
-                                    </Button>
+                                        <IconButton
+                                            color="primary"
+                                            onClick={handleOpenAlarmModal}
+                                        >
+                                            <AddAlarmIcon />
+                                        </IconButton>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={handleCallbackClick}
+                                            disabled={!alarmSet}
+                                        >
+                                            Callback
+                                        </Button>
+                                        {userDepartment === 'verify' && (
+                                            <>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleUpdateStatus('verified')}
+                                                >
+                                                    Verify Order
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleUpdateStatus('canceled')}
+                                                >
+                                                    Cancel Order
+                                                </Button>
+                                            </>
+                                        )}
+
+                                        {userDepartment === 'rto' && (
+                                            <>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleUpdateStatus('re-deleivery')}
+                                                >
+                                                    Redelivery
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleUpdateStatus('return-canceled')}
+                                                >
+                                                    Return Canceled
+                                                </Button>
+                                            </>
+                                        )}
+
+                                        {userDepartment === 'rework' && (
+                                            <>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleUpdateStatus('rework-completed')}
+                                                >
+                                                    Rework Completed
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleUpdateStatus('rework-failed')}
+                                                >
+                                                    Rework Failed
+                                                </Button>
+                                            </>
+                                        )}
                                 </Box>
                             </CardContent>
                         </Card>
@@ -585,7 +637,7 @@ const VerifyOperationPage = () => {
                         <AssignedTo onAssign={handleAssignTo} />
                     </Grid>
                     <Grid item xs={12} md={9}>
-                        <CallAttemptComponent department={'verify'} dataId={id} mobileNumber={orderDetails.number} />
+                        <CallAttemptComponent department={userDepartment} dataId={id} mobileNumber={orderDetails.number} />
                     </Grid>
                 </Grid>
             </Box>
@@ -596,8 +648,8 @@ const VerifyOperationPage = () => {
                     initialNumber={orderDetails.number}
                     initialName={orderDetails.name}
                     onAlarmSet={handleAlarmSet}
-                    initialDataId={id}
-                    initialDepartment={'verify'}
+                    initialDataId={orderDetails.customerId}
+                    initialDepartment={userDepartment}
                     initialEmployeeId={orderDetails.employeeId}
                 />
             </LocalizationProvider>

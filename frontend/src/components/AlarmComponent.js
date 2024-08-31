@@ -70,7 +70,7 @@ const AlarmModal = ({ open, handleClose, initialNumber, initialDataId, initialNa
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <TextField
-                            label="Data ID"
+                            label="Customer Id"
                             value={dataId}
                             onChange={(e) => setDataId(e.target.value)}
                             fullWidth
