@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderData } from '../../redux/dataActions';
-import { Card, Typography, Box, Dialog, DialogTitle, DialogContent, MenuItem, Select } from '@mui/material';
+import { Paper, Typography, Box, Dialog, DialogTitle, DialogContent, MenuItem, Select } from '@mui/material';
 import { LineChart, Line, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis } from 'recharts';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
@@ -83,7 +83,7 @@ const CancelOrdersChart = ({ employeeId, role }) => {
     };
 
     return (
-        <Card sx={{ p: 3, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between' }}>
+        <Paper elevation={3} sx={{ p: 3, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, justifyContent: 'center', flex: 1 }}>
                 <Typography variant="h6">Canceled Orders</Typography>
                 <Typography variant="h4">{totalCanceled}</Typography>
@@ -149,7 +149,7 @@ const CancelOrdersChart = ({ employeeId, role }) => {
                     </ResponsiveContainer>
                 </DialogContent>
             </Dialog>
-        </Card>
+        </Paper>
     );
 };
 

@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
 import Header from '../components/Header';
+import ReworkCallBack from '../components/Rework/ReworkCallBack';
+import ReworkHold from '../components/Rework/ReworkHold';
 
 const ReworkDashboard = () => {
     const dispatch = useDispatch();
@@ -91,17 +93,27 @@ const ReworkDashboard = () => {
                         <Grid item xs={12} md={6} container spacing={4}>
                             <Grid item xs={12} sm={6}>
                                 <Paper elevation={3}>
-                                    <UnderRework employeeId={employeeId} role={user?.role} />
+                                    <UnderRework employeeId={employeeId} />
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Paper elevation={3}>
-                                    <ReworkCompleted employeeId={employeeId} role={user?.role} />
+                                    <ReworkCompleted employeeId={employeeId} />
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Paper elevation={3}>
-                                    <ReworkFailed employeeId={employeeId} role={user?.role} />
+                                    <ReworkCallBack employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <ReworkFailed employeeId={employeeId} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3}>
+                                    <ReworkHold employeeId={employeeId} />
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -118,7 +130,7 @@ const ReworkDashboard = () => {
                             </Box>
                             <Box>
                                 <Paper elevation={3}>
-                                    <AlarmAlertComponent employeeId={employeeId} department={'flead'} />
+                                    <AlarmAlertComponent employeeId={user?.employeeId} department={user?.department} />
                                 </Paper>
                             </Box>
                         </Grid>

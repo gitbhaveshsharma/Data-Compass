@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import { loadUser } from './redux/authActions';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
-import FieldDashboard from './pages/FleadDashboard';
+import FleadDashboard from './pages/FleadDashboard';
 import LogisticsDashboard from './pages/LogisticsDashboard';
 import VerifyOperationPage from './pages/OperationPages/VerifyOperationPage';
 import VerifyDashboard from './pages/VerifyDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import FieldOperationPage from './pages/OperationPages/FieldOperationPage';
+import FleadOperationPage from './pages/OperationPages/FleadOperationPage';
 import Footer from './pages/Footer';
 import ReworkDashboard from './pages/ReworkDashboard';
 import RTODashboard from './pages/RTODashboard';
@@ -28,12 +28,12 @@ const App = () => {
                     <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
                 </Route>
                 <Route element={<ProtectedRoute role="employee" />}>
-                    <Route path="/field-dashboard" element={<FieldDashboard />} />
+                    <Route path="/field-dashboard" element={<FleadDashboard />} />
                     <Route path="/verify-dashboard" element={<VerifyDashboard />} />
                     <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />
                     <Route path="/rework-dashboard" element={<ReworkDashboard />} />
                     <Route path="/rto-dashboard" element={<RTODashboard />} />
-                    <Route path="/data/:id" element={<FieldOperationPage />} />
+                    <Route path="/data/:id" element={<FleadOperationPage />} />
                     <Route path="/data/order/:id" element={<VerifyOperationPage />} />
                 </Route>
                 <Route path="/" element={<LoginPage />} />

@@ -134,7 +134,7 @@ const VerifyDashboard = () => {
                             <ChartCard data={chartData} />
                         </Paper>
                         <Paper elevation={3}>
-                            <AlarmAlertComponent employeeId={employeeId} department={'verify'} />
+                                <AlarmAlertComponent employeeId={user?.employeeId} department={department} />
                         </Paper>
                     </Grid>
                 </Grid>

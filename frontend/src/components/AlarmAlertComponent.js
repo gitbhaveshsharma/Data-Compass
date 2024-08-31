@@ -41,13 +41,13 @@ const AlarmAlertComponent = ({ employeeId, department }) => {
                     if (alarm.department === department && alarm.status === 'active' && sameMinute) {
                         setCurrentAlarm(alarm);
                         setOpenSnackbar(true);
-                        setSnackbarMessage(`Call Back on ${alarm.number} (ID: ${alarm.dataId}) at ${alarmTime.format('HH:mm')}`);
+                        setSnackbarMessage(`Call Back on ${alarm.number} (Customer Id: ${alarm.dataId}) at ${alarmTime.format('HH:mm')}`);
                         setSnackbarSeverity('info');
                     } else if (alarm.department === department && alarm.status === 'active' && alarmTime.isBefore(now)) {
                         // If alarm time is missed, set severity to red
                         setCurrentAlarm(alarm);
                         setOpenSnackbar(true);
-                        setSnackbarMessage(`Missed alarm for ${alarm.number} (ID: ${alarm.dataId}) at ${alarmTime.format('HH:mm')}`);
+                        setSnackbarMessage(`Missed alarm for ${alarm.number} (Customer Id: ${alarm.dataId}) at ${alarmTime.format('HH:mm')}`);
                         setSnackbarSeverity('error');
                     }
                 });

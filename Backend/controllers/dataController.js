@@ -228,7 +228,6 @@ cron.schedule('*/2 * * * *', autoAssignOrdersForRework);
 // Fetch data assigned to a specific employee
 const getAssignedData = async (req, res) => {
     const { employeeId } = req.params;
-    console.log("res form backend ", employeeId)
     try {
         let assignedData;
         if (employeeId === 'all') {
@@ -240,35 +239,25 @@ const getAssignedData = async (req, res) => {
             assignedData = await Data.find({ assignedTo: new mongoose.Types.ObjectId(employeeId) });
         }
         res.json(assignedData);
-        console.log(assignedData)
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch assigned data' });
     }
 };
 
 
-const updateDataHoldStatus = async (req, res) => {
+
+const updateDataStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
-        const data = await Data.findByIdAndUpdate(id, { status: 'hold' }, { new: true });
+        console.log(req.id)
+        console.log(req.body)
+        const data = await Data.findByIdAndUpdate(id, {status}, { new: true });
         res.json(data);
     } catch (error) {
         res.status(500).send(error.message);
     }
 };
-
-const updateDataCallbackStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
-        const data = await Data.findByIdAndUpdate(id, { status: 'callback' }, { new: true });
-        res.json(data);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-};
-
 
 
 // Fetch data by ID
@@ -606,11 +595,10 @@ module.exports = {
     getCancelDataById,
     getCallbackDataById,
     updateOrderStatus,
+    updateDataStatus,
     deleteProductFromOrder,
     updateOrder,
     getVerifyStatusOrders,
-    updateDataHoldStatus,
     getHoldData,
     getHoldDataById,
-    updateDataCallbackStatus,
 };

@@ -24,7 +24,7 @@ const ReworkFailed = React.memo(({ employeeId, role }) => {
     const displayData = useMemo(() => {
         const combinedData = [...orderData, ...assignedData]; // Merging the two datasets
         return combinedData
-            .filter(order => order.status === 'rework failed' && (role === 'admin' || order.assignedTo === employeeId))
+            .filter(order => order.status === 'rework-failed' && (role === 'admin' || order.assignedTo === employeeId))
             .map(order => ({
                 ...order,
                 totalPrice: (order.billDetails && Array.isArray(order.billDetails))
@@ -33,8 +33,13 @@ const ReworkFailed = React.memo(({ employeeId, role }) => {
             }));
     }, [orderData, assignedData, employeeId, role]);
 
-    return <DataTable columns={orderColumns} data={displayData} title="Rework Failed" baseURL="/data/order" />;
-});
+    // Determine baseURL based on totalPrice
+    const baseURL = useMemo(() => {
+        const hasNonZeroPrice = displayData.some(order => order.totalPrice > 0);
+        return hasNonZeroPrice ? "/data/order" : "/data";
+    }, [displayData]);
 
+    return <DataTable columns={orderColumns} data={displayData} title="Rework Failed" baseURL={baseURL} />;
+});
 
 export default ReworkFailed;

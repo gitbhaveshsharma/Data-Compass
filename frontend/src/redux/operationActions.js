@@ -163,22 +163,14 @@ export const updateOrder = (id, orderDetails) => async (dispatch) => {
     }
 };
 
-export const updateDataHoldStatus = (id, status) => async (dispatch) => {
+
+export const updateDataStatus = (id, status) => async (dispatch) => {
+    console.log(id, status)
     try {
-        const response = await axios.put(`${API_BASE_URL}/data/${id}/status/hold`, { status }, getAuthHeaders());
+        const response = await axios.put(`${API_BASE_URL}/data/${id}/status`, { status }, getAuthHeaders());
         dispatch({ type: 'UPDATE_DATA_STATUS_SUCCESS', payload: response.data });
     } catch (error) {
+        console.log(error)
         dispatch({ type: 'UPDATE_DATA_STATUS_FAILURE', error: error.message });
     }
 };
-
-
-export const updateDataCallbackStatus = (id, status) => async (dispatch) => {
-    try {
-        const response = await axios.put(`${API_BASE_URL}/data/${id}/status/callback`, { status }, getAuthHeaders());
-        dispatch({ type: 'UPDATE_DATA_STATUS_SUCCESS', payload: response.data });
-    } catch (error) {
-        dispatch({ type: 'UPDATE_DATA_STATUS_FAILURE', error: error.message });
-    }
-};
-

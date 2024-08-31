@@ -14,11 +14,10 @@ const {
     getCancelDataById,
     getCallbackDataById,
     updateOrderStatus,
+    updateDataStatus,
     deleteProductFromOrder,
     updateOrder,
     getVerifyStatusOrders,
-    updateDataHoldStatus,
-    updateDataCallbackStatus,
     getHoldData,
     getHoldDataById,
 } = require('../controllers/dataController');
@@ -39,11 +38,10 @@ router.get('/order/:id', getOrderDataById);
 router.get('/cancel/:id', getCancelDataById);
 router.get('/callback/:id', getCallbackDataById);
 router.put('/order/:id/status', updateOrderStatus);
+router.put('/:id/status', updateDataStatus);
 router.delete('/order/:id/product/:productId', deleteProductFromOrder);
 router.put('/order/:id', updateOrder);
 router.get('/orders/status/verify', getVerifyStatusOrders);
-router.put('/:id/status/hold', updateDataHoldStatus);
-router.put('/:id/status/callback', updateDataCallbackStatus);
 router.get('/hold/:employeeId', getHoldData);
 router.get('/hold/:id', getHoldDataById);
 module.exports = router;
