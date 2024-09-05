@@ -54,8 +54,8 @@ connectDB();
 // Public routes (excluded from auth middleware)
 app.use('/api/auth', authRoutes);
 
-// // // Serve static files from the "frontend/build" directory
-// app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+// // Serve static files from the "frontend/build" directory
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
 // Apply auth middleware to all other routes that require authentication
 app.use('/api/upload', auth, uploadRoute);
@@ -71,10 +71,10 @@ app.get('/api/protected', auth, (req, res) => {
     res.send({ message: 'This is a protected route', user: req.user });
 });
 
-// // Handle all other routes and send back the index.html file for frontend routing
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
-// });
+// Handle all other routes and send back the index.html file for frontend routing
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

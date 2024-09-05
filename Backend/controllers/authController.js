@@ -11,21 +11,30 @@ const generateEmployeeId = (firstName, lastName) => {
 
 exports.login = async (req, res) => {
     const { employeeId, password } = req.body;
-    //console.log(req.body)
+
     try {
         const user = await User.findOne({ employeeId });
-        //console.log(user)
+        // const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        // // console.log('Password comparison result:', isPasswordCorrect); // Debugging line
+
+
+        // Check if the user exists and if the password matches
         if (!user || !(await bcrypt.compare(password, user.password))) {
+            // console.error('Invalid login attempt: Employee ID or password is incorrect.');
             return res.status(400).send({ error: 'Invalid employee ID or password.' });
         }
-        
-        const token = jwt.sign({ id: user._id, role: user.role, department: user.department, employeeId: user.employeeId }, process.env.JWT_SECRET, {
-            expiresIn: '13h',
-        });
-        //console.log(token)
-        //console.log(user)
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId },
+            process.env.JWT_SECRET,
+            { expiresIn: '13h' }
+        );
+
         res.send({ token, user: { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId } });
     } catch (error) {
+        // Log the error with detailed information
+        // console.error('Error during login:', error);
         res.status(500).send({ error: 'Server error.' });
     }
 };
@@ -54,7 +63,7 @@ exports.register = async (req, res) => {
 
         return res.status(201).json({ message: 'User registered successfully.' });
     } catch (error) {
-        console.error('Registration error:', error); // Log the detailed error
+        // console.error('Registration error:', error); // Log the detailed error
         return res.status(500).json({ error: 'Server error.' });
     }
 };

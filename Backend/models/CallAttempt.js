@@ -78,7 +78,7 @@ const CallAttemptSchema = new mongoose.Schema({
   },
   departmentLevel: {
     type: String,
-    enum: ['flead', 'verify'],
+    enum: ['flead', 'verify', 'rework', 'rto'],
     required: true
   },
   message: {

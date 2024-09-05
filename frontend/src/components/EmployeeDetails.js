@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployeeByEmployeeId, updateEmployee } from '../redux/employeeActions';
+import { fetchEmployees, updateEmployee } from '../redux/employeeActions';
+import { loadUser } from '../redux/authActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -8,12 +9,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
-const departments = ['flead', 'verify', 'admin', 'logistics'];
+const departments = ['flead', 'verify', 'admin', 'rework', 'rto', 'logistics'];
 const statuses = ['active', 'inactive'];
 
 const EmployeeDetails = () => {
     const [employeeIdToFetch, setEmployeeIdToFetch] = useState('');
+    const [filteredEmployee, setFilteredEmployee] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -25,29 +28,40 @@ const EmployeeDetails = () => {
 
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState({});
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
     const dispatch = useDispatch();
-    const { employee, loading, error } = useSelector((state) => state.employees);
+    const { employees, loading, error } = useSelector((state) => state.employees);
 
     const handleEmployeeIdChange = (e) => {
-        setEmployeeIdToFetch(e.target.value);
-    };
+        const id = e.target.value;
+        setEmployeeIdToFetch(id);
 
-    const fetchEmployee = () => {
-        dispatch(fetchEmployeeByEmployeeId(employeeIdToFetch));
+        // Filter the employee by ID from the fetched employees
+        if (id && employees) {
+            const foundEmployee = employees.find(emp => emp.employeeId === id);
+            setFilteredEmployee(foundEmployee || null);
+        } else {
+            setFilteredEmployee(null);
+        }
     };
 
     useEffect(() => {
-        if (employee) {
+        dispatch(fetchEmployees());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (filteredEmployee) {
             setFormData({
-                name: employee.name,
-                email: employee.email,
+                name: filteredEmployee.name,
+                email: filteredEmployee.email,
                 password: '',
-                department: employee.department,
-                employeeId: employee.employeeId,
-                status: employee.status,
+                department: filteredEmployee.department,
+                employeeId: filteredEmployee.employeeId,
+                status: filteredEmployee.status,
             });
         }
-    }, [employee]);
+    }, [filteredEmployee]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,6 +87,7 @@ const EmployeeDetails = () => {
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             setMessage('Please fill in all required fields.');
+            setSnackbarOpen(true);
             return;
         }
 
@@ -85,15 +100,29 @@ const EmployeeDetails = () => {
                 status: formData.status,
             };
 
+            let passwordChanged = false;
             if (formData.password) {
                 userData.password = formData.password;
+                passwordChanged = true;
             }
 
-            await dispatch(updateEmployee(employee._id, userData));
+            await dispatch(updateEmployee(filteredEmployee._id, userData));
             setMessage('Employee details updated successfully!');
+            setSnackbarOpen(true);
+
+            if (passwordChanged) {
+                setTimeout(() => {
+                    dispatch(loadUser()); 
+                }, 1000);
+            }
         } catch (error) {
             setMessage('Update failed. Please try again.');
+            setSnackbarOpen(true);
         }
+    };
+
+    const handleClose = () => {
+        setSnackbarOpen(false);
     };
 
     return (
@@ -110,14 +139,6 @@ const EmployeeDetails = () => {
                 onChange={handleEmployeeIdChange}
                 sx={{ mt: 2, mb: 2 }}
             />
-            <Button
-                fullWidth
-                variant="contained"
-                onClick={fetchEmployee}
-                disabled={loading}
-            >
-                Get Details
-            </Button>
             {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                     {error}
@@ -269,11 +290,11 @@ const EmployeeDetails = () => {
                         Update Details
                     </Button>
                 </Box>
-                {message && (
-                    <Alert severity={message.includes('successfully') ? 'success' : 'error'}>
+                <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={message.includes('successfully') ? 'success' : 'error'}>
                         {message}
                     </Alert>
-                )}
+                </Snackbar>
             </Box>
         </>
     );
