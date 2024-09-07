@@ -2,8 +2,9 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { Box, Drawer as MuiDrawer, AppBar as MuiAppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon } from '@mui/icons-material';
-import Profile from './Profile';
+import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon,  People as PeopleIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon } from '@mui/icons-material';
+import AvatarComponent from './AvatarComponent';
+
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -104,7 +105,7 @@ export default function AdminDrawer({ children }) {
             </Typography>
           </Box>
           <Box>
-            <Profile />
+            <AvatarComponent />
           </Box>
         </Toolbar>
       </AppBar>
@@ -216,6 +217,27 @@ export default function AdminDrawer({ children }) {
                 <AnalyticsIcon />
               </ListItemIcon>
               <ListItemText primary="Data Analysis" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+
+            <ListItemButton
+              component={Link}
+              to="/admin-dashboard/employee-profile"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

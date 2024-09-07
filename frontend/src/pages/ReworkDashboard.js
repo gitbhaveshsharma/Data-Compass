@@ -11,7 +11,6 @@ import { fetchAssignedData, fetchOrderData } from '../redux/dataActions'; // Upd
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
-import Header from '../components/Header';
 import ReworkCallBack from '../components/Rework/ReworkCallBack';
 import ReworkHold from '../components/Rework/ReworkHold';
 
@@ -86,7 +85,6 @@ const ReworkDashboard = () => {
 
     return (
         <>
-            <Header title="Rework Dashboard" />
             <Container maxWidth="xl">
                 <Box sx={{ flexGrow: 1, p: 2 }}>
                     <Grid container spacing={4}>

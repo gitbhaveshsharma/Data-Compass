@@ -184,6 +184,8 @@ const CallAttemptComponent = ({ dataId, mobileNumber, department }) => {
                                         <MenuItem value="" disabled>Department Level</MenuItem>
                                         <MenuItem value="flead">flead</MenuItem>
                                         <MenuItem value="verify">verify</MenuItem>
+                                        <MenuItem value="verify">rework</MenuItem>
+                                        <MenuItem value="verify">rto</MenuItem>
                                     </Select>
                                 </Grid>
                                 <Grid item xs={12} md={4}>

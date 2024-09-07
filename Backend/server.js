@@ -20,11 +20,12 @@ const auth = require('./middleware/auth');
 const app = express();
 const PORT = process.env.PORT;
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS;
 
 const corsOptions = {
     origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        if (!origin || origin === allowedOrigins) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));

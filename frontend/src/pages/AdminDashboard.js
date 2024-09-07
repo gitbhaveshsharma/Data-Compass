@@ -6,17 +6,19 @@ import Register from './admin/EmployeeRegister';
 import DataAssigned from './admin/DataAssgined';
 import AdminDrawer from '../components/AdminCustomDrawer';
 import AnalysisPage from './admin/AnalysisPage';
+import Profile from '../components/Profile';
 
 const AdminDashboard = () => {
 
     return (
         <AdminDrawer>
-                <Routes>
+            <Routes>
                      <Route path="/" element={<Dashboard />} />
                     <Route path="/products" element={<ProductPage />} />
                 <Route path="/Register" element={<Register />} />
                 <Route path="/analysis" element={<AnalysisPage />} />
-                    <Route path="/data-assgined" element={<DataAssigned />} />
+                <Route path="/data-assgined" element={<DataAssigned />} />
+                <Route path="/employee-profile" element={<Profile />} />
                 </Routes>
         </AdminDrawer>
     );

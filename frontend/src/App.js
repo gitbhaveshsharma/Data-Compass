@@ -13,6 +13,8 @@ import FleadOperationPage from './pages/OperationPages/FleadOperationPage';
 import Footer from './pages/Footer';
 import ReworkDashboard from './pages/ReworkDashboard';
 import RTODashboard from './pages/RTODashboard';
+import EmployeeDrawer from './components/EmployeeDrawer';
+import Profile from './components/Profile';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -24,18 +26,35 @@ const App = () => {
         <Router>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
+
+                {/* Admin Route */}
                 <Route element={<ProtectedRoute role="admin" />}>
                     <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
                 </Route>
+
+                {/* Employee Routes with EmployeeDrawer */}
                 <Route element={<ProtectedRoute role="employee" />}>
-                    <Route path="/field-dashboard" element={<FleadDashboard />} />
-                    <Route path="/verify-dashboard" element={<VerifyDashboard />} />
-                    <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />
-                    <Route path="/rework-dashboard" element={<ReworkDashboard />} />
-                    <Route path="/rto-dashboard" element={<RTODashboard />} />
-                    <Route path="/data/:id" element={<FleadOperationPage />} />
-                    <Route path="/data/order/:id" element={<VerifyOperationPage />} />
+                    <Route
+                        path="/*"
+                        element={
+                            <EmployeeDrawer>
+                                {/* Nested Routes inside EmployeeDrawer */}
+                                <Routes>
+                                    <Route path="/employee-profile" element={<Profile />} />
+                                    <Route path="/field-dashboard" element={<FleadDashboard />} />
+                                    <Route path="/verify-dashboard" element={<VerifyDashboard />} />
+                                    <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />
+                                    <Route path="/rework-dashboard" element={<ReworkDashboard />} />
+                                    <Route path="/rto-dashboard" element={<RTODashboard />} />
+                                    <Route path="/data/:id" element={<FleadOperationPage />} />
+                                    <Route path="/data/order/:id" element={<VerifyOperationPage />} />
+                                </Routes>
+                            </EmployeeDrawer>
+                        }
+                    />
                 </Route>
+
+                {/* Default Route */}
                 <Route path="/" element={<LoginPage />} />
             </Routes>
             <ConditionalFooter />

@@ -12,9 +12,9 @@ const HoldData = ({ employeeId, role }) => {
         dispatch(fetchAssignedData(employeeId, role));
     }, [dispatch, employeeId, role]);
 
-    const canceledData = assignedData.filter(data => data.status === 'hold');
+    const holdData = assignedData.filter(data => data.status === 'hold');
 
-    return <DataTable columns={columns} data={canceledData} title="Hold Data" baseURL="/data" />;
+    return <DataTable columns={columns} data={holdData} title="Hold Data" baseURL="/data" />;
 };
 
 export default HoldData;

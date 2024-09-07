@@ -33,7 +33,6 @@ const CallAttemptSchema = new mongoose.Schema({
       'OBD_TIMEOUT',
       'CANCEL',
       'BRIDGE_UNAVAILABLE',
-      'MISS_CALL',
       'NO_INCOMING_CLI',
       'INCOMING_DISCONNECTED',
       'RING_TIMEOUT',
@@ -78,7 +77,7 @@ const CallAttemptSchema = new mongoose.Schema({
   },
   departmentLevel: {
     type: String,
-    enum: ['flead', 'verify'],
+    enum: ['flead', 'verify', 'rework', 'rto'],
     required: true
   },
   message: {

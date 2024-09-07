@@ -134,7 +134,7 @@ const DataTable = ({ columns, data, title, baseURL }) => {
                 <h3>{title}</h3>
             <p>Data Count: {rows.length}</p>
             <Button variant="outlined" onClick={handleOpen}>
-                View {title}
+                View 
             </Button>
             <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '22px' }}>
