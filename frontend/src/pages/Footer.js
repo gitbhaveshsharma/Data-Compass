@@ -15,6 +15,7 @@ const Footer = () => {
                 padding: '1rem',
                 marginTop: 'auto',
                 textAlign: 'center',
+                marginBottom:0,
             }}
         >
             <Typography variant="body2">

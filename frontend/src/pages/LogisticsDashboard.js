@@ -7,7 +7,6 @@ import ShippingOrder from '../components/Logistics/ShippingOrder';
 import DeliveredOrder from '../components/Logistics/DeliveredOrders';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
-import Header from '../components/Header';
 import ReturnedOrder from '../components/Logistics/ReturnedOrder';
 
 
@@ -38,7 +37,6 @@ const LogisticsDashboard = () => {
 
     return (
         <>
-            <Header title="Logistics Dashboard" />
         <Container maxWidth="lg" sx={{mt: 4}}>
             {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 4, mb: 4 }}>
                 Logistics Dashboard

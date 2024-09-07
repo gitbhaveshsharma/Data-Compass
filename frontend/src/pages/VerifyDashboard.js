@@ -12,7 +12,6 @@ import ChartCard from '../components/ChartCard';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { updateEmployee } from '../redux/employeeActions';
-import Header from '../components/Header';
 
 const VerifyDashboard = () => {
     const dispatch = useDispatch();
@@ -72,7 +71,6 @@ const VerifyDashboard = () => {
 
     return (
         <>
-            <Header title="Verify Dashboard" />
         <Container maxWidth="xl">
             {/* <Typography variant="h4" sx={{ textAlign: 'center', mt: 2 }}>Verify Dashboard</Typography> */}
             <Box sx={{ flexGrow: 1, p: 2 }}>

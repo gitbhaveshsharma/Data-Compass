@@ -33,7 +33,6 @@ const CallAttemptSchema = new mongoose.Schema({
       'OBD_TIMEOUT',
       'CANCEL',
       'BRIDGE_UNAVAILABLE',
-      'MISS_CALL',
       'NO_INCOMING_CLI',
       'INCOMING_DISCONNECTED',
       'RING_TIMEOUT',

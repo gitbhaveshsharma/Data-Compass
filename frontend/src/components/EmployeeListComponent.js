@@ -98,7 +98,7 @@ const EmployeeListComponent = () => {
         },
         [selectedEmployees, handleCheckboxChange]
     );
-
+    
     const activeEmployees = useMemo(() => employees.filter(employee => employee.status !== 'inactive'), [employees]);
     const verifyEmployees = useMemo(() => activeEmployees.filter(employee => employee.department === 'verify'), [activeEmployees]);
     const fleadEmployees = useMemo(() => activeEmployees.filter(employee => employee.department === 'flead'), [activeEmployees]);
@@ -138,8 +138,7 @@ const EmployeeListComponent = () => {
                                     itemData={fleadEmployees}
                                 >
                                     {renderRow}
-                                </FixedSizeList>
-                          
+                                </FixedSizeList> 
                         </Grid>
                     </Grid>
                 )}
