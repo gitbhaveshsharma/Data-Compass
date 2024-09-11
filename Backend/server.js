@@ -15,7 +15,9 @@ const authRoutes = require('./routes/authRoute');
 const productRoutes = require('./routes/productRoutes');
 const callAttemptRoutes = require('./routes/callAttemptRoutes');
 const alarmRoutes = require('./routes/alarmRoutes');
+const accessControlRoutes = require('./routes/accessControlRoutes')
 const auth = require('./middleware/auth');
+const verifyIP = require("./middleware/verifyIP");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -25,7 +27,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS;
 
 const corsOptions = {
     origin: function (origin, callback) {
-        if (!origin || origin === allowedOrigins) {
+        if (!origin || origin === allowedOrigins || true) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -53,6 +55,7 @@ async function connectDB() {
 connectDB();
 
 // Public routes (excluded from auth middleware)
+app.use(verifyIP);
 app.use('/api/auth', authRoutes);
 
 // // // Serve static files from the "frontend/build" directory
@@ -66,7 +69,7 @@ app.use('/api/products', auth, productRoutes);
 app.use('/api/callAttempts', auth, callAttemptRoutes);
 app.use('/api/alarms', auth, alarmRoutes);
 app.use('/api/history', auth, historyRoutes);
-
+app.use('/api/access-control',auth,accessControlRoutes)
 // Protecting a route as an example
 app.get('/api/protected', auth, (req, res) => {
     res.send({ message: 'This is a protected route', user: req.user });
