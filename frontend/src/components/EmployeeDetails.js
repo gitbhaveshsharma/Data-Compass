@@ -33,19 +33,6 @@ const EmployeeDetails = () => {
     const dispatch = useDispatch();
     const { employees, loading, error } = useSelector((state) => state.employees);
 
-    const handleEmployeeIdChange = (e) => {
-        const id = e.target.value;
-        setEmployeeIdToFetch(id);
-
-        // Filter the employee by ID from the fetched employees
-        if (id && employees) {
-            const foundEmployee = employees.find(emp => emp.employeeId === id);
-            setFilteredEmployee(foundEmployee || null);
-        } else {
-            setFilteredEmployee(null);
-        }
-    };
-
     useEffect(() => {
         dispatch(fetchEmployees());
     }, [dispatch]);
@@ -62,6 +49,34 @@ const EmployeeDetails = () => {
             });
         }
     }, [filteredEmployee]);
+
+    const handleEmployeeIdChange = (e) => {
+        setEmployeeIdToFetch(e.target.value);
+    };
+
+    const handleFetchEmployee = () => {
+        if (employeeIdToFetch && employees) {
+            const foundEmployee = employees.find(emp => emp.employeeId === employeeIdToFetch);
+
+            if (foundEmployee) {
+                setFilteredEmployee(foundEmployee);
+            } else {
+                setMessage('Employee not found');
+                setSnackbarOpen(true);
+                setFilteredEmployee(null);
+                setFormData({
+                    name: '',
+                    email: '',
+                    password: '',
+                    department: '',
+                    employeeId: '',
+                    status: '',
+                });
+            }
+        } else {
+            setFilteredEmployee(null);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -112,7 +127,7 @@ const EmployeeDetails = () => {
 
             if (passwordChanged) {
                 setTimeout(() => {
-                    dispatch(loadUser()); 
+                    dispatch(loadUser());
                 }, 1000);
             }
         } catch (error) {
@@ -139,6 +154,13 @@ const EmployeeDetails = () => {
                 onChange={handleEmployeeIdChange}
                 sx={{ mt: 2, mb: 2 }}
             />
+            <Button
+                variant="contained"
+                onClick={handleFetchEmployee}
+                sx={{ mb: 2 }}
+            >
+                Get Employee Details
+            </Button>
             {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                     {error}
