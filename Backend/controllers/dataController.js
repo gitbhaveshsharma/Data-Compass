@@ -219,10 +219,10 @@ const autoAssignOrdersForRework = async () => {
     }
 };
 
-// Schedule the tasks to run every 2 minutes
+// Schedule the tasks to run every 3:00AM minutes
 cron.schedule('*/2 * * * *', autoAssignOrders);
-cron.schedule('*/2 * * * *', autoAssignOrdersForRto);
-cron.schedule('*/2 * * * *', autoAssignOrdersForRework);
+cron.schedule('0 3 * * *', autoAssignOrdersForRto);
+cron.schedule('0 3 * * *', autoAssignOrdersForRework);
 
 
 // Fetch data assigned to a specific employee
