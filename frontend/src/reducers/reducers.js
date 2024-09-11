@@ -15,6 +15,7 @@ import productReducer from './productReducer';
 import callattemptReducer from './callAttemptReducer';
 import alarmReducer from './alarmReducer';
 import historyReducer from './historyReducer';
+import accessControlReducer from './accessReducer';
 
 
 const rootReducer = combineReducers({
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
     callAttempts: callattemptReducer,
     alarms: alarmReducer,
     history: historyReducer,
+    ipAccess: accessControlReducer
 });
 
 export default rootReducer;

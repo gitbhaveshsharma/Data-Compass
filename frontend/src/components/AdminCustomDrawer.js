@@ -2,9 +2,9 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { Box, Drawer as MuiDrawer, AppBar as MuiAppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon,  People as PeopleIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon,  People as PeopleIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon} from '@mui/icons-material';
 import AvatarComponent from './AvatarComponent';
-
+import KeyIcon from '@mui/icons-material/Key';
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -236,6 +236,26 @@ export default function AdminDrawer({ children }) {
                 }}
               >
                 <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+            <ListItemButton
+              component={Link}
+              to="/admin-dashboard/access-control"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <KeyIcon />
               </ListItemIcon>
               <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
