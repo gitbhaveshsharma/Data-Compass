@@ -111,6 +111,10 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    fleadEmployeeIds: [{ type: String }],  // Array for Flead employee IDs
+    verifyEmployeeIds: [{ type: String }],  // Array for Verify employee IDs
+    reworkEmployeeIds: [{ type: String }],  // Array for Rework employee IDs
+    rtoEmployeeIds: [{ type: String }],     // Array for RTO employee IDs
     expectedDeliveryDate: {
         type: Date,
     },

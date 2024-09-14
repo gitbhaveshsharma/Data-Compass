@@ -631,9 +631,9 @@ const VerifyOperationPage = () => {
             </Box>
             <Box display="flex" justifyContent="center" alignItems="center" padding="10px">
                 <Grid container spacing={2} maxWidth="false">
-                    <Grid item xs={12} md={3}>
+                    {/* <Grid item xs={12} md={3}>
                         <AssignedTo onAssign={handleAssignTo} />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12} md={9}>
                         <CallAttemptComponent department={userDepartment} dataId={id} mobileNumber={orderDetails.number} />
                     </Grid>
