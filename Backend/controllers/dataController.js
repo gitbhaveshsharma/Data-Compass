@@ -14,30 +14,36 @@ const distributeData = async (req, res) => {
         const assignmentMessages = [];
 
         for (let i = 0; i < employeeIds.length; i++) {
-            const { _id, employeeId } = employeeIds[i]; // Destructure _id and employeeId
+            const { _id, employeeId } = employeeIds[i];
             const department = departments[i];
 
-            let unassignedData;
+            let unassignedData = [];
 
-            if (department === 'verify') {
-                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: _id } }).limit(dataCount * employeeIds.length);
-            } else if (department === 'flead') {
-                unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount * employeeIds.length);
+            // Fetch unassigned data for each department
+            if (department === 'flead') {
+                unassignedData = await Data.find({ status: 'unassigned' }).limit(dataCount);
+                await Data.updateMany({ _id: { $in: unassignedData.map(d => d._id) } }, { $set: { status: 'assigned' } });
+            } else if (department === 'verify') {
+                unassignedData = await Order.find({ status: 'pending', assignedTo: { $ne: _id } }).limit(dataCount);
+                await Order.updateMany({ _id: { $in: unassignedData.map(d => d._id) } }, { $set: { status: 'under verification' } });
             }
 
             if (unassignedData && unassignedData.length > 0) {
-                const assignedData = unassignedData.slice(i * dataCount, (i + 1) * dataCount);
-                assignedData.forEach(data => {
-                    data.assignedTo = _id; // Assign _id to assignedTo
-                    data.employeeId = employeeId; // Assign employeeId to employeeId field
+                unassignedData.forEach(data => {
+                    data.assignedTo = _id;
+
+                    // Assign employeeId to the respective department's array
                     if (department === 'flead') {
-                        data.status = 'assigned';
+                        data.fleadEmployeeIds.push(employeeId);
                     } else if (department === 'verify') {
-                        data.status = 'under verification';
-                    }
+                        data.verifyEmployeeIds.push(employeeId);
+                    } 
                     updates.push(data.save());
                 });
-                assignmentMessages.push(`Assigned ${assignedData.length} items to employee ${employeeId} in ${department} department.`);
+
+                assignmentMessages.push(`Assigned ${unassignedData.length} items to employee ${employeeId} in ${department} department.`);
+            } else {
+                assignmentMessages.push(`No available items to assign to employee ${employeeId} in ${department} department.`);
             }
         }
 
@@ -48,6 +54,8 @@ const distributeData = async (req, res) => {
         res.status(500).json({ message: 'Error distributing data', error });
     }
 };
+
+
 
 // Fetch data counts
 const getDataCounts = async (req, res) => {
@@ -95,7 +103,7 @@ const autoAssignOrders = async () => {
         for (const order of pendingOrders) {
             const employee = employees[employeeIndex];
             order.assignedTo = employee._id;
-            order.employeeId = employee.employeeId;
+            order.verifyEmployeeIds.push(employee.employeeId);
             order.status = 'under verification';
             await order.save();
 
@@ -143,7 +151,7 @@ const autoAssignOrdersForRto = async () => {
         for (const order of returnOrders) {
             const employee = employees[employeeIndex];
             order.assignedTo = employee._id;
-            order.employeeId = employee.employeeId;
+            order.rtoEmployeeIds.push(employee.employeeId);
             order.status = 'under rto';
             await order.save();
 
@@ -197,7 +205,7 @@ const autoAssignOrdersForRework = async () => {
 
             // Assign the item to the employee
             item.assignedTo = employee._id;
-            item.employeeId = employee.employeeId;
+            item.reworkEmployeeIds.push(employee.employeeId);
             item.status = 'under rework';
             await item.save();
 
@@ -340,6 +348,7 @@ const orderData = async (req, res) => {
         if (!data) {
             return res.status(404).json({ message: 'Data not found' });
         }
+
         const { products, status, billDetails } = req.body;
 
         const orderId = await Order.generateOrderId();
@@ -348,6 +357,7 @@ const orderData = async (req, res) => {
         const expectedDeliveryDate = new Date();
         expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
+        // Create new order with department-specific employee IDs
         const order = new Order({
             dataId: data._id,
             name: data.name,
@@ -366,17 +376,24 @@ const orderData = async (req, res) => {
             status,
             orderId,
             expectedDeliveryDate, // Set the expected delivery date
+            fleadEmployeeIds: data.fleadEmployeeIds || [],  // Set fleadEmployeeIds
+            reworkEmployeeIds: data.reworkEmployeeIds || [],  // Set reworkEmployeeIds
         });
 
         await order.save();
+
+        // Update data status to 'order'
         data.status = 'order';
         await data.save();
+
+        // Return the created order as response
         res.json(order);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 
@@ -442,6 +459,7 @@ const cancelData = async (req, res) => {
             employeeId: data.employeeId || null,
             expectedDeliveryDate: data.expectedDeliveryDate || null,
             department: department, // Set the department field
+            fleadEmployeeIds: data.fleadEmployeeIds || [],  // Set fleadEmployeeIds
         });
 
         await cancel.save();

@@ -7,6 +7,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+const ipRoutes = require('./routes/ipRoutes');
 const uploadRoute = require('./routes/uploadRoute');
 const employeeRoute = require('./routes/employeeRoute');
 const dataRoute = require('./routes/dataRoute');
@@ -16,29 +17,16 @@ const productRoutes = require('./routes/productRoutes');
 const callAttemptRoutes = require('./routes/callAttemptRoutes');
 const alarmRoutes = require('./routes/alarmRoutes');
 const auth = require('./middleware/auth');
+const ipVerify = require('./middleware/ipVerify'); 
 
 const app = express();
 const PORT = process.env.PORT;
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || origin === allowedOrigins) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    optionsSuccessStatus: 200,
-};
-
-
-// const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+// const allowedOrigins = process.env.ALLOWED_ORIGINS;
 
 // const corsOptions = {
 //     origin: function (origin, callback) {
-//         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+//         if (!origin || origin === allowedOrigins) {
 //             callback(null, true);
 //         } else {
 //             callback(new Error('Not allowed by CORS'));
@@ -46,6 +34,20 @@ const corsOptions = {
 //     },
 //     optionsSuccessStatus: 200,
 // };
+
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionsSuccessStatus: 200,
+};
 
 app.use(cors(corsOptions));
 
@@ -72,13 +74,15 @@ app.use('/api/auth', authRoutes);
 // app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
 // Apply auth middleware to all other routes that require authentication
-app.use('/api/upload', auth, uploadRoute);
-app.use('/api/employees', auth, employeeRoute);
-app.use('/api/data', auth, dataRoute);
-app.use('/api/products', auth, productRoutes);
-app.use('/api/callAttempts', auth, callAttemptRoutes);
-app.use('/api/alarms', auth, alarmRoutes);
-app.use('/api/history', auth, historyRoutes);
+app.use('/api/ips', auth, ipVerify, ipRoutes);
+app.use('/api/upload', auth, ipVerify, uploadRoute);
+app.use('/api/employees', auth, ipVerify, employeeRoute);
+app.use('/api/data', auth, ipVerify, dataRoute);
+app.use('/api/products', auth, ipVerify, productRoutes);
+app.use('/api/callAttempts', auth, ipVerify, callAttemptRoutes);
+app.use('/api/alarms', auth, ipVerify, alarmRoutes);
+app.use('/api/history', auth, ipVerify, historyRoutes);
+
 
 // Protecting a route as an example
 app.get('/api/protected', auth, (req, res) => {

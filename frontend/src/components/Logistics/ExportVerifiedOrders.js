@@ -13,6 +13,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { exportColumns as columns } from '../../constants/orderColumns'; // Import the columns
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -26,31 +27,6 @@ const formatProduct = (product) => {
 const formatDate = (date) => {
     return dayjs(date).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm:ss');
 };
-
-const columns = [
-    { id: 'orderId', label: 'Order ID', minWidth: 170 },
-    { id: 'customerId', label: 'Customer ID', minWidth: 170 },
-    { id: 'name', label: 'Name', minWidth: 170 },
-    { id: 'number', label: 'Number', minWidth: 100 },
-    { id: 'products', label: 'Products', minWidth: 170 },
-    { id: 'discountType', label: 'Discount Type', minWidth: 170 },
-    { id: 'discountValue', label: 'Discount Value', minWidth: 170 },
-    { id: 'gstPercentage', label: 'GST Percentage', minWidth: 170 },
-    { id: 'totalPrice', label: 'Total Price', minWidth: 170 },
-    { id: 'address', label: 'Address', minWidth: 170 },
-    { id: 'city', label: 'City', minWidth: 170 },
-    { id: 'state', label: 'State', minWidth: 170 },
-    { id: 'zip', label: 'Zip', minWidth: 170 },
-    { id: 'nearBy', label: 'Near By', minWidth: 170 },
-    { id: 'area', label: 'Area', minWidth: 170 },
-    { id: 'altNumber', label: 'Alt Number', minWidth: 170 },
-    { id: 'createdAt', label: 'Created At', minWidth: 170 },
-    { id: 'paymentMethod', label: 'Payment Method', minWidth: 170 },
-    { id: 'transactionId', label: 'Transaction ID', minWidth: 170 },
-    { id: 'expectedDeliveryDate', label: 'Expected Delivery Date', minWidth: 170 },
-    { id: 'employeeId', label: 'Employee ID', minWidth: 170 },
-];
-
 
 const ExportVerifiedOrders = () => {
     const dispatch = useDispatch();
@@ -102,7 +78,10 @@ const ExportVerifiedOrders = () => {
                     filteredOrder[col] = order.billDetails ? order.billDetails.map(bill => bill[col]).join(', ') : '';
                 } else if (col === 'createdAt' || col === 'expectedDeliveryDate') {
                     filteredOrder[col] = formatDate(order[col]);
-                } else {
+                } else if (col === 'fleadEmployeeIds' || col === 'verifyEmployeeIds' || col === 'reworkEmployeeIds' || col === 'rtoEmployeeIds') {
+                    filteredOrder[col] = order[col].join(', ');
+                }
+                else {
                     filteredOrder[col] = order[col];
                 }
             });

@@ -1,4 +1,3 @@
-// backend/models/Data.js
 const mongoose = require('mongoose');
 
 const dataSchema = new mongoose.Schema({
@@ -14,9 +13,12 @@ const dataSchema = new mongoose.Schema({
     altNumber: String,
     status: { type: String, default: 'unassigned' },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    employeeId: { type: String, default: null },
+    fleadEmployeeIds: [{ type: String }],  // Array to store flead employee IDs
+    verifyEmployeeIds: [{ type: String }],  // Array to store verify employee IDs
+    reworkEmployeeIds: [{ type: String }],  // Array to store rework employee IDs
+    rtoEmployeeIds: [{ type: String }],     // Array to store rto employee IDs
     department: String,
-    activeDate: { type: Date, default: Date.now }, // New field to store the active date
+    activeDate: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Data', dataSchema);
