@@ -75,13 +75,13 @@ app.use('/api/auth', authRoutes);
 
 // Apply auth middleware to all other routes that require authentication
 // app.use('/api/ips', auth, ipVerify, ipRoutes);
-app.use('/api/upload', auth, ipVerify, uploadRoute);
-app.use('/api/employees', auth, ipVerify, employeeRoute);
-app.use('/api/data', auth, ipVerify, dataRoute);
-app.use('/api/products', auth, ipVerify, productRoutes);
-app.use('/api/callAttempts', auth, ipVerify, callAttemptRoutes);
-app.use('/api/alarms', auth, ipVerify, alarmRoutes);
-app.use('/api/history', auth, ipVerify, historyRoutes);
+app.use('/api/upload', auth, uploadRoute);
+app.use('/api/employees', auth, employeeRoute);
+app.use('/api/data', auth, dataRoute);
+app.use('/api/products', auth, productRoutes);
+app.use('/api/callAttempts', auth, callAttemptRoutes);
+app.use('/api/alarms', auth, alarmRoutes);
+app.use('/api/history', auth, historyRoutes);
 
 
 // Protecting a route as an example
