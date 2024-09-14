@@ -74,7 +74,7 @@ app.use('/api/auth', authRoutes);
 // app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
 
 // Apply auth middleware to all other routes that require authentication
-app.use('/api/ips', auth, ipVerify, ipRoutes);
+// app.use('/api/ips', auth, ipVerify, ipRoutes);git 
 app.use('/api/upload', auth, ipVerify, uploadRoute);
 app.use('/api/employees', auth, ipVerify, employeeRoute);
 app.use('/api/data', auth, ipVerify, dataRoute);
