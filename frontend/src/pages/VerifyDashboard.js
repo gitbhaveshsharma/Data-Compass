@@ -124,7 +124,7 @@ const VerifyDashboard = () => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Paper elevation={3}>
-                                    <YourOrder employeeId={user?.employeeId} role={'admin'} />
+                                    <YourOrder employeeId={user?.employeeId} />
                             </Paper>
                         </Grid>
                     </Grid>
