@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { Box, Drawer as MuiDrawer, AppBar as MuiAppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon,  People as PeopleIcon, Inventory as InventoryIcon, Dashboard as DashboardIcon, HowToReg as HowToRegIcon, DataSaverOn as DataSaverOnIcon, Analytics as AnalyticsIcon } from '@mui/icons-material';
 import AvatarComponent from './AvatarComponent';
+import PersonIcon from '@mui/icons-material/Person';
+import LogOut from '../components/Logout';
+import { useSelector, useDispatch } from 'react-redux';
 
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
@@ -73,6 +76,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function AdminDrawer({ children }) {
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -235,12 +240,15 @@ export default function AdminDrawer({ children }) {
                   justifyContent: 'center',
                 }}
               >
-                <PeopleIcon />
+                <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, mt: 'auto', opacity: open ? 1 : 0 }}>
+          <LogOut employeeId={user?.employeeId} id={user?.id} />
+        </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />

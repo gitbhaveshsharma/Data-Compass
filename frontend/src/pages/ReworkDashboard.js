@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UnderRework from '../components/Rework/UnderRework';
 import ReworkCompleted from '../components/Rework/ReworkCompleted';
 import ReworkFailed from '../components/Rework/ReworkFailed';
-import CheckOrderStatus from '../components/CheckOrderStatus';
+import YourOrder from '../components/YourOrders';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Container, Snackbar, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -115,8 +115,8 @@ const ReworkDashboard = () => {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                                    <CheckOrderStatus role={'admin'} />
+                                <Paper elevation={3}>
+                                    <YourOrder employeeId={user?.employeeId}/>
                                 </Paper>
                             </Grid>
                         </Grid>
