@@ -18,18 +18,17 @@ import {
 } from '@mui/material';
 import {
     Menu as MenuIcon,
-    People as PeopleIcon,
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
     Dashboard as DashboardIcon,
 } from '@mui/icons-material';
-
+import PersonIcon from '@mui/icons-material/Person';
+import LogOut from '../components/Logout';
 import AvatarComponent from './AvatarComponent';
 import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
 
-// Reuse the same mixins for drawer open/close animations
 const openedMixin = (theme) => ({
     width: drawerWidth,
     transition: theme.transitions.create('width', {
@@ -78,12 +77,14 @@ const AppBar = styled(MuiAppBar, {
     }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })((
+    { theme, open }) => ({
         width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
         ...(open && {
             ...openedMixin(theme),
             '& .MuiDrawer-paper': openedMixin(theme),
@@ -92,13 +93,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
             ...closedMixin(theme),
             '& .MuiDrawer-paper': closedMixin(theme),
         }),
-    }),
-);
+    }));
 
 export default function EmployeeDrawer({ children, pageTitle }) {
     const [open, setOpen] = React.useState(false);
     const user = useSelector((state) => state.auth.user);
-   
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -113,6 +113,7 @@ export default function EmployeeDrawer({ children, pageTitle }) {
         { name: 'logistics', path: '/logistics-dashboard' },
         { name: 'rework', path: '/rework-dashboard' },
         { name: 'rto', path: '/rto-dashboard' },
+        { name: 'IT', path: '/IT-dashboard' },
     ];
 
     const filteredLinks = departmentLinks.filter((link) => link.name === user?.department);
@@ -154,29 +155,31 @@ export default function EmployeeDrawer({ children, pageTitle }) {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            component={Link}
-                            to="/employee-profile"
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                                '&:hover': { backgroundColor: 'purple', color: '#fff' },
-                            }}
-                        >
-                            <ListItemIcon >
-                                <PeopleIcon sx={{ ml: 1.9 }} />
-                            </ListItemIcon>
-                            <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
-                    {filteredLinks.map(({ name, path }) => (
-                        <ListItem key={name} disablePadding sx={{ display: 'block' }}>
+                <Box sx={{ flexGrow: 1 }}>
+                    <List>
+                        {filteredLinks.map(({ name, path }) => (
+                            <ListItem key={name} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    component={Link}
+                                    to={path}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                        '&:hover': { backgroundColor: 'purple', color: '#fff' },
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <DashboardIcon sx={{ ml: 1.9 }} />
+                                    </ListItemIcon >
+                                    <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                        <ListItem disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 component={Link}
-                                to={path}
+                                to="/employee-profile"
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
@@ -184,14 +187,17 @@ export default function EmployeeDrawer({ children, pageTitle }) {
                                     '&:hover': { backgroundColor: 'purple', color: '#fff' },
                                 }}
                             >
-                                <ListItemIcon>
-                                    <DashboardIcon sx={{ ml: 1.9}} />
-                                </ListItemIcon >
-                                <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+                                <ListItemIcon >
+                                    <PersonIcon sx={{ ml: 1.9 }} />
+                                </ListItemIcon>
+                                <ListItemText primary="My Profile" sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                </List>
+                    </List>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, mt: 'auto', opacity: open ? 1 : 0 }}>
+                    <LogOut employeeId={user?.employeeId} id={user?.id} />
+                </Box>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />

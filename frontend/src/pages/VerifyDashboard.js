@@ -7,6 +7,7 @@ import CallbackOrders from '../components/OrderCard/CallbackOrders';
 import CanceledOrders from '../components/OrderCard/CanceledOrders';
 import CheckOrderStatus from '../components/CheckOrderStatus';
 import VerifiedOrders from '../components/OrderCard/VerifiedOrders';
+import YourOrder from '../components/YourOrders';
 import HoldOrder from '../components/OrderCard/HoldOrders';
 import ChartCard from '../components/ChartCard';
 import dayjs from 'dayjs';
@@ -122,8 +123,8 @@ const VerifyDashboard = () => {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                                <CheckOrderStatus role={'admin'} />
+                            <Paper elevation={3}>
+                                    <YourOrder employeeId={user?.employeeId} role={'admin'} />
                             </Paper>
                         </Grid>
                     </Grid>

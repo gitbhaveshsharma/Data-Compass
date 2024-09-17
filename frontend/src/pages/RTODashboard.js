@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UnderRTO from '../components/RTO/UnderRTO';
 import ReturnCanceled from '../components/RTO/ReturnCanceled';
 import ReDelivered from '../components/RTO/ReDelivered';
-import CheckOrderStatus from '../components/CheckOrderStatus';
+import YourOrder from '../components/YourOrders';
 import AlarmAlertComponent from '../components/AlarmAlertComponent';
 import { Grid, Paper, Box, Container} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -103,8 +103,8 @@ const RTODashboard = () => {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                                    <CheckOrderStatus role={'admin'} />
+                                <Paper elevation={3}>
+                                    <YourOrder employeeId={user?.employeeId} />
                                 </Paper>
                             </Grid>
                         </Grid>

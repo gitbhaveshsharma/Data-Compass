@@ -15,6 +15,7 @@ import ReworkDashboard from './pages/ReworkDashboard';
 import RTODashboard from './pages/RTODashboard';
 import EmployeeDrawer from './components/EmployeeDrawer';
 import Profile from './components/Profile';
+import ITDashboard from './pages/ITDashboard';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const App = () => {
                                     <Route path="/logistics-dashboard" element={<LogisticsDashboard />} />
                                     <Route path="/rework-dashboard" element={<ReworkDashboard />} />
                                     <Route path="/rto-dashboard" element={<RTODashboard />} />
+                                    <Route path="/IT-dashboard" element={<ITDashboard />} />
                                     <Route path="/data/:id" element={<FleadOperationPage />} />
                                     <Route path="/data/order/:id" element={<VerifyOperationPage />} />
                                 </Routes>

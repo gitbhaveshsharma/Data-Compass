@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { Paper, Box, Typography, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchEmployeeByEmployeeId } from '../redux/employeeActions';
-import LogOut from '../components/Logout';
-import AvatarComponent from './AvatarComponent'
+import AvatarComponent from './AvatarComponent';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -18,48 +17,68 @@ const Profile = () => {
   }, [employeeId, dispatch]);
 
   return (
-    <Paper elevation={3} sx={{ p: 3, maxWidth: 400, margin: '0 auto', mt: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-        <AvatarComponent avatarUrl={employee?.avatarUrl || '/static/images/avatar/1.jpg'}  />
-      </Box>
-      {loading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', p: 2  }}>
-          <CircularProgress />
+    <Box
+      sx={{
+        height: '70vh', // Set height to 90vh
+        display: 'flex',
+        alignItems: 'center', // Center vertically
+        justifyContent: 'center', // Center horizontally
+        p: 2,
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          p: 4,
+          maxWidth: 400,
+          width: '100%',
+          borderRadius: 2,
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+          backgroundColor: '#ffffff',
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <AvatarComponent
+            avatarUrl={employee?.avatarUrl || '/static/images/avatar/1.jpg'}
+            sx={{ width: 100, height: 100 }}
+          />
         </Box>
-      )}
-      {error && (
-        <Typography variant="body2" color="error">
-          Error: {error}
-        </Typography>
-      )}
-      {employee && (
-        <>
-          <Typography variant="h6" align="center">
-            {employee?.name}
-          </Typography>
-          <Typography variant="body2" align="center" color="textSecondary">
-            Employee Id: {employee?.employeeId}
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
-            <Typography variant="body2" color="textSecondary">
-              Status:
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ ml: 1 }}>
-              {employee?.status}
-            </Typography>
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+            <CircularProgress />
           </Box>
-          <Typography variant="body2" align="center" color="textSecondary" sx={{ mt: 1 }}>
-            Email: {employee?.email}
+        )}
+        {error && (
+          <Typography variant="body2" color="error" align="center" sx={{ mb: 2 }}>
+            Error: {error}
           </Typography>
-          <Typography variant="body2" align="center" color="textSecondary" sx={{ mt: 1 }}>
-            Department: {employee?.department}
-          </Typography>
-        </>
-      )}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        <LogOut employeeId={user?.employeeId} id={user?.id} />
-      </Box>
-    </Paper>
+        )}
+        {employee && (
+          <>
+            <Typography variant="h5" align="center" sx={{ mb: 1, fontWeight: 'bold' }}>
+              {employee?.name}
+            </Typography>
+            <Typography variant="body1" align="center" color="textSecondary" sx={{ mb: 1 }}>
+              Employee ID: {employee?.employeeId}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1 }}>
+              <Typography variant="body1" color="textSecondary" sx={{ mr: 0.5 }}>
+                Status:
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                {employee?.status}
+              </Typography>
+            </Box>
+            <Typography variant="body1" align="center" color="textSecondary" sx={{ mb: 1 }}>
+              Email: {employee?.email}
+            </Typography>
+            <Typography variant="body1" align="center" color="textSecondary">
+              Department: {employee?.department}
+            </Typography>
+          </>
+        )}
+      </Paper>
+    </Box>
   );
 };
 
