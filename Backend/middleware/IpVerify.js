@@ -12,7 +12,7 @@ const ipVerify = async (req, res, next) => {
             userIp = '192.168.0.103';
         }
 
-        console.log('Request IP:', userIp); // Debugging: Log the IP address from the request
+        // console.log('Request IP:', userIp); // Debugging: Log the IP address from the request
 
         // Fetch the user from the database
         const userId = req.user.id;
@@ -27,7 +27,7 @@ const ipVerify = async (req, res, next) => {
         // Fetch the IP details from the database
         const ipRecord = await IP.findOne({ ip: userIp });
 
-        console.log('DB IP Record:', ipRecord); // Debugging: Log the IP record from the database
+        // console.log('DB IP Record:', ipRecord); // Debugging: Log the IP record from the database
 
         if (!ipRecord) {
             // IP not found in the database
