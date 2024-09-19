@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 
-const departments = ['flead', 'verify', 'rework', 'rto', 'admin', 'logistics'];
+const departments = ['flead', 'verify', 'rework', 'rto', 'admin', 'logistics', 'IT'];
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
