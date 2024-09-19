@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
 
             const ipRecord = await IP.findOne({ ip: userIp });
 
-            console.log('DB IP Record:', ipRecord); // Debugging: Log the IP record from the database
+           // console.log('DB IP Record:', ipRecord); // Debugging: Log the IP record from the database
 
             if (!ipRecord) {
                 return res.status(403).send({ error: 'IP address is not registered.' });
@@ -61,7 +61,7 @@ exports.login = async (req, res) => {
 
         res.send({ token, user: { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId } });
     } catch (error) {
-        console.error('Error during login:', error);
+        //console.error('Error during login:', error);
         res.status(500).send({ error: 'Server error.' });
     }
 };
