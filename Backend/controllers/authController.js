@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const IP = require('../models/Ip');
+const requestIp = require('request-ip');
 require('dotenv').config();
 
 const generateEmployeeId = (firstName, lastName) => {
@@ -9,19 +11,45 @@ const generateEmployeeId = (firstName, lastName) => {
     return initials + randomNum;
 };
 
+
+
+
 exports.login = async (req, res) => {
     const { employeeId, password } = req.body;
+    let userIp = requestIp.getClientIp(req); // Use request-ip to get the IP address
+
+    // Convert ::1 to 127.0.0.1 for local development
+    if (userIp === '::1') {
+        userIp = '192.168.0.103';
+    }
+
+    // console.log('Request IP:', userIp); // Debugging: Log the IP address from the request
 
     try {
         const user = await User.findOne({ employeeId });
-        // const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        // // console.log('Password comparison result:', isPasswordCorrect); // Debugging line
-
 
         // Check if the user exists and if the password matches
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            // console.error('Invalid login attempt: Employee ID or password is incorrect.');
             return res.status(400).send({ error: 'Invalid employee ID or password.' });
+        }
+
+        // Check IP verification for non-IT department users
+        if (user.department !== 'IT') {
+            // Retrieve all IPs to see what is stored in the database
+            // const allIps = await IP.find({});
+            // console.log('All IPs in DB:', allIps);
+
+            const ipRecord = await IP.findOne({ ip: userIp });
+
+            console.log('DB IP Record:', ipRecord); // Debugging: Log the IP record from the database
+
+            if (!ipRecord) {
+                return res.status(403).send({ error: 'IP address is not registered.' });
+            }
+
+            if (ipRecord.status !== 'active') {
+                return res.status(403).send({ error: 'IP address is not active.' });
+            }
         }
 
         // Generate JWT token
@@ -33,11 +61,11 @@ exports.login = async (req, res) => {
 
         res.send({ token, user: { id: user._id, role: user.role, department: user.department, employeeId: user.employeeId } });
     } catch (error) {
-        // Log the error with detailed information
-        // console.error('Error during login:', error);
+        console.error('Error during login:', error);
         res.status(500).send({ error: 'Server error.' });
     }
 };
+
 
 exports.register = async (req, res) => {
     const { email, password, name, role, department, employeeId } = req.body;

@@ -45,6 +45,9 @@ const LoginPage = () => {
                 case 'rto':
                     navigate('/rto-dashboard');
                     break;
+                case 'IT':
+                    navigate('/IT-dashboard');
+                    break;
                 default:
                     navigate('/');
                     break;
@@ -74,7 +77,6 @@ const LoginPage = () => {
         }
 
         await dispatch(login(formData));
-        setMessage('');
     };
 
     const handleClose = () => {
@@ -83,104 +85,103 @@ const LoginPage = () => {
 
     return (
         <>
-        <Container component="main" maxWidth="xs">
-            <Card
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    padding: 3,
-                    marginTop: 8,
-                    boxShadow: 3,
-                    backgroundColor: 'white',
-                }}
-            >
+            <Container component="main" maxWidth="xs">
+                <Card
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: 3,
+                        marginTop: 8,
+                        boxShadow: 3,
+                        backgroundColor: 'white',
+                    }}
+                >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main', width: 50, height: 50 }}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h4">
-                    Login
-                </Typography>
-                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="employeeId"
-                        label="Employee ID"
-                        name="employeeId"
-                        autoComplete="employeeId"
-                        autoFocus
-                        value={formData.employeeId}
-                        onChange={handleChange}
-                        error={!!errors.employeeId}
-                        helperText={errors.employeeId}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: errors.employeeId ? 'red' : '',
-                                },
-                            },
-                        }}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        error={!!errors.password}
-                        helperText={errors.password}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: errors.password ? 'red' : '',
-                                },
-                            },
-                        }}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h4">
                         Login
-                    </Button>
-                </Box>
-                
-                {message && (
-                    <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert
-                            onClose={handleClose}
-                            severity={message.includes('successful') ? 'success' : 'error'}
-                            sx={{ width: '100%' }}
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="employeeId"
+                            label="Employee ID"
+                            name="employeeId"
+                            autoComplete="employeeId"
+                            autoFocus
+                            value={formData.employeeId}
+                            onChange={handleChange}
+                            error={!!errors.employeeId}
+                            helperText={errors.employeeId}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: errors.employeeId ? 'red' : '',
+                                    },
+                                },
+                            }}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!errors.password}
+                            helperText={errors.password}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: errors.password ? 'red' : '',
+                                    },
+                                },
+                            }}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 3, mb: 2 }}
                         >
-                            {message}
-                        </Alert>
-                    </Snackbar>
-                )}
-            </Card>
+                            Login
+                        </Button>
+                    </Box>
+
+                    {message && (
+                        <Snackbar open={true} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert
+                                onClose={handleClose}
+                                severity={message.includes('successful') ? 'success' : 'error'}
+                                sx={{ width: '100%' }}
+                            >
+                                {message}
+                            </Alert>
+                        </Snackbar>
+                    )}
+                </Card>
             </Container>
             <Box sx={{
                 padding: '1rem',
                 marginTop: 'auto',
                 textAlign: 'center',
-}}>
-        <Typography variant="body2">
-                This product is under development and test. If you are having problems, please reach out to the admin.{' '}
-                {/* <Link href="/contact-admin" underline="hover">admin</Link>. */}
-            </Typography>
-            <Typography variant="body2">
-                All rights reserved © SevenZin
+            }}>
+                <Typography variant="body2">
+                    This product is under development and test. If you are having problems, please reach out to the admin.
+                </Typography>
+                <Typography variant="body2">
+                    All rights reserved © SevenZin
                 </Typography>
             </Box>
         </>

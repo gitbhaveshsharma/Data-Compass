@@ -15,7 +15,7 @@ import productReducer from './productReducer';
 import callattemptReducer from './callAttemptReducer';
 import alarmReducer from './alarmReducer';
 import historyReducer from './historyReducer';
-
+import { ipReducer } from './ipReducer';
 
 const rootReducer = combineReducers({
     admin: adminReducer,
@@ -34,6 +34,7 @@ const rootReducer = combineReducers({
     callAttempts: callattemptReducer,
     alarms: alarmReducer,
     history: historyReducer,
+    ips: ipReducer,
 });
 
 export default rootReducer;
